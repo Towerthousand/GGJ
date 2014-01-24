@@ -4,6 +4,7 @@
 #include "BlurContainer.hpp"
 #include "SquareObject.hpp"
 #include "DeferredLight.hpp"
+#include "Map.hpp"
 
 SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	this->setName("SCENE");
@@ -32,17 +33,8 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
     cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
     cam->addTo(renderer);
 
-    SquareObject* sq = new SquareObject();
-    sq->pos = vec3f(5,0,-10);
-    sq->addTo(renderer);
-
-    SquareObject* sq2 = new SquareObject();
-    sq2->pos = vec3f(-5,0,-10);
-    sq2->addTo(renderer);
-
-    SquareObject* sq3 = new SquareObject();
-    sq3->pos = vec3f(0,2,0);
-    sq3->addTo(sq2);
+	Map* map = new Map("data/maps/map0.map");
+	map->addTo(renderer);
 
     DeferredLight* dl = new DeferredLight();
     dl->pos = vec3f(-5,5,-5);
@@ -70,6 +62,7 @@ void SceneMain::loadResources() {
 	quad->setPrimitiveType(Mesh::TRIANGLES);
 	Meshes.add("quad", quad);
 	Meshes.add("monkey", Mesh::loadFromFile("data/meshes/monkey.obj"));
+	Meshes.add("Cube", Mesh::loadFromFile("data/meshes/cube.obj"));
 	std::vector<vec3f> cubeVertices = {
 		vec3f(0.0, 0.0, 1.0),
 		vec3f(1.0, 0.0, 1.0),

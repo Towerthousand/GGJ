@@ -2,6 +2,7 @@
 #define MAP_HPP
 #include "commons.hpp"
 
+class DeferredContainer;
 class Map : public GameObject {
 	public:
 		class Cube {
@@ -14,23 +15,32 @@ class Map : public GameObject {
 				};
 
 				enum Type {
-					SPIKES,
+					AIR,
 					FLOOR,
+					SPIKES,
 					BUMP
 				};
 
-				Cube(Color col);
+				Cube(Color c, Type t) : color(c), type(t) {}
 
 			private:
-				Color col;
+				Color color;
+				Type type;
 				friend class Map;
 		};
 
 		Map(const std::string& mapfile);
 		~Map();
 
+		void update(float deltaTime);
+		void draw() const; //while(1) fork;
+
 	private:
+		Cube translate(char c);
+
 		std::vector<std::vector <Cube> > map;
+		Model cube;
+		DeferredContainer* renderer;
 };
 
 #endif // MAP_HPP

@@ -60,6 +60,7 @@ void DeferredContainer::draw() const {
 
 	glDepthFunc(GL_LEQUAL);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //forward rendering blending
+
 }
 
 DeferredContainer::DrawMode DeferredContainer::getMode() const {

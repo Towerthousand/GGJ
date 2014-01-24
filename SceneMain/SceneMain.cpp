@@ -35,6 +35,7 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
     SquareObject* sq = new SquareObject();
     sq->pos = vec3f(5,0,-10);
     sq->addTo(renderer);
+    sq->setName("monkey");
 
     SquareObject* sq2 = new SquareObject();
     sq2->pos = vec3f(-5,0,-10);
@@ -70,26 +71,37 @@ void SceneMain::loadResources() {
 	quad->setPrimitiveType(Mesh::TRIANGLES);
 	Meshes.add("quad", quad);
 	Meshes.add("monkey", Mesh::loadFromFile("data/meshes/monkey.obj"));
-	std::vector<vec3f> cubeVertices = {
-		vec3f(0.0, 0.0, 1.0),
-		vec3f(1.0, 0.0, 1.0),
-		vec3f(0.0, 1.0, 1.0),
-		vec3f(1.0, 1.0, 1.0),
-		vec3f(0.0, 0.0, 0.0),
-		vec3f(1.0, 0.0, 0.0),
-		vec3f(0.0, 1.0, 0.0),
-		vec3f(1.0, 1.0, 0.0),
-	};
 
+	std::vector<vec3f> cubeVertices = {
+        vec3f(-1.0, -1.0, 1.0),
+        vec3f(1.0, -1.0, 1.0),
+        vec3f(-1.0, 1.0, 1.0),
+		vec3f(1.0, 1.0, 1.0),
+        vec3f(-1.0, -1.0, -1.0),
+        vec3f(1.0, -1.0, -1.0),
+        vec3f(-1.0, 1.0, -1.0),
+        vec3f(1.0, 1.0, -1.0),
+	};
 	std::vector<unsigned int> cubeIndices = {
 		0, 1, 2, 3, 7, 1, 5, 4, 7, 6, 2, 4, 0, 1
 	};
-
 	Mesh* cube = Mesh::loadEmpty(Vertex::Format(elems),Mesh::STATIC,true);
 	cube->setPrimitiveType(Mesh::TRIANGLE_STRIP);
 	cube->setVertexData(&cubeVertices[0],cubeVertices.size());
 	cube->setVertexIndices(&cubeIndices[0],cubeIndices.size());
 	Meshes.add("1x1Cube",cube);
+
+
+    std::vector<unsigned int> wireIndices = {
+        0, 1, 1, 3, 3, 2, 2, 0,     // front
+        4, 5, 5, 7, 7, 6, 6, 4,     // back
+        0, 4, 2, 6, 1, 5, 3, 7      // side edges
+    };
+    Mesh* wirecube = Mesh::loadEmpty(Vertex::Format(elems),Mesh::STATIC,true);
+    wirecube->setPrimitiveType(Mesh::LINES);
+    wirecube->setVertexData(&cubeVertices[0],cubeVertices.size());
+    wirecube->setVertexIndices(&wireIndices[0],wireIndices.size());
+    Meshes.add("1x1WireCube",wirecube);
 
 	//textures
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
@@ -112,6 +124,7 @@ void SceneMain::loadResources() {
 	Programs.add("textureToScreen", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/quad.frag"));
 	Programs.add("blurMaskPass", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurMaskPass.frag"));
     Programs.add("depthShader", ShaderProgram::loadFromFile("data/shaders/depth.vert","data/shaders/depth.frag"));
+    Programs.add("lines", ShaderProgram::loadFromFile("data/shaders/quad.vert","data/shaders/lines.frag"));
 }
 
 void SceneMain::update(float deltaTime) {

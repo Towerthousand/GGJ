@@ -34,5 +34,6 @@ OTHER_FILES += \
     data/shaders/depth.vert \
     data/shaders/standardDeferred.vert \
     data/shaders/standardDeferred.frag \
-    data/shaders/ambientPass.frag
+    data/shaders/ambientPass.frag \
+    data/shaders/lines.frag
 

@@ -30,11 +30,19 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 
     Camera* cam = new Camera("playerCam");
     cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-    cam->addTo(this);
+    cam->addTo(renderer);
 
     SquareObject* sq = new SquareObject();
-    sq->pos = vec3f(0,0,-10);
+    sq->pos = vec3f(5,0,-10);
     sq->addTo(renderer);
+
+    SquareObject* sq2 = new SquareObject();
+    sq2->pos = vec3f(-5,0,-10);
+    sq2->addTo(renderer);
+
+    SquareObject* sq3 = new SquareObject();
+    sq3->pos = vec3f(0,2,0);
+    sq3->addTo(sq2);
 
     DeferredLight* dl = new DeferredLight();
     dl->pos = vec3f(-5,5,-5);
@@ -61,7 +69,27 @@ void SceneMain::loadResources() {
 	quad->setVertexData(&data[0], 6);
 	quad->setPrimitiveType(Mesh::TRIANGLES);
 	Meshes.add("quad", quad);
-    Meshes.add("monkey", Mesh::loadFromFile("data/meshes/monkey.obj"));
+	Meshes.add("monkey", Mesh::loadFromFile("data/meshes/monkey.obj"));
+	std::vector<vec3f> cubeVertices = {
+		vec3f(0.0, 0.0, 1.0),
+		vec3f(1.0, 0.0, 1.0),
+		vec3f(0.0, 1.0, 1.0),
+		vec3f(1.0, 1.0, 1.0),
+		vec3f(0.0, 0.0, 0.0),
+		vec3f(1.0, 0.0, 0.0),
+		vec3f(0.0, 1.0, 0.0),
+		vec3f(1.0, 1.0, 0.0),
+	};
+
+	std::vector<unsigned int> cubeIndices = {
+		0, 1, 2, 3, 7, 1, 5, 4, 7, 6, 2, 4, 0, 1
+	};
+
+	Mesh* cube = Mesh::loadEmpty(Vertex::Format(elems),Mesh::STATIC,true);
+	cube->setPrimitiveType(Mesh::TRIANGLE_STRIP);
+	cube->setVertexData(&cubeVertices[0],cubeVertices.size());
+	cube->setVertexIndices(&cubeIndices[0],cubeIndices.size());
+	Meshes.add("1x1Cube",cube);
 
 	//textures
 	char pixels[4] = {char(200), char(20), char(20), char(255)};

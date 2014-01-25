@@ -59,6 +59,7 @@ void Map::update(float deltaTime) {
 
 void Map::draw() const {
     Player* pla = (Player*)getGame()->getObjectByName("playerTest");
+
 	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
 	if(renderer->getMode() == DeferredContainer::Deferred) {
 		for(int i = 0; i < (int)map.size(); ++i) {

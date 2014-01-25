@@ -67,7 +67,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	cam = new Camera("playerCam");
 	cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
 	cam->addTo(this);
-	cam->targetPlayer = "playerTest";
+	cam->targetPlayer = players[playerNum];
 }
 
 SceneMain::~SceneMain() {

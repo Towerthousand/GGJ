@@ -12,12 +12,10 @@ Camera::~Camera() {
 
 void Camera::update(float deltaTime) {
 
-	Player* player = (Player*) getGame()->getObjectByName(targetPlayer);
-
-	vec3f newPos = player->pos + vec3f(0, 0, 8);
+	vec3f newPos = targetPlayer->pos + vec3f(0, 0, 8);
 	float fac = exp(-deltaTime*20);
 	pos = pos*fac+newPos*(1-fac);
-	lookPos = player->pos;
+	lookPos = targetPlayer->pos;
 
 	transform = glm::translate(mat4f(1.0f),pos);
 	view = glm::lookAt(pos, lookPos, vec3f(0, 1, 0));

@@ -8,6 +8,7 @@
 #include "Map.hpp"
 #include "particles/ParticleSystem.hpp"
 #include "particles/LightParticleEmitter.hpp"
+#include "Trails.hpp"
 
 SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	this->setName("SCENE");
@@ -38,6 +39,9 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 
 	Map* map = new Map("data/maps/map0.map");
 	map->addTo(renderer);
+
+    Trails* trails = new Trails("trails");
+    trails->addTo(renderer);
 
     DeferredLight* dl = new DeferredLight();
 	dl->pos = vec3f(10,5,10);
@@ -149,6 +153,7 @@ void SceneMain::loadResources() {
 	Programs.add("blurMaskPass", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurMaskPass.frag"));
     Programs.add("depthShader", ShaderProgram::loadFromFile("data/shaders/depth.vert","data/shaders/depth.frag"));
     Programs.add("lines", ShaderProgram::loadFromFile("data/shaders/quad.vert","data/shaders/lines.frag"));
+    Programs.add("trails", ShaderProgram::loadFromFile("data/shaders/trails.vert", "data/shaders/trails.geom", "data/shaders/trails.frag"));
 }
 
 void SceneMain::update(float deltaTime) {

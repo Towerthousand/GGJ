@@ -2,7 +2,7 @@
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
 
-std::string Map::models_textures[Map::Cube::NUM_TYPES][Map::Cube::NUM_COLORS][2] = {
+std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	{ //AIR
 	  {"",""},
 	  {"",""},
@@ -128,14 +128,14 @@ bool Map::isColliding(const AABB& aabb) const
 
 Map::Cube Map::translate(char c) {
 	switch (c) {
-		case 'W' : return Cube(Cube::WHITE	,Cube::FLOOR);
-		case 'R' : return Cube(Cube::RED	,Cube::FLOOR);
-		case 'G' : return Cube(Cube::GREEN	,Cube::FLOOR);
-		case 'B' : return Cube(Cube::BLUE	,Cube::FLOOR);
-		case 'Z' : return Cube(Cube::RED	,Cube::SAW);
-		case 'X' : return Cube(Cube::GREEN	,Cube::SAW);
-		case 'C' : return Cube(Cube::BLUE	,Cube::SAW);
-		case ' ' : return Cube(Cube::WHITE	,Cube::AIR);
+        case 'W' : return Cube(Color::WHITE	,Cube::FLOOR);
+        case 'R' : return Cube(Color::RED	,Cube::FLOOR);
+        case 'G' : return Cube(Color::GREEN	,Cube::FLOOR);
+        case 'B' : return Cube(Color::BLUE	,Cube::FLOOR);
+        case 'Z' : return Cube(Color::RED	,Cube::SAW);
+        case 'X' : return Cube(Color::GREEN	,Cube::SAW);
+        case 'C' : return Cube(Color::BLUE	,Cube::SAW);
+        case ' ' : return Cube(Color::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}
 }

@@ -2,6 +2,7 @@
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
 #include "Map.hpp"
+#include "Trails.hpp"
 
 #define MAX_VELOCITY    10.0f
 #define GRAVITY         9.8f
@@ -32,12 +33,17 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     animState = Player::IDLE;
 
     scale = vec3f(0.26f/model.mesh->getBoundingBox().getRadius());
+
+    color = RED;
 }
 
 Player::~Player() {
 }
 
 void Player::update(float deltaTime) {
+
+    vec3f initPos = pos;
+
     //Animation Conditions
     bool collidingSides = false;
     bool collidingFloor = false;
@@ -109,6 +115,7 @@ void Player::update(float deltaTime) {
 	aabb = AABB(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
 
 	//X
+    bool isRightWall = false;
 	AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
 	if(map->isColliding(newboxX)) {
 		float min = 0;
@@ -131,7 +138,7 @@ void Player::update(float deltaTime) {
 
         if(velocity.x > 0 ) {
             if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x -= JUMP_IMPULSE*5;
-
+            isRightWall = true;
         } else if(velocity.x < 0 ) {
             if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x += JUMP_IMPULSE*5;
         } else velocity.x = 0;
@@ -153,6 +160,21 @@ void Player::update(float deltaTime) {
 
     //VBE_LOG(animState);
 
+
+    // TRAILS
+    if (prevOnfloor && collidingFloor) {
+        Trails* trails = (Trails*)getGame()->getObjectByName("trails");
+        trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos, pos));
+    }
+    if (prevOnside && collidingSides) {
+        Trails* trails = (Trails*)getGame()->getObjectByName("trails");
+        if (isRightWall)
+            trails->addTrailSegment(color, Trails::VERTICAL_RIGHT, Trails::Segment(initPos, pos));
+        else
+            trails->addTrailSegment(color, Trails::VERTICAL_LEFT, Trails::Segment(initPos, pos));
+    }
+    prevOnfloor = collidingFloor;
+    prevOnside = collidingSides;
 
 
 	//transform stuff

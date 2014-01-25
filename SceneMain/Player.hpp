@@ -1,12 +1,14 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 #include "commons.hpp"
+#include "Colors.hpp"
 
 class DeferredContainer;
 class Camera;
 
 class Player : public GameObject {
 public:
+
     Player(const std::string &playerName, const vec3f& pos = vec3f(0.0f), const vec3f& rot = vec3f(0.0f));
     virtual ~Player();
 
@@ -16,6 +18,9 @@ public:
     vec3f pos;
     vec3f rot;
     vec3f scale;
+
+    Color color;
+
 
 private:
     Model model;
@@ -36,6 +41,9 @@ private:
     };
 
     Animation animState;
+
+    bool prevOnfloor;
+    bool prevOnside;
 
 };
 

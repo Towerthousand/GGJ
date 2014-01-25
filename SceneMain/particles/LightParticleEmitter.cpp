@@ -1,7 +1,7 @@
 #include "LightParticleEmitter.hpp"
 #include "ParticleEmitter.hpp"
 
-LightParticleEmitter::LightParticleEmitter(vec3f col) : ParticleEmitter(20), col(col) {
+LightParticleEmitter::LightParticleEmitter(vec3f col, int index) : ParticleEmitter(20), col(col), index(index) {
 }
 
 Particle LightParticleEmitter::makeParticle(float frameTimePassed, float deltaTime, vec3f position) {
@@ -19,6 +19,6 @@ Particle LightParticleEmitter::makeParticle(float frameTimePassed, float deltaTi
     pt.v = vel;
 	pt.p = position-vec3f(0,0.1,0);
     pt.a = vec3f(0,-9.8,0);
-	pt.texIndex = 1;
+    pt.texIndex = index;
 	return pt;
 }

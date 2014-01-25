@@ -39,6 +39,7 @@ SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socke
 
     Player* pla = new Player("playerTest");
     pla->pos = vec3f(3,5,0);
+    pla->color = Color::BLUE;
     pla->addTo(renderer);
 
 	Map* map = new Map("data/maps/map0.map");
@@ -56,7 +57,7 @@ SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socke
 	sys->addTo(renderer);
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
-	ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1));
+    ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1),pla->color-1);
 	emitter1->addTo(pla);
 
 
@@ -76,8 +77,7 @@ SceneMain::~SceneMain() {
 
 void SceneMain::loadResources() {
     AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
-
-    AudioManager::getMusic("gameMusic")->setPlayingOffset(sf::seconds(43));
+    AudioManager::getMusic("gameMusic")->setPlayingOffset(sf::seconds(42.22));
     AudioManager::getMusic("gameMusic")->play();
 
 	//meshes
@@ -158,9 +158,9 @@ void SceneMain::loadResources() {
 	Textures2D.add("elevatorR", Texture2D::createFromFile("data/textures/elevatorR.png"));
 	Textures2D.add("elevatorG", Texture2D::createFromFile("data/textures/elevatorG.png"));
 	Textures2D.add("elevatorB", Texture2D::createFromFile("data/textures/elevatorB.png"));
-    Textures2D.add("brushR", Texture2D::createFromFile("data/textures/brushR.png"));
-    Textures2D.add("brushG", Texture2D::createFromFile("data/textures/brushG.png"));
-    Textures2D.add("brushB", Texture2D::createFromFile("data/textures/brushB.png"));
+    Textures2D.add("brush1", Texture2D::createFromFile("data/textures/brushR.png"));
+    Textures2D.add("brush2", Texture2D::createFromFile("data/textures/brushG.png"));
+    Textures2D.add("brush3", Texture2D::createFromFile("data/textures/brushB.png"));
     Textures2D.add("trailR", Texture2D::createFromFile("data/textures/decal2R.png"));
     Textures2D.add("trailG", Texture2D::createFromFile("data/textures/decal2G.png"));
     Textures2D.add("trailB", Texture2D::createFromFile("data/textures/decal2B.png"));
@@ -202,4 +202,5 @@ void SceneMain::update(float deltaTime) {
 		debugCounter--;
 		fpsCount = 0;
 	}
+
 }

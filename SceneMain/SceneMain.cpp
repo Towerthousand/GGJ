@@ -14,6 +14,11 @@
 SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
 
+	sf::Packet packet = receivePacket();
+	int mapSize, personCount, policeCount, seed;
+	packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
+	//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
+
 	loadResources();
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
 

@@ -33,7 +33,7 @@ void Trails::draw() const
         return;
 
     Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-    glDepthMask(GL_FALSE);
+	glDepthMask(GL_TRUE);
     glDisable(GL_CULL_FACE);
 
     for (int i = 0; i < Color::NUM_COLORS; i++) {

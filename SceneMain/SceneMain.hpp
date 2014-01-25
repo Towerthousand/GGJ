@@ -16,6 +16,9 @@ class SceneMain : public GameObject {
 		int fpsCount;
 		Camera* cam;
 		sf::Socket* socket;
+
+		int playerNum;
+		int playerCount;
 };
 
 #endif // SCENEMAIN_HPP

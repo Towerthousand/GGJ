@@ -12,6 +12,9 @@ class SceneMain : public GameObject {
 		~SceneMain();
 		void update(float deltaTime);
 
+        int playerNum;
+        int playerCount;
+
 	private:
         void loadResources();
 		float debugCounter;
@@ -19,8 +22,7 @@ class SceneMain : public GameObject {
 		Camera* cam;
 		sf::TcpSocket* socket;
 
-		int playerNum;
-		int playerCount;
+
 
 		Player* players[32]; //32 players son suficientes :3
 

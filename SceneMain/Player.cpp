@@ -18,16 +18,17 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     model.program = Programs.get("deferredModel");
     renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 
+    modelOffset = glm::translate(mat4f(1.0f), -model.mesh->getBoundingBox().getCenter());
+
     cam = new Camera("playerCam");
     cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-    cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius()) - 0.5f*model.mesh->getBoundingBox().getDimensions();
+    cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius());
     cam->addTo(this);
 
     velocity = vec3f(0,0,0);
     colliding = false;
 
     scale = vec3f(0.26f/model.mesh->getBoundingBox().getRadius());
-
 }
 
 Player::~Player() {
@@ -67,7 +68,8 @@ void Player::update(float deltaTime) {
     // collision detection
 	Map* map = (Map*)getGame()->getObjectByName("map");
 	AABB aabb = model.mesh->getBoundingBox();
-	aabb = AABB(vec3f(fullTransform*vec4f(aabb.getMin(), 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax(), 1.0f)));
+    mat4f trans = fullTransform*modelOffset;
+    aabb = AABB(vec3f(trans*vec4f(aabb.getMin(), 1.0f)), vec3f(trans*vec4f(aabb.getMax(), 1.0f)));
 
 	colliding = false;
 
@@ -119,16 +121,17 @@ void Player::update(float deltaTime) {
 		else if(rot[i] >= 360.0f) rot[i] = rot[i]-360;
 	}
 
-	transform = glm::translate(mat4f(1),pos);
-	transform = glm::scale(transform, scale);
+    transform = glm::translate(mat4f(1), pos);
+    transform = glm::scale(transform, scale);
+
 }
 
 void Player::draw() const
 {
     if(renderer->getMode() == DeferredContainer::Deferred) {
         Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-        model.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform);
-        model.program->uniform("M")->set(fullTransform);
+        model.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform*modelOffset);
+        model.program->uniform("M")->set(fullTransform*modelOffset);
         model.program->uniform("V")->set(cam->view);
         model.program->uniform("ambient")->set(0.5f);
         model.program->uniform("specular")->set(1.0f);
@@ -136,10 +139,11 @@ void Player::draw() const
         model.draw();
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
+        AABB aabb = model.mesh->getBoundingBox();
 		Model m;
 		m.mesh = Meshes.get("1x1WireCube");
         m.program = Programs.get("lines");
-		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(fullTransform,vec3f(model.mesh->getBoundingBox().getDimensions()/model.mesh->getBoundingBox().getRadius())));
+        m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(fullTransform, vec3f(aabb.getDimensions()/float(sqrt(3.0f)))));
         m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
         m.draw();
     }

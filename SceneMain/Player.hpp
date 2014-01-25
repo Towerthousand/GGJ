@@ -25,6 +25,7 @@ private:
     vec3f velocity;
     bool colliding;
 
+    mat4f modelOffset;
 
 };
 

@@ -32,8 +32,8 @@ Particle ParticleEmitter::makeParticle(float frameTimePassed, float deltaTime, v
 }
 
 void ParticleEmitter::spawnParticle(float frameTimePassed, float deltaTime) {
-	float t2 = frameTimePassed/deltaTime;
-	Particle pt = makeParticle(frameTimePassed, deltaTime, oldWorldPos * (1-t2) + currWorldPos * t2);
+    float t2 = 1;//frameTimePassed/deltaTime;
+    Particle pt = makeParticle(frameTimePassed, deltaTime, oldWorldPos * (1-t2) + currWorldPos * t2);
     //pt.update(deltaTime-frameTimePassed); //update for the rest of the frame time
 	sys->addParticle(pt);
 }

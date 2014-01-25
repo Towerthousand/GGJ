@@ -17,8 +17,8 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     cam->addTo(this);
 
     velocity = vec3f(0,0,0);
-    maxvelocity = .1f;
-    gravity = 1.0f;
+    maxvelocity = 10.0f;
+    gravity = 9.8f;
     colliding = true;
 
 }
@@ -28,32 +28,51 @@ Player::~Player() {
 
 void Player::update(float deltaTime) {
 
-    float speed = 1.0f;
+    float accel = 40.0f;
+    float kfriction = 20.0f;
 
     //MOVEMENT
+    vec3f dir(0);
     if(Input::isKeyDown(sf::Keyboard::Left)) {
-        velocity.x -= speed*deltaTime;
-        if(velocity.x < -maxvelocity) velocity.x = -maxvelocity;
-    } else if(Input::isKeyDown(sf::Keyboard::Right)) {
-        velocity.x += speed*deltaTime;
-        if(velocity.x > maxvelocity) velocity.x = maxvelocity;
-    } else velocity.x = 0;
+        dir += vec3f(-1, 0, 0);
+    }
+    if(Input::isKeyDown(sf::Keyboard::Right)) {
+        dir += vec3f(1, 0, 0);
+    }
+
+    vec3f friction(0);
+    friction = kfriction*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+
+
+    //GRAVITY AND COLLISIONS
+    vec3f contactForce(0);
+    if(colliding) {
+        contactForce = vec3f(0, gravity, 0);
+        velocity.y = 0;
+        //pos.y = //posicion de la colision;
+    }
+
+    vec3f totalForce = accel*dir + vec3f(0, -gravity, 0) + contactForce + friction;
+
+
+    velocity += totalForce*deltaTime;
+    glm::clamp(velocity, vec3f(-maxvelocity), vec3f(maxvelocity));
 
     if(Input::isKeyDown(sf::Keyboard::X)) {
         colliding = false;
     } else colliding = true;
 
+
+
     //JUMP
-    if(Input::isKeyPressed(sf::Keyboard::Up)) velocity.y = .5f;
+    if(Input::isKeyPressed(sf::Keyboard::Up))
+        velocity.y = 5.0f;
+
+
+    pos += velocity*deltaTime;
 
 
 
-    pos += velocity;
-
-    //GRAVITY
-    if(!colliding) {
-        velocity.y -= gravity*deltaTime;
-    } else velocity.y = 0;
 
 
     //transform stuff

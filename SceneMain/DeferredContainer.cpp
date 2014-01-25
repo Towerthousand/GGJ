@@ -78,4 +78,3 @@ Texture2D *DeferredContainer::getColor1() const {
 Texture2D* DeferredContainer::getDepth() const {
     return gBuffer->getTextureForAttachment(RenderTarget::DEPTH);
 }
-

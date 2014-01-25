@@ -16,13 +16,12 @@ public:
     vec3f pos;
     vec3f rot;
     vec3f scale;
+	vec3f velocity;
 
 private:
     Model model;
     DeferredContainer* renderer;
-    Camera* cam;
 
-    vec3f velocity;
     bool colliding;
 
     mat4f modelOffset;

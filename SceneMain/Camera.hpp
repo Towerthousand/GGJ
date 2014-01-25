@@ -12,11 +12,14 @@ class Camera : public GameObject {
 		vec3f getForward() const;
 
 		vec3f pos;
+		vec3f lookPos;
 		vec3f rot;
 		mat4f projection;
 		mat4f view;
 
 		const Frustum& getFrustum() const;
+
+		std::string targetPlayer;
 	private:
 		Frustum frustum;
 };

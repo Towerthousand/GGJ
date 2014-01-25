@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+#include "Player.hpp"
 
 Camera::Camera(const std::string& cameraName, const vec3f& pos, const vec3f& rot)
     : pos(pos), rot(rot), projection(1.0f), view(1.0f) {
@@ -11,24 +12,16 @@ Camera::~Camera() {
 
 void Camera::update(float deltaTime) {
 
-    float speed = 10.0f;
-    if(Input::isKeyDown(sf::Keyboard::A)) pos.x -= speed*deltaTime;
-    if(Input::isKeyDown(sf::Keyboard::W)) pos.y += speed*deltaTime;
-    if(Input::isKeyDown(sf::Keyboard::S)) pos.y -= speed*deltaTime;
-    if(Input::isKeyDown(sf::Keyboard::D)) pos.x += speed*deltaTime;
+	Player* player = (Player*) getGame()->getObjectByName(targetPlayer);
 
-    //transform stuff
-    for(int i = 0; i < 3; ++i) {
-        if(rot[i] < 0) rot[i] = rot[i]+360;
-        else if(rot[i] >= 360.0f) rot[i] = rot[i]-360;
-    }
-    transform = glm::translate(mat4f(1.0f),pos);
-    view = mat4f(1.0f);
-    view = glm::rotate(view, rot.x, vec3f(1, 0, 0));
-    view = glm::rotate(view, rot.y, vec3f(0, 1, 0));
-    view = glm::rotate(view, rot.z, vec3f(0, 0, 1));
-    view = glm::translate(view, -getWorldPos());
-    frustum.calculate(projection*view);
+	vec3f newPos = player->pos + vec3f(0, 0, 8);
+	float fac = exp(-deltaTime*20);
+	pos = pos*fac+newPos*(1-fac);
+	lookPos = player->pos;
+
+	transform = glm::translate(mat4f(1.0f),pos);
+	view = glm::lookAt(pos, lookPos, vec3f(0, 1, 0));
+	frustum.calculate(projection*view);
 }
 
 vec3f Camera::getWorldPos() const {

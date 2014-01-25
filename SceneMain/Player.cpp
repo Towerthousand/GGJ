@@ -16,15 +16,10 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     this->setName(playerName);
     model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
-    renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
+	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 
     modelAabb = model.mesh->getBoundingBox();
     modelOffset = glm::translate(mat4f(1.0f), -modelAabb.getCenter()+vec3f(0,0,0.5));
-
-    cam = new Camera("playerCam");
-    cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-    cam->pos = vec3f(0,0,20*modelAabb.getRadius());
-    cam->addTo(this);
 
     velocity = vec3f(0.0f);
     colliding = false;
@@ -205,7 +200,8 @@ void Player::draw() const
         model.draw();
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
-        AABB aabb = modelAabb;
+		Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
+		AABB aabb = modelAabb;
 		Model m;
 		m.mesh = Meshes.get("1x1WireCube");
         m.program = Programs.get("lines");

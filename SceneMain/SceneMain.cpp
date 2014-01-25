@@ -50,6 +50,13 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 
     ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1.0, 0.1, 0.03));
 	emitter1->addTo(pla);
+
+
+	cam = new Camera("playerCam");
+	cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
+//	cam->pos = vec3f(0,0,20*modelAabb.getRadius());
+	cam->addTo(this);
+	cam->targetPlayer = "playerTest";
 }
 
 SceneMain::~SceneMain() {

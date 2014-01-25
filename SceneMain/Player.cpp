@@ -3,6 +3,7 @@
 #include "DeferredContainer.hpp"
 #include "Map.hpp"
 #include "Trails.hpp"
+#include "particles/LightParticleEmitter.hpp"
 
 #define MAX_VELOCITY    10.0f
 #define GRAVITY         9.8f
@@ -12,8 +13,8 @@
 #define ELASTICITY      0.0f
 
 
-Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot)
-    : pos(pos), rot(rot) {
+Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot, Color col)
+	: pos(pos), rot(rot), color(col) {
     this->setName(playerName);
     model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
@@ -34,8 +35,10 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     anim = "idle";
     animIter = 0;
 
-    scale = vec3f(0.26f/modelAabb.getRadius());
-    color = RED;
+	scale = vec3f(0.30f/modelAabb.getRadius());
+
+	ParticleEmitter* emitter = new LightParticleEmitter(vec3f(1),color-1);
+	emitter->addTo(this);
 }
 
 Player::~Player() {
@@ -203,7 +206,7 @@ void Player::update(float deltaTime) {
 
     // TRAILS
 
-    vec3f posoff(0, -0.25f*modelAabb.getDimensions().y, 0.5);
+	vec3f posoff(0, -0.29f*modelAabb.getDimensions().y, 0.5);
     if (prevOnfloor && collidingFloor && (blockColor == Color::WHITE || blockColor == color) ) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         if (initPos.x < pos.x)

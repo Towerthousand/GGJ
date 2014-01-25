@@ -35,7 +35,7 @@ class Map : public GameObject {
 		void update(float deltaTime);
 		void draw() const; //while(1) fork;
 
-        bool checkCollisions(const AABB& aabb, vec3f& pos, vec3f&  nor) const;
+		bool isColliding(const AABB& aabb) const;
 
 	private:
 		Cube translate(char c);

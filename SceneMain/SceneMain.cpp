@@ -6,6 +6,8 @@
 #include "SquareObject.hpp"
 #include "DeferredLight.hpp"
 #include "Map.hpp"
+#include "particles/ParticleSystem.hpp"
+#include "particles/LightParticleEmitter.hpp"
 
 SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	this->setName("SCENE");
@@ -31,7 +33,7 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	renderer->addTo(blur);
 
     Player* pla = new Player("playerTest");
-    pla->pos = vec3f(-2,0,0);
+	pla->pos = vec3f(-10,0,0);
     pla->addTo(renderer);
 
 	Map* map = new Map("data/maps/map0.map");
@@ -40,6 +42,13 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
     DeferredLight* dl = new DeferredLight();
     dl->pos = vec3f(-5,5,-5);
     dl->addTo(renderer);
+
+	ParticleSystem* sys = new ParticleSystem();
+	sys->addTo(renderer);
+	sys->setTextureSheet(Textures2D.get("particleSheet"), 2);
+
+	ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1.0, 0.1, 0.03));
+	emitter1->addTo(pla);
 }
 
 SceneMain::~SceneMain() {
@@ -96,6 +105,7 @@ void SceneMain::loadResources() {
     Meshes.add("1x1WireCube",wirecube);
 
 	//textures
+	Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
 	Textures2D.add("nullRed", Texture2D::createFromRaw(pixels, 1, 1));
 	char pixels2[4] = {char(20), char(200), char(20), char(255)};

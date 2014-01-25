@@ -11,7 +11,11 @@ SOURCES += main.cpp \
     SceneMain/BlurContainer.cpp \
     SceneMain/Frustum.cpp \
     SceneMain/SquareObject.cpp \
-    SceneMain/Map.cpp
+    SceneMain/Map.cpp \
+    SceneMain/particles/ParticleSystem.cpp \
+    SceneMain/particles/ParticleEmitter.cpp \
+    SceneMain/particles/Particle.cpp \
+    SceneMain/particles/LightParticleEmitter.cpp
 
 HEADERS += \
     commons.hpp \
@@ -23,7 +27,11 @@ HEADERS += \
     SceneMain/BlurContainer.hpp \
     SceneMain/Frustum.hpp \
     SceneMain/SquareObject.hpp \
-    SceneMain/Map.hpp
+    SceneMain/Map.hpp \
+    SceneMain/particles/ParticleSystem.hpp \
+    SceneMain/particles/ParticleEmitter.hpp \
+    SceneMain/particles/Particle.hpp \
+    SceneMain/particles/LightParticleEmitter.hpp
 
 OTHER_FILES += \
     data/shaders/quad.vert \
@@ -37,5 +45,8 @@ OTHER_FILES += \
     data/shaders/standardDeferred.vert \
     data/shaders/standardDeferred.frag \
     data/shaders/ambientPass.frag \
-    data/shaders/lines.frag
+    data/shaders/lines.frag \
+    data/shaders/particles.vert \
+    data/shaders/particles.geom \
+    data/shaders/particles.frag
 

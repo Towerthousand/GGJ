@@ -37,6 +37,7 @@ void Player::update(float deltaTime) {
 
     vec3f prevPos = pos;
 
+	//PHYSICS
     // apply forces
     vec3f dir(0);
     if(Input::isKeyDown(sf::Keyboard::Left)) {
@@ -60,42 +61,28 @@ void Player::update(float deltaTime) {
     if (Input::isKeyPressed(sf::Keyboard::Up)) {
         velocity.y += JUMP_IMPULSE;
     }
-
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
     pos += velocity*deltaTime;
 
-    //transform stuff
-    for(int i = 0; i < 3; ++i) {
-        if(rot[i] < 0) rot[i] = rot[i]+360;
-        else if(rot[i] >= 360.0f) rot[i] = rot[i]-360;
-    }
-    transform = glm::scale(mat4f(1), scale);
-    transform = glm::translate(transform,pos);
-
+	//NOT PHYSICS
+	vec3f disp = pos-prevPos;
 
     // collision detection
     AABB aabb = model.mesh->getBoundingBox();
-    AABB mybox(vec3f(fullTransform*vec4f(aabb.getMin(), 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax(), 1.0f)));
-    vec3f collpos, collnor;
-    float fraction = 1.0f;
-    colliding = ((Map*)getGame()->getObjectByName("map"))->checkCollisions(mybox, collpos, collnor);
-    if (colliding) {
-        vec3f velNor = glm::dot(velocity, collnor)*collnor;
-        vec3f velTan = velocity - velNor;
-        velocity = velTan - ELASTICITY*velNor;
-        pos = pos - (1 + ELASTICITY)*(glm::dot(collnor, pos) - glm::dot(collnor, collpos))*collnor + model.mesh->getBoundingBox().getRadius()*collnor;
-    }
-    /*while (((Map*)getGame()->getObjectByName("map"))->checkCollisions(mybox, collpos, collnor)) {
-        fraction *= 0.5f;
-        pos = prevPos + fraction*velocity*deltaTime;
-        transform = glm::scale(mat4f(1), scale);
-        transform = glm::translate(transform,pos);
-        mybox = AABB(vec3f(fullTransform*vec4f(aabb.getMin(), 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax(), 1.0f)));
-    }*/
+	//AABB mybox(vec3f(fullTransform*vec4f(aabb.getMin(), 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax(), 1.0f)));
+	AABB newbox(vec3f(fullTransform*vec4f(aabb.getMin()+disp, 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax()+disp, 1.0f)));
+	if(((Map*)getGame()->getObjectByName("map"))->isColliding(newbox)) {
+		pos = prevPos;
+	}
+	//transform stuff
+	for(int i = 0; i < 3; ++i) {
+		if(rot[i] < 0) rot[i] = rot[i]+360;
+		else if(rot[i] >= 360.0f) rot[i] = rot[i]-360;
+	}
 
-
-
+	transform = glm::scale(mat4f(1), scale);
+	transform = glm::translate(transform,pos);
 }
 
 void Player::draw() const
@@ -111,10 +98,11 @@ void Player::draw() const
         model.draw();
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
-        Model m;
+		Model m;
         m.mesh = Meshes.get("1x1WireCube");
+		VBE_LOG(model.mesh->getBoundingBox().getDimensions().x << " " << model.mesh->getBoundingBox().getDimensions().y << " " << model.mesh->getBoundingBox().getDimensions().z);
         m.program = Programs.get("lines");
-        m.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform);
+		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(fullTransform,vec3f(model.mesh->getBoundingBox().getDimensions()/model.mesh->getBoundingBox().getRadius())));
         m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
         m.draw();
     }

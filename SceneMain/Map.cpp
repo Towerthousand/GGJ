@@ -31,71 +31,58 @@ void Map::update(float deltaTime) {
 }
 
 void Map::draw() const {
-	if(renderer->getMode() != DeferredContainer::Deferred) return;
-	for(int i = 0; i < (int)map.size(); ++i) {
-		for(int j = 0; j < (int)map[0].size(); ++j) {
-			if(map[i][j].type == Cube::AIR) continue;
-			Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-            cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0)));
-            cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
-			cube.program->uniform("V")->set(cam->view);
-			cube.program->uniform("ambient")->set(0.5f);
-			cube.program->uniform("specular")->set(1.0f);
-			switch(map[i][j].color) {
-				case Cube::WHITE: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullWhite")); break;
-				case Cube::RED: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullRed")); break;
-				case Cube::GREEN: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullGreen")); break;
-				case Cube::BLUE: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullBlue")); break;
+	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
+	if(renderer->getMode() == DeferredContainer::Deferred) {
+		for(int i = 0; i < (int)map.size(); ++i) {
+			for(int j = 0; j < (int)map[0].size(); ++j) {
+				if(map[i][j].type == Cube::AIR) continue;
+				cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0)));
+				cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
+				cube.program->uniform("V")->set(cam->view);
+				cube.program->uniform("ambient")->set(0.5f);
+				cube.program->uniform("specular")->set(1.0f);
+				switch(map[i][j].color) {
+					case Cube::WHITE: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullWhite")); break;
+					case Cube::RED: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullRed")); break;
+					case Cube::GREEN: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullGreen")); break;
+					case Cube::BLUE: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullBlue")); break;
+				}
+				cube.draw();
 			}
-			cube.draw();
 		}
-    }
+	}
+	else if (renderer->getMode() == DeferredContainer::Forward) {
+		for(int i = 0; i < (int)map.size(); ++i) {
+			for(int j = 0; j < (int)map[0].size(); ++j) {
+				Model m;
+				m.mesh = Meshes.get("1x1WireCube");
+				m.program = Programs.get("lines");
+				m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
+				m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,-0.5)),vec3f(0.5f)));
+				m.draw();
+			}
+		}
+	}
 }
 
-bool Map::checkCollisions(const AABB &aabb, vec3f &pos, vec3f &nor) const
+bool Map::isColliding(const AABB &aabb) const
 {
-    pos = aabb.getCenter();
-    nor = vec3f(0);
-    int xmin = glm::clamp(int(aabb.getMin().x), 0, int(map.size())-1);
-    int xmax = glm::clamp(int(aabb.getMax().x), 0, int(map.size())-1);
-    int ymin = glm::clamp(int(aabb.getMin().y), 0, int(map[0].size())-1);
-    int ymax = glm::clamp(int(aabb.getMax().y), 0, int(map[0].size())-1);
+	int xmin = aabb.getMin().x;
+	int xmax = aabb.getMax().x;
+	int ymin = aabb.getMin().y;
+	int ymax = aabb.getMax().y;
 
-    VBE_LOG(aabb.getCenter().x << " " << aabb.getCenter().y);
-
-    for (int i = ymin; i <= ymax; i++) {
-        for (int j = xmin; j <= xmax; j++) {
-            if (map[i][j].type != Cube::AIR) {
-                AABB tilebox(vec3f(j, i, -1), vec3f(j+1, i+1, 1));
-                if (tilebox.overlap(aabb)) {
-                    return true;
-                    /*vec3f cdir = aabb.getCenter() - tilebox.getCenter();
-                    if (abs(cdir.x) > abs(cdir.y)) {
-                        if (cdir.x > 0) {   // coll from tile right
-                            nor += vec3f(1, 0, 0);
-                            pos.x = std::min(pos.x, float(j+1));
-                        }
-                        else {              // coll from tile left
-                            nor += vec3f(-1, 0, 0);
-                            pos.x = std::max(pos.x, float(j));
-                        }
-                    }
-                    else {
-                        if (cdir.y > 0) {   // coll from tile top
-                            nor += vec3f(0, 1, 0);
-                            pos.y = std::min(pos.y, float(i+1));
-                        }
-                        else {              // coll from tile bottom
-                            nor += vec3f(0, -1, 0);
-                            pos.y = std::max(pos.y, float(i));
-                        }
-                    }
-                    collision = true;*/
-                }
-            }
-        }
-    }
-    return false;
+	for (int i = ymin; i <= ymax && i < map.size(); i++) {
+		if(i < 0) continue;
+		for (int j = xmin; j <= xmax && j < map[0].size(); j++) {
+			if(j < 0) continue;
+			if (map[i][j].type != Cube::AIR) {
+				AABB tilebox(vec3f(j, i, -1), vec3f(j+1, i+1, 1));
+				if (tilebox.overlap(aabb)) return true;
+			}
+		}
+	}
+	return false;
 }
 
 Map::Cube Map::translate(char c) {

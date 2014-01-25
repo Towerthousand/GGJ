@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
 
-	string host = "localhost";
+	string host = "192.168.1.147";
 	//cout<<"Enter host to connect:";
 	//getline(cin, host);
 

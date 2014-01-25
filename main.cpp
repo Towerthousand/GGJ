@@ -5,13 +5,11 @@ using namespace std;
 
 int main() {
 
-	connSocket = new sf::TcpSocket();
-	string host;
-	cout<<"Enter host to connect:";
-	getline(cin, host);
+	string host = "localhost";
+	//cout<<"Enter host to connect:";
+	//getline(cin, host);
 
-	sf::Socket connSocket;
-
+	sf::TcpSocket connSocket;
 	if(connSocket.connect(host, 6174) != sf::Socket::Done)
 	{
 		cerr<<"Can't connect to host."<<endl;
@@ -20,7 +18,7 @@ int main() {
 
 	cerr<<"Connected!"<<endl;
 	sf::Packet p;
-	while(connSocket->receive(p) == sf::Socket::Done)
+	while(connSocket.receive(p) == sf::Socket::Done)
 	{
 		int x;
 		p>>x;

@@ -34,13 +34,8 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
 	anim = "idle";
 	animIter = 0;
 
-<<<<<<< HEAD
-
-	scale = vec3f(0.26f/modelAabb.getRadius());
-=======
     scale = vec3f(0.26f/modelAabb.getRadius());
     color = RED;
->>>>>>> acbd6d809e3652b29e9e7ce2082fc1985bf01d03
 }
 
 Player::~Player() {

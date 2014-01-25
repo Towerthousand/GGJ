@@ -1,5 +1,8 @@
 include(VBE/VBE.pro)
 INCLUDEPATH += .
+LIBS += -lsfml-network
+
+
 #DEFINES += __DLOG
 SOURCES += main.cpp \
     commons.cpp \

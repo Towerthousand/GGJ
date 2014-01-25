@@ -5,6 +5,7 @@ SOURCES += main.cpp \
     commons.cpp \
     SceneMain/SceneMain.cpp \
     SceneMain/Camera.cpp \
+    SceneMain/Player.cpp \
     SceneMain/DeferredContainer.cpp \
 	SceneMain/DeferredLight.cpp \
     SceneMain/BlurContainer.cpp \
@@ -16,6 +17,7 @@ HEADERS += \
     commons.hpp \
     SceneMain/SceneMain.hpp \
     SceneMain/Camera.hpp \
+    SceneMain/Player.hpp \
     SceneMain/DeferredContainer.hpp \
 	SceneMain/DeferredLight.hpp \
     SceneMain/BlurContainer.hpp \

@@ -1,5 +1,6 @@
 #include "SceneMain.hpp"
 #include "Camera.hpp"
+#include "Player.hpp"
 #include "DeferredContainer.hpp"
 #include "BlurContainer.hpp"
 #include "SquareObject.hpp"
@@ -29,9 +30,9 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	DeferredContainer* renderer = new DeferredContainer();
 	renderer->addTo(blur);
 
-    Camera* cam = new Camera("playerCam");
-    cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-    cam->addTo(renderer);
+    Player* pla = new Player("playerTest");
+    pla->pos = vec3f(0,0,-10);
+    pla->addTo(renderer);
 
 	Map* map = new Map("data/maps/map0.map");
 	map->addTo(renderer);

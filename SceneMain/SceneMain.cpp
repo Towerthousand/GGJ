@@ -75,6 +75,10 @@ SceneMain::~SceneMain() {
 }
 
 void SceneMain::loadResources() {
+    AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
+
+    AudioManager::getMusic("gameMusic")->setPlayingOffset(sf::seconds(43));
+    AudioManager::getMusic("gameMusic")->play();
 
 	//meshes
 	std::vector<Vertex::Element> elems = {

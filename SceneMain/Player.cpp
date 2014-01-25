@@ -61,7 +61,7 @@ void Player::update(float deltaTime) {
     totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
     // apply impulses
-    if (Input::isKeyPressed(sf::Keyboard::Up)) {
+    if (animState != Player::JUMP && Input::isKeyPressed(sf::Keyboard::Up)) {
         velocity.y += JUMP_IMPULSE;
     }
     // integration
@@ -124,7 +124,7 @@ void Player::update(float deltaTime) {
         //WALL JUMP
         vec3f wallFriction(0);
         if(velocity.x != 0) {
-            wallFriction = 0.4f*FRICTION_COEFF*vec3f(0, velocity.y > 0 ? -1.0 : 1.0, 0);
+            wallFriction = FRICTION_COEFF*vec3f(0, velocity.y > 0 ? -.1 : .4, 0);
             collidingSides = true;
         }
         totalForce += wallFriction;

@@ -26,6 +26,16 @@ private:
     bool colliding;
 
     mat4f modelOffset;
+    vec3f totalForce;
+
+    enum Animation {
+        IDLE,
+        RUN,
+        JUMP,
+        WALL
+    };
+
+    Animation animState;
 
 };
 

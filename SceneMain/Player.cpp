@@ -7,7 +7,7 @@
 #define GRAVITY         9.8f
 #define ACCELERATION    40.0f
 #define FRICTION_COEFF  20.0f
-#define JUMP_IMPULSE    5.0f
+#define JUMP_IMPULSE    7.0f
 #define ELASTICITY      0.0f
 
 
@@ -25,8 +25,11 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius());
     cam->addTo(this);
 
-    velocity = vec3f(0,0,0);
+    velocity = vec3f(0.0f);
     colliding = false;
+
+    totalForce = vec3f(0.0f);
+    animState = Player::IDLE;
 
     scale = vec3f(0.26f/model.mesh->getBoundingBox().getRadius());
 }
@@ -35,21 +38,27 @@ Player::~Player() {
 }
 
 void Player::update(float deltaTime) {
+    //Animation Conditions
+    bool collidingSides = false;
+    bool collidingFloor = false;
+    bool running = false;
 
 	//PHYSICS
     // apply forces
     vec3f dir(0);
     if(Input::isKeyDown(sf::Keyboard::Left)) {
         dir += vec3f(-1, 0, 0);
+        running = true;
     }
     if(Input::isKeyDown(sf::Keyboard::Right)) {
         dir += vec3f(1, 0, 0);
+        running = true;
     }
 
 	vec3f friction(0);
     friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
 
-    vec3f totalForce = ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
+    totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
     // apply impulses
     if (Input::isKeyPressed(sf::Keyboard::Up)) {
@@ -58,6 +67,10 @@ void Player::update(float deltaTime) {
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
 	if (glm::length(velocity) < 1.0e-3f) velocity = vec3f(0);
+
+    //Reset totalForce;
+    totalForce = vec3f(0.0f);
+
 
 
 	vec3f disp = velocity*deltaTime;
@@ -86,6 +99,7 @@ void Player::update(float deltaTime) {
 			else
 				min = m;
 		}
+        if(velocity.y < 0) collidingFloor = true;
 		velocity.y = 0;
 		disp.y *= min;
 		colliding = true;
@@ -107,12 +121,38 @@ void Player::update(float deltaTime) {
 			else
 				min = m;
 		}
-		velocity.x = 0;
+        //WALL JUMP
+        vec3f wallFriction(0);
+        if(velocity.x != 0) {
+            wallFriction = 0.4f*FRICTION_COEFF*vec3f(0, velocity.y > 0 ? -1.0 : 1.0, 0);
+            collidingSides = true;
+        }
+        totalForce += wallFriction;
+
+        if(velocity.x > 0 ) {
+            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x -= JUMP_IMPULSE*5;
+
+        } else if(velocity.x < 0 ) {
+            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x += JUMP_IMPULSE*5;
+        } else velocity.x = 0;
+
+
+
 		disp.x *= min;
 		colliding = true;
 	}
 
     pos.x += disp.x;
+
+    //ANIMATION
+    if(collidingSides)  animState = Player::WALL;
+    else if(collidingFloor) {
+        if(running)     animState = Player::RUN;
+        else            animState = Player::IDLE;
+    } else              animState = Player::JUMP;
+
+    //VBE_LOG(animState);
+
 
 
 	//transform stuff

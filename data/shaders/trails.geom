@@ -21,7 +21,7 @@ void main() {
     for (int i = 0; i < 8; i++) {
         pos = gl_in[inidx[i]].gl_Position + texY[i]*vec4(side.x, side.y, 0.0f, 0.0f) + vec4(0.0f, 0.0f, zdisp[i], 0.0f);
         gl_Position = MVP*pos;
-        v_texCoord = vec2(horTrail*pos.x + verTrail*pos.y, texY[i]);
+        v_texCoord = vec2(horTrail*pos.x/2 + verTrail*pos.y/2, texY[i]/2);
         EmitVertex();
     }
 

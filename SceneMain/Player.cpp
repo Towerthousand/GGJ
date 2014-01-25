@@ -34,7 +34,7 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     anim = "idle";
     animIter = 0;
 
-    scale = vec3f(0.26f/modelAabb.getRadius());
+	scale = vec3f(0.30f/modelAabb.getRadius());
     color = RED;
 }
 
@@ -203,7 +203,7 @@ void Player::update(float deltaTime) {
 
     // TRAILS
 
-    vec3f posoff(0, -0.25f*modelAabb.getDimensions().y, 0.5);
+	vec3f posoff(0, -0.29f*modelAabb.getDimensions().y, 0.5);
     if (prevOnfloor && collidingFloor && (blockColor == Color::WHITE || blockColor == color) ) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         if (initPos.x < pos.x)

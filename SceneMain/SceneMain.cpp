@@ -115,9 +115,9 @@ void SceneMain::loadResources() {
     Meshes.add("brushjumpb0", Mesh::loadFromFile("data/meshes/brush1a.obj"));
     Meshes.add("brushjumpb1", Mesh::loadFromFile("data/meshes/brush1b.obj"));
     Meshes.add("brushwallu0", Mesh::loadFromFile("data/meshes/brushparetU.obj"));
-    Meshes.add("brushwallu1", Mesh::loadFromFile("data/meshes/brushparetU.obj"));
+    Meshes.add("brushwallu1", Mesh::loadFromFile("data/meshes/brushparetUb.obj"));
     Meshes.add("brushwalld0", Mesh::loadFromFile("data/meshes/brushparetD.obj"));
-    Meshes.add("brushwalld1", Mesh::loadFromFile("data/meshes/brushparetD.obj"));
+    Meshes.add("brushwalld1", Mesh::loadFromFile("data/meshes/brushparetDb.obj"));
 
 
     Meshes.add("cube", Mesh::loadFromFile("data/meshes/cube.obj"));

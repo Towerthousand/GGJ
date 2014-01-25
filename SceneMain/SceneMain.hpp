@@ -3,6 +3,7 @@
 #include "commons.hpp"
 
 class Chunk;
+class Camera;
 class SceneMain : public GameObject {
 	public:
 		SceneMain();
@@ -13,6 +14,7 @@ class SceneMain : public GameObject {
         void loadResources();
 		float debugCounter;
 		int fpsCount;
+		Camera* cam;
 };
 
 #endif // SCENEMAIN_HPP

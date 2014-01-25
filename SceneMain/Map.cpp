@@ -22,10 +22,10 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	  {"sawCube","nullBlue"}
 	},
 	{ //BUMP
-	  {"botCube","botCubeW"},
-	  {"botCube","botCubeR"},
-	  {"botCube","botCubeG"},
-	  {"botCube","botCubeB"}
+	  {"botCube","nullWhite"},
+	  {"botCube","nullRed"},
+	  {"botCube","nullGreen"},
+	  {"botCube","nullBlue"}
 	}
 };
 
@@ -82,7 +82,7 @@ void Map::draw() const {
 				}
 			}
 		}
-	}
+    }
 	else if (renderer->getMode() == DeferredContainer::Forward) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
@@ -95,7 +95,7 @@ void Map::draw() const {
 				m.draw();
 			}
 		}
-	}
+    }
 }
 
 bool Map::isColliding(const vec3f& pos) const {
@@ -132,9 +132,14 @@ Map::Cube Map::translate(char c) {
         case 'R' : return Cube(Color::RED	,Cube::FLOOR);
         case 'G' : return Cube(Color::GREEN	,Cube::FLOOR);
         case 'B' : return Cube(Color::BLUE	,Cube::FLOOR);
+        case '<' : return Cube(Color::WHITE	,Cube::SAW);
         case 'Z' : return Cube(Color::RED	,Cube::SAW);
         case 'X' : return Cube(Color::GREEN	,Cube::SAW);
         case 'C' : return Cube(Color::BLUE	,Cube::SAW);
+        case 'J' : return Cube(Color::WHITE	,Cube::BUMP);
+        case 'K' : return Cube(Color::RED	,Cube::BUMP);
+        case 'L' : return Cube(Color::GREEN	,Cube::BUMP);
+        case 'P' : return Cube(Color::BLUE	,Cube::BUMP);
         case ' ' : return Cube(Color::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}

@@ -68,7 +68,7 @@ void Map::draw() const {
 bool Map::isColliding(const vec3f& pos) const {
 	int x = floor(pos.x);
 	int y = floor(pos.y);
-	return !(x < 0 || y < 0 || x >= map[0].size() || y >= map.size() || map[y][x].type == Cube::AIR);
+    return !(x < 0 || y < 0 || x >= int(map[0].size()) || y >= int(map.size()) || map[y][x].type == Cube::AIR);
 }
 
 bool Map::isColliding(const AABB& aabb) const

@@ -26,7 +26,7 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     velocity = vec3f(0,0,0);
     colliding = false;
 
-    scale = vec3f(0.5f/model.mesh->getBoundingBox().getRadius());
+    scale = vec3f(0.26f/model.mesh->getBoundingBox().getRadius());
 
 }
 
@@ -34,8 +34,6 @@ Player::~Player() {
 }
 
 void Player::update(float deltaTime) {
-
-    vec3f prevPos = pos;
 
 	//PHYSICS
     // apply forces
@@ -48,11 +46,9 @@ void Player::update(float deltaTime) {
     }
 
 	vec3f friction(0);
-	if (abs(velocity.x) > 1.0e3f) {
-		friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
-	}
+    friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
 
-	vec3f totalForce = ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
+    vec3f totalForce = ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
     // apply impulses
     if (Input::isKeyPressed(sf::Keyboard::Up)) {
@@ -61,7 +57,10 @@ void Player::update(float deltaTime) {
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
 	if (glm::length(velocity) < 1.0e-3f) velocity = vec3f(0);
+
+
 	vec3f disp = velocity*deltaTime;
+
 
 	//NOT PHYSICS
 
@@ -111,7 +110,8 @@ void Player::update(float deltaTime) {
 		colliding = true;
 	}
 
-	pos.x += disp.x;
+    pos.x += disp.x;
+
 
 	//transform stuff
 	for(int i = 0; i < 3; ++i) {

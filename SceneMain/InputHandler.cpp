@@ -38,7 +38,7 @@ void InputHandler::decodeFromString(std::string encoded) {
 	firstUpdate = false;
 }
 
-void InputHandler::Update()
+void InputHandler::update()
 {
 	for (int i = 0; i < K_SIZE; i++)
 	{

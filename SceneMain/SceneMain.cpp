@@ -46,14 +46,12 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->addTo(renderer);
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
-	Player* pla = new Player("playerTest",vec3f(3,5,0),vec3f(0.0f), Color::BLUE);
-    pla->addTo(renderer);
-
-	Player* pla2 = new Player("enemy",vec3f(4,5,0),vec3f(0.0f),Color::RED);
-	pla2->addTo(renderer);
-
-	Player* pla3 = new Player("enemy2",vec3f(5,5,0),vec3f(0.0f),Color::GREEN);
-	pla3->addTo(renderer);
+	for(int i = 0; i < playerCount; i++)
+	{
+		Player* p = new Player("playerTest",vec3f(3,5,0),vec3f(0.0f), Color::BLUE);
+		p->addTo(renderer);
+		players[i] = p;
+	}
 
 	Map* map = new Map("data/maps/map0.map");
 	map->addTo(renderer);
@@ -206,6 +204,10 @@ void SceneMain::update(float deltaTime) {
 		debugCounter--;
 		fpsCount = 0;
 	}
+
+	input.update();
+	sendInputToServer();
+	receiveServerInfo();
 
 }
 

@@ -55,11 +55,11 @@ void Player::update(float deltaTime) {
     //PHYSICS
     // apply forces
     vec3f dir(0);
-    if(Input::isKeyDown(sf::Keyboard::Left)) {
+	if(input.getKeyState(InputHandler::PLAYER_LEFT)) {
         dir += vec3f(-1, 0, 0);
         running = true;
     }
-    if(Input::isKeyDown(sf::Keyboard::Right)) {
+	if(input.getKeyState(InputHandler::PLAYER_RIGHT)) {
         dir += vec3f(1, 0, 0);
         running = true;
     }
@@ -71,14 +71,14 @@ void Player::update(float deltaTime) {
     totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
     // apply impulses
-    if (animState != Player::JUMP && Input::isKeyPressed(sf::Keyboard::Up)) {
+	if (animState != Player::JUMP && input.getKeyDown(InputHandler::PLAYER_UP)) {
         velocity.y += JUMP_IMPULSE;
     }
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
 
     // apply impulses
-    if (animState != Player::JUMP && Input::isKeyPressed(sf::Keyboard::Up)) {
+	if (animState != Player::JUMP && input.getKeyDown(InputHandler::PLAYER_UP)) {
         velocity.y += JUMP_IMPULSE;
     }
     // integration
@@ -161,10 +161,10 @@ void Player::update(float deltaTime) {
         totalForce += wallFriction;
 
         if(velocity.x > 0 ) {
-            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x -= JUMP_IMPULSE*5;
+			if (input.getKeyDown(InputHandler::PLAYER_UP)) velocity.x -= JUMP_IMPULSE*5;
             isRightWall = true;
         } else if(velocity.x < 0 ) {
-            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x += JUMP_IMPULSE*5;
+			if (input.getKeyDown(InputHandler::PLAYER_UP)) velocity.x += JUMP_IMPULSE*5;
         } else velocity.x = 0;
 
         disp.x *= min;

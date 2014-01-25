@@ -14,7 +14,7 @@ public:
 
 	InputHandler();
 
-	void Update();
+	void update();
 
 	bool getKeyState(int key);
 	bool getKeyUp(int key);

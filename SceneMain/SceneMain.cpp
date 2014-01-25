@@ -11,8 +11,13 @@
 #include "particles/LightParticleEmitter.hpp"
 #include "Trails.hpp"
 
-SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
+SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
+
+	sf::Packet packet = receivePacket();
+	int mapSize, personCount, policeCount, seed;
+	packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
+	//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
 
 	loadResources();
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
@@ -41,14 +46,12 @@ SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socke
 	sys->addTo(renderer);
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
-	Player* pla = new Player("playerTest",vec3f(3,5,0),vec3f(0.0f), Color::BLUE);
-    pla->addTo(renderer);
-
-	Player* pla2 = new Player("enemy",vec3f(4,5,0),vec3f(0.0f),Color::RED);
-	pla2->addTo(renderer);
-
-	Player* pla3 = new Player("enemy2",vec3f(5,5,0),vec3f(0.0f),Color::GREEN);
-	pla3->addTo(renderer);
+	for(int i = 0; i < playerCount; i++)
+	{
+		Player* p = new Player("playerTest",vec3f(3,5,0),vec3f(0.0f), Color::BLUE);
+		p->addTo(renderer);
+		players[i] = p;
+	}
 
 	Map* map = new Map("data/maps/map0.map");
 	map->addTo(renderer);
@@ -202,4 +205,38 @@ void SceneMain::update(float deltaTime) {
 		fpsCount = 0;
 	}
 
+	input.update();
+	sendInputToServer();
+	receiveServerInfo();
+
+}
+
+
+
+void SceneMain::sendInputToServer() {
+	sf::Packet packet;
+	packet << input.encodeToString();
+	socket->send(packet);
+}
+
+sf::Packet SceneMain::receivePacket() {
+	sf::Packet packet;
+	if (socket->receive(packet) != sf::Socket::Done) {
+		std::cerr<< "[ERROR] PACKET COSAS CHUNGAS" << std::endl;
+		socket->disconnect();
+		exit(1);
+	}
+	return packet;
+}
+
+void SceneMain::receiveServerInfo() {
+
+	sf::Packet packet = receivePacket();
+
+	for(int i = 0; i < playerCount; i++)
+	{
+		std::string str;
+		packet >> str;
+		players[i]->input.decodeFromString(str);
+	}
 }

@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 #include "commons.hpp"
 #include "Colors.hpp"
+#include "InputHandler.hpp"
 
 class DeferredContainer;
 class Camera;
@@ -23,7 +24,9 @@ public:
     Color color;
 
 
+	InputHandler input;
 private:
+
     Model model;
     DeferredContainer* renderer;
 

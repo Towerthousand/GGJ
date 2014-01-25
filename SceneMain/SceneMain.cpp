@@ -46,9 +46,9 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 
 	ParticleSystem* sys = new ParticleSystem();
 	sys->addTo(renderer);
-	sys->setTextureSheet(Textures2D.get("particleSheet"), 2);
+	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
-    ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1.0, 0.1, 0.03));
+	ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1));
 	emitter1->addTo(pla);
 }
 

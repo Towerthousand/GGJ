@@ -58,11 +58,10 @@ void DeferredContainer::draw() const {
 	quad.program->uniform("invResolution")->set(vec2f(1.0f/SCRWIDTH, 1.0f/SCRHEIGHT));
 	quad.draw();
 
-
-    drawMode = Forward;
-    ContainerObject::draw();
 	glDepthFunc(GL_LEQUAL);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //forward rendering blending
+    drawMode = Forward;
+	ContainerObject::draw();
 }
 
 DeferredContainer::DrawMode DeferredContainer::getMode() const {

@@ -10,16 +10,16 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Map::Cube::NUM_COLORS][2]
 	  {"",""}
 	},
 	{ //FLOOR
-	  {"cube","botCubeW"},
-	  {"cube","botCubeR"},
-	  {"cube","botCubeG"},
-	  {"cube","botCubeB"}
+	  {"cube","nullWhite"},
+	  {"cube","nullRed"},
+	  {"cube","nullGreen"},
+	  {"cube","nullBlue"}
 	},
 	{ //SAW
-	  {"sawCube","sawCubeW"},
-	  {"sawCube","sawCubeR"},
-	  {"sawCube","sawCubeG"},
-	  {"sawCube","sawCubeB"}
+	  {"sawCube","nullWhite"},
+	  {"sawCube","nullRed"},
+	  {"sawCube","nullGreen"},
+	  {"sawCube","nullBlue"}
 	},
 	{ //BUMP
 	  {"botCube","botCubeW"},

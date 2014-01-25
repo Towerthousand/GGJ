@@ -40,7 +40,8 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	map->addTo(renderer);
 
     DeferredLight* dl = new DeferredLight();
-    dl->pos = vec3f(-5,5,-5);
+	dl->pos = vec3f(10,5,10);
+	dl->color = vec3f(1);
     dl->addTo(renderer);
 
 	ParticleSystem* sys = new ParticleSystem();

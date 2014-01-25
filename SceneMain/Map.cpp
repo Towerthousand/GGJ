@@ -1,6 +1,7 @@
 #include "Map.hpp"
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
+#include "Player.hpp"
 
 std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	{ //AIR
@@ -57,11 +58,12 @@ void Map::update(float deltaTime) {
 }
 
 void Map::draw() const {
+    Player* pla = (Player*)getGame()->getObjectByName("playerTest");
 	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
 	if(renderer->getMode() == DeferredContainer::Deferred) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
-				if(map[i][j].type == Cube::AIR) continue;
+                if(map[i][j].type == Cube::AIR || (pla->color != map[i][j].color && map[i][j].color != Color::WHITE)) continue;
                 cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
                 cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
 				cube.program->uniform("V")->set(cam->view);
@@ -83,7 +85,7 @@ void Map::draw() const {
 			}
 		}
     }
-	else if (renderer->getMode() == DeferredContainer::Forward) {
+    else if (renderer->getMode() == DeferredContainer::Forward) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
 				if(map[i][j].type == Cube::AIR) continue;

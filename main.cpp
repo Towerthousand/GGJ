@@ -5,7 +5,8 @@ using namespace std;
 
 int main() {
 
-	string host = "192.168.1.147";
+    /*
+    string host = "192.168.1.147";
 	//cout<<"Enter host to connect:";
 	//getline(cin, host);
 
@@ -31,14 +32,14 @@ int main() {
 			cout << "WAITING FOR PLAYERS ("<<a<<" OF "<<b<<")";
 		}
 	}
-
+    */
 	cerr<<"STARTING GAME!"<<endl;
 
 	WINDOW_TITLE = "Deferred Test";
 	ZNEAR = 0.01f;
 	ZFAR = 1000.0f;
 	Game* game = new Game();
-	SceneMain* sc = new SceneMain(&connSocket);
+    SceneMain* sc = new SceneMain(nullptr);
 	sc->addTo(game);
 	game->run();
 	delete game;

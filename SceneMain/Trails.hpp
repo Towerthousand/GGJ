@@ -41,6 +41,8 @@ private:
     Model                models[Color::NUM_COLORS][Direction::NUM_DIRECTIONS];
     std::vector<Segment> trails[Color::NUM_COLORS][Direction::NUM_DIRECTIONS];
 
+    DeferredContainer* renderer;
+
 
 };
 

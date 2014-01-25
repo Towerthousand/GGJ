@@ -41,6 +41,11 @@ private:
     };
 
     Animation animState;
+    float animCount;
+    std::string anim;
+    int animIter;
+    AABB modelAabb;
+
 
     bool prevOnfloor;
     bool prevOnside;

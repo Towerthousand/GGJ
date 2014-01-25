@@ -16,4 +16,6 @@ constexpr int MINLIGHT = 3;
 constexpr int MAXLIGHT = 16;
 constexpr int TEXSIZE = 8;
 
+std::string toString(float n);
+
 #endif // COMMONS_HPP

@@ -1,4 +1,6 @@
 #include "Trails.hpp"
+#include "DeferredContainer.hpp"
+#include "Camera.hpp"
 
 Trails::Trails(const std::string &name)
 {
@@ -13,6 +15,8 @@ Trails::Trails(const std::string &name)
             models[i][j].program = Programs.get("trails");
         }
     }
+
+    renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 }
 
 Trails::~Trails()
@@ -25,22 +29,30 @@ void Trails::update(float )
 
 void Trails::draw() const
 {
+    if (renderer->getMode() != DeferredContainer::Forward)
+        return;
+
+    Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
+    glDepthMask(GL_FALSE);
+
     for (int i = 0; i < Color::NUM_COLORS; i++) {
+        if (i == Color::WHITE) continue;
         Texture2D* tex;
         switch (i) {
-            case RED:   tex = Textures2D.get("trailR"); break;
-            case GREEN: tex = Textures2D.get("trailG"); break;
-            case BLUE:  tex = Textures2D.get("trailB"); break;
+            case Color::RED:   tex = Textures2D.get("trailR"); break;
+            case Color::GREEN: tex = Textures2D.get("trailG"); break;
+            case Color::BLUE:  tex = Textures2D.get("trailB"); break;
         }
         for (int j = 0; j < Direction::NUM_DIRECTIONS; j++) {
 
             float hor, ver;
             vec2f side;
             switch (j) {
-                case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f(0, 0.25f);  break;
-                case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-0.25f, 0); break;
-                case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 0.25f, 0); break;
+                case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f( 0, -0.25f); break;
+                case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-0.25f, 0);  break;
+                case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 0.25f, 0);  break;
             }
+            models[i][j].program->uniform("MVP")->set(cam->projection*cam->view);
             models[i][j].program->uniform("tex")->set(tex);
             models[i][j].program->uniform("horTrail")->set(hor);
             models[i][j].program->uniform("verTrail")->set(ver);
@@ -48,10 +60,36 @@ void Trails::draw() const
             models[i][j].draw();
         }
     }
+
+    glDepthMask(GL_TRUE);
 }
 
 void Trails::addTrailSegment(Color color, Trails::Direction dir, const Trails::Segment &s)
 {
-    trails[color][dir].push_back(s);
-    //TODO: merge with existing segments
+    std::vector<Segment>& segs = trails[color][dir];
+    bool merged = false;
+    for (unsigned int i = 0; i < segs.size() && !merged; i++) {
+        Segment& s2 = segs[i];
+        if (dir == Direction::HORIZONTAL) {
+            if (fabs(s2.ini.y - s.ini.y)) {
+                if ((s.ini.x < s2.end.x + 0.1f && s.ini.x > s2.ini.x - 0.1f) || (s.end.x < s2.end.x + 0.1f && s.end.x > s2.ini.x - 0.1f)) {
+                    s2.ini.x = std::min(s2.ini.x, s.ini.x);
+                    s2.end.x = std::max(s2.end.x, s.end.x);
+                    merged = true;
+                }
+            }
+        }
+        else {
+            if (fabs(s2.ini.x - s.ini.x)) {
+                if ((s.ini.y < s2.end.y + 0.1f && s.ini.y > s2.ini.y - 0.1f) || (s.end.y < s2.end.y + 0.1f && s.end.y > s2.ini.y - 0.1f)) {
+                    s2.ini.y = std::min(s2.ini.y, s.ini.y);
+                    s2.end.y = std::max(s2.end.y, s.end.y);
+                    merged = true;
+                }
+            }
+        }
+    }
+    if (!merged) segs.push_back(s);
+
+    models[color][dir].mesh->setVertexData(&trails[color][dir][0], trails[color][dir].size()*2);
 }

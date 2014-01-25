@@ -15,15 +15,16 @@
 Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot)
     : pos(pos), rot(rot) {
     this->setName(playerName);
-    model.mesh = Meshes.get("brush");
+    model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
     renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 
-    modelOffset = glm::translate(mat4f(1.0f), -model.mesh->getBoundingBox().getCenter());
+    modelAabb = model.mesh->getBoundingBox();
+    modelOffset = glm::translate(mat4f(1.0f), -modelAabb.getCenter()+vec3f(0,0,0.5));
 
     cam = new Camera("playerCam");
     cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-    cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius());
+    cam->pos = vec3f(0,0,20*modelAabb.getRadius());
     cam->addTo(this);
 
     velocity = vec3f(0.0f);
@@ -32,8 +33,11 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     totalForce = vec3f(0.0f);
     animState = Player::IDLE;
 
-    scale = vec3f(0.26f/model.mesh->getBoundingBox().getRadius());
+    animCount = 0.0f;
+    anim = "idle";
+    animIter = 0;
 
+    scale = vec3f(0.26f/modelAabb.getRadius());
     color = RED;
 }
 
@@ -86,7 +90,7 @@ void Player::update(float deltaTime) {
 
     // collision detection
 	Map* map = (Map*)getGame()->getObjectByName("map");
-	AABB aabb = model.mesh->getBoundingBox();
+    AABB aabb = modelAabb;
     mat4f trans = fullTransform*modelOffset;
     aabb = AABB(vec3f(trans*vec4f(aabb.getMin(), 1.0f)), vec3f(trans*vec4f(aabb.getMax(), 1.0f)));
 
@@ -152,26 +156,47 @@ void Player::update(float deltaTime) {
     pos.x += disp.x;
 
     //ANIMATION
-    if(collidingSides)  animState = Player::WALL;
-    else if(collidingFloor) {
-        if(running)     animState = Player::RUN;
-        else            animState = Player::IDLE;
-    } else              animState = Player::JUMP;
+    if(collidingSides)  {
+        animState = Player::WALL;
+        anim = velocity.y > 0 ? "wallu" : "walld";
+    } else if(collidingFloor) {
+        if(running)      {
+            animState = Player::RUN;
+            anim = fabs(velocity.x) >= MAX_VELOCITY/2 ? "runb" : "runa";
+        } else {
+            animState = Player::IDLE;
+            anim = "idle";
 
-    //VBE_LOG(animState);
+        }
+    } else {
+        animState = Player::JUMP;
+        anim = fabs(velocity.x) > MAX_VELOCITY/2 ? "jumpb" : "jumpa";
+
+    }
+
+    animCount += deltaTime;
+    if(animCount >= 0.1f) {
+        animCount -= 0.1f;
+        animIter = 1 - animIter;
+    }
+    std::string s = "brush" + anim + toString(animIter);
+    //VBE_LOG(s);
+    model.mesh = Meshes.get(s);
+
 
 
     // TRAILS
+    vec3f posoff(0, -0.25f*modelAabb.getDimensions().y, 0.5);
     if (prevOnfloor && collidingFloor) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
-        trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos, pos));
+        trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos + posoff, pos + posoff));
     }
     if (prevOnside && collidingSides) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         if (isRightWall)
-            trails->addTrailSegment(color, Trails::VERTICAL_RIGHT, Trails::Segment(initPos, pos));
+            trails->addTrailSegment(color, Trails::VERTICAL_RIGHT, Trails::Segment(initPos + posoff, pos + posoff));
         else
-            trails->addTrailSegment(color, Trails::VERTICAL_LEFT, Trails::Segment(initPos, pos));
+            trails->addTrailSegment(color, Trails::VERTICAL_LEFT, Trails::Segment(initPos + posoff, pos + posoff));
     }
     prevOnfloor = collidingFloor;
     prevOnside = collidingSides;
@@ -181,19 +206,19 @@ void Player::update(float deltaTime) {
 	for(int i = 0; i < 3; ++i) {
 		if(rot[i] < 0) rot[i] = rot[i]+360;
 		else if(rot[i] >= 360.0f) rot[i] = rot[i]-360;
-	}
-
+    }
     transform = glm::translate(mat4f(1), pos);
     transform = glm::scale(transform, scale);
-
 }
 
 void Player::draw() const
 {
     if(renderer->getMode() == DeferredContainer::Deferred) {
         Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-        model.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform*modelOffset);
-        model.program->uniform("M")->set(fullTransform*modelOffset);
+        mat4f t = mat4f(1.0f);
+        if(velocity.x < 0) t = glm::rotate(t,180.0f,vec3f(0,1,0));
+        model.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform*t*modelOffset);
+        model.program->uniform("M")->set(fullTransform*t*modelOffset);
         model.program->uniform("V")->set(cam->view);
         model.program->uniform("ambient")->set(0.5f);
         model.program->uniform("specular")->set(1.0f);
@@ -201,7 +226,7 @@ void Player::draw() const
         model.draw();
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
-        AABB aabb = model.mesh->getBoundingBox();
+        AABB aabb = modelAabb;
 		Model m;
 		m.mesh = Meshes.get("1x1WireCube");
         m.program = Programs.get("lines");

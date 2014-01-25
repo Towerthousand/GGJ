@@ -62,8 +62,8 @@ void Map::draw() const {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
 				if(map[i][j].type == Cube::AIR) continue;
-				cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0)));
-				cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
+                cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+                cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
 				cube.program->uniform("V")->set(cam->view);
 				cube.program->uniform("ambient")->set(0.5f);
 				cube.program->uniform("specular")->set(1.0f);
@@ -74,7 +74,7 @@ void Map::draw() const {
 					float rot = GLOBALCLOCK.getElapsedTime().asSeconds()*10000;
 					cube.program->uniform("MVP")->
 							set(cam->projection*cam->view*
-								glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,-0.5)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
+                                glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,0)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
 					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
 					cube.mesh = Meshes.get("saw");
 					cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
@@ -91,7 +91,7 @@ void Map::draw() const {
 				m.mesh = Meshes.get("1x1WireCube");
 				m.program = Programs.get("lines");
 				m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
-				m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,-0.5)),vec3f(0.5f)));
+                m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,0)),vec3f(0.5f)));
 				m.draw();
 			}
 		}

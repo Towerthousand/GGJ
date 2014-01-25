@@ -11,7 +11,7 @@ Particle::Particle()
 void Particle::update(float deltaTime) {
 	p += v*deltaTime + a*deltaTime*deltaTime*0.5f;
 	v += a*deltaTime;
-	lifeLeft -= deltaTime*(1/life);
+    lifeLeft -= deltaTime/life;
 }
 
 void Particle::render(Particle::Vertex& vtx) const {

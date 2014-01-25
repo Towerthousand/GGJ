@@ -1,22 +1,23 @@
 #include "LightParticleEmitter.hpp"
 #include "ParticleEmitter.hpp"
 
-LightParticleEmitter::LightParticleEmitter(vec3f col) : ParticleEmitter(1000), col(col) {
+LightParticleEmitter::LightParticleEmitter(vec3f col) : ParticleEmitter(5), col(col) {
 }
 
 Particle LightParticleEmitter::makeParticle(float frameTimePassed, float deltaTime, vec3f position) {
 	(void) frameTimePassed;
 	(void) deltaTime;
-	vec3f vel = glm::sphericalRand(3.0f);
+    //vec3f vel = glm::sphericalRand(3.0f);
+    vec3f vel = vec3f(0,3.0,0);
 	Particle pt;
-	pt.life = 2;
-	pt.startSize = 0.1;
+    pt.life = 1;// + (rand()%100)/99.0f;
+    pt.startSize = 0.08 + ((rand()%4)/100.0f);
     pt.endSize = 0;
-	pt.startCol = vec4f(col, 0.7);
-	pt.endCol = vec4f(col, 0);
-	pt.v = vec3f(0.1);//glm::length(position-oldWorldPos) > 0? glm::normalize(position - oldWorldPos )*-2.0f + vel:vel;
-	pt.p = position + (glm::length(position-oldWorldPos) > 0? (position - oldWorldPos)*2.0f:vec3f(0.0f));
-	//pt.a = glm::sphericalRand(10.0f);
+    pt.startCol = vec4f(col, 0.7);
+    pt.endCol = vec4f(col, 0.7);
+    pt.v = vel;
+    pt.p = position;
+    pt.a = vec3f(0,-9.8,0);
 	pt.texIndex = 1;
 	return pt;
 }

@@ -35,7 +35,7 @@ void main() {
     vec3 front = normalize(gl_in[0].gl_Position.xyz);
     vec3 vel = vec3(geom_vel[0], 0.0);
     vec3 up;
-    if(vel.x < 0.1 && vel.y < 0.1) up = vec3(0,0,0);
+    if(abs(vel.x) < 0.1 && abs(vel.y) < 0.1) up = vec3(0,0,0);
     else up = cross(front, vel);
 
     mat3 transform = mat3(1.0);

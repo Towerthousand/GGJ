@@ -59,6 +59,7 @@ SceneMain::~SceneMain() {
 }
 
 void SceneMain::loadResources() {
+
 	//meshes
 	std::vector<Vertex::Element> elems = {
 		Vertex::Element(Vertex::Element(Vertex::Attribute::Position, Vertex::Element::Float, 3))
@@ -73,6 +74,7 @@ void SceneMain::loadResources() {
 	Meshes.add("quad", quad);
 	Meshes.add("monkey", Mesh::loadFromFile("data/meshes/monkey.obj"));
 	Meshes.add("Cube", Mesh::loadFromFile("data/meshes/cube.obj"));
+    Meshes.add("brush", Mesh::loadFromFile("data/meshes/brush2.obj"));
 	std::vector<vec3f> cubeVertices = {
         vec3f(-1.0, -1.0, 1.0),
         vec3f(1.0, -1.0, 1.0),
@@ -104,8 +106,11 @@ void SceneMain::loadResources() {
     wirecube->setVertexIndices(&wireIndices[0],wireIndices.size());
     Meshes.add("1x1WireCube",wirecube);
 
-	//textures
-	Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
+    //textures
+    Textures2D.add("brushR", Texture2D::createFromFile("data/textures/brushR.png"));
+    Textures2D.add("brushG", Texture2D::createFromFile("data/textures/brushG.png"));
+    Textures2D.add("brushB", Texture2D::createFromFile("data/textures/brushB.png"));
+    Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
 	Textures2D.add("nullRed", Texture2D::createFromRaw(pixels, 1, 1));
 	char pixels2[4] = {char(20), char(200), char(20), char(255)};
@@ -116,6 +121,7 @@ void SceneMain::loadResources() {
 	Textures2D.add("nullBlack", Texture2D::createFromRaw(pixels4, 1, 1));
 	char pixels5[4] = {char(255), char(255), char(255), char(255)};
     Textures2D.add("nullWhite", Texture2D::createFromRaw(pixels5, 1, 1));
+
 
     //program
     Programs.add("deferredLight", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/light.frag"));

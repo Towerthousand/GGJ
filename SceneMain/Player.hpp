@@ -15,6 +15,7 @@ public:
 
     vec3f pos;
     vec3f rot;
+    vec3f scale;
 
 private:
     Model model;
@@ -22,8 +23,6 @@ private:
     Camera* cam;
 
     vec3f velocity;
-    float maxvelocity;
-    float gravity;
     bool colliding;
 
 

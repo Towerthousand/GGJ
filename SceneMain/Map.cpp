@@ -36,8 +36,8 @@ void Map::draw() const {
 		for(int j = 0; j < (int)map[0].size(); ++j) {
 			if(map[i][j].type == Cube::AIR) continue;
 			Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-			cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,-10)));
-			cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,-10)));
+            cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0)));
+            cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
 			cube.program->uniform("V")->set(cam->view);
 			cube.program->uniform("ambient")->set(0.5f);
 			cube.program->uniform("specular")->set(1.0f);
@@ -49,7 +49,53 @@ void Map::draw() const {
 			}
 			cube.draw();
 		}
-	}
+    }
+}
+
+bool Map::checkCollisions(const AABB &aabb, vec3f &pos, vec3f &nor) const
+{
+    pos = aabb.getCenter();
+    nor = vec3f(0);
+    int xmin = glm::clamp(int(aabb.getMin().x), 0, int(map.size())-1);
+    int xmax = glm::clamp(int(aabb.getMax().x), 0, int(map.size())-1);
+    int ymin = glm::clamp(int(aabb.getMin().y), 0, int(map[0].size())-1);
+    int ymax = glm::clamp(int(aabb.getMax().y), 0, int(map[0].size())-1);
+
+    VBE_LOG(aabb.getCenter().x << " " << aabb.getCenter().y);
+
+    for (int i = ymin; i <= ymax; i++) {
+        for (int j = xmin; j <= xmax; j++) {
+            if (map[i][j].type != Cube::AIR) {
+                AABB tilebox(vec3f(j, i, -1), vec3f(j+1, i+1, 1));
+                if (tilebox.overlap(aabb)) {
+                    return true;
+                    /*vec3f cdir = aabb.getCenter() - tilebox.getCenter();
+                    if (abs(cdir.x) > abs(cdir.y)) {
+                        if (cdir.x > 0) {   // coll from tile right
+                            nor += vec3f(1, 0, 0);
+                            pos.x = std::min(pos.x, float(j+1));
+                        }
+                        else {              // coll from tile left
+                            nor += vec3f(-1, 0, 0);
+                            pos.x = std::max(pos.x, float(j));
+                        }
+                    }
+                    else {
+                        if (cdir.y > 0) {   // coll from tile top
+                            nor += vec3f(0, 1, 0);
+                            pos.y = std::min(pos.y, float(i+1));
+                        }
+                        else {              // coll from tile bottom
+                            nor += vec3f(0, -1, 0);
+                            pos.y = std::max(pos.y, float(i));
+                        }
+                    }
+                    collision = true;*/
+                }
+            }
+        }
+    }
+    return false;
 }
 
 Map::Cube Map::translate(char c) {

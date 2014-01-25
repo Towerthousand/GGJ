@@ -31,7 +31,7 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	renderer->addTo(blur);
 
     Player* pla = new Player("playerTest");
-    pla->pos = vec3f(0,0,-10);
+    pla->pos = vec3f(-2,0,0);
     pla->addTo(renderer);
 
 	Map* map = new Map("data/maps/map0.map");

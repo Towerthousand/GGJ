@@ -22,10 +22,10 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Map::Cube::NUM_COLORS][2]
 	  {"sawCube","nullBlue"}
 	},
 	{ //BUMP
-	  {"botCube","botCubeW"},
-	  {"botCube","botCubeR"},
-	  {"botCube","botCubeG"},
-	  {"botCube","botCubeB"}
+	  {"botCube","nullWhite"},
+	  {"botCube","nullRed"},
+	  {"botCube","nullGreen"},
+	  {"botCube","nullBlue"}
 	}
 };
 
@@ -83,19 +83,19 @@ void Map::draw() const {
 			}
 		}
 	}
-	else if (renderer->getMode() == DeferredContainer::Forward) {
-		for(int i = 0; i < (int)map.size(); ++i) {
-			for(int j = 0; j < (int)map[0].size(); ++j) {
-				if(map[i][j].type == Cube::AIR) continue;
-				Model m;
-				m.mesh = Meshes.get("1x1WireCube");
-				m.program = Programs.get("lines");
-				m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
-				m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,-0.5)),vec3f(0.5f)));
-				m.draw();
-			}
-		}
-	}
+//	else if (renderer->getMode() == DeferredContainer::Forward) {
+//		for(int i = 0; i < (int)map.size(); ++i) {
+//			for(int j = 0; j < (int)map[0].size(); ++j) {
+//				if(map[i][j].type == Cube::AIR) continue;
+//				Model m;
+//				m.mesh = Meshes.get("1x1WireCube");
+//				m.program = Programs.get("lines");
+//				m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
+//				m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,-0.5)),vec3f(0.5f)));
+//				m.draw();
+//			}
+//		}
+//	}
 }
 
 bool Map::isColliding(const vec3f& pos) const {
@@ -132,9 +132,14 @@ Map::Cube Map::translate(char c) {
 		case 'R' : return Cube(Cube::RED	,Cube::FLOOR);
 		case 'G' : return Cube(Cube::GREEN	,Cube::FLOOR);
 		case 'B' : return Cube(Cube::BLUE	,Cube::FLOOR);
+		case '<' : return Cube(Cube::WHITE	,Cube::SAW);
 		case 'Z' : return Cube(Cube::RED	,Cube::SAW);
 		case 'X' : return Cube(Cube::GREEN	,Cube::SAW);
 		case 'C' : return Cube(Cube::BLUE	,Cube::SAW);
+		case 'J' : return Cube(Cube::WHITE	,Cube::BUMP);
+		case 'K' : return Cube(Cube::RED	,Cube::BUMP);
+		case 'L' : return Cube(Cube::GREEN	,Cube::BUMP);
+		case 'P' : return Cube(Cube::BLUE	,Cube::BUMP);
 		case ' ' : return Cube(Cube::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}

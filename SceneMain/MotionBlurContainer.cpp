@@ -38,7 +38,7 @@ void MotionBlurContainer::draw() const {
 
 	mat4f mat = mat4f(1.0f);
 	float t = GLOBALCLOCK.getElapsedTime().asSeconds();
-
+	std::cout << "pene" << std::endl;
 	mat = mat4f(1.0f);
 	mat = glm::rotate(mat, 30.0f*t, vec3f(0, 0, 1));
 	//mat = glm::translate(mat, vec3f(0.2*sin(t*2.42), 0.2*sin(t*3.125), 0));

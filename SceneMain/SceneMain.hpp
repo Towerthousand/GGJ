@@ -6,7 +6,7 @@ class Chunk;
 class Camera;
 class SceneMain : public GameObject {
 	public:
-		SceneMain();
+		SceneMain(sf::Socket* socket);
 		~SceneMain();
 		void update(float deltaTime);
 
@@ -15,6 +15,7 @@ class SceneMain : public GameObject {
 		float debugCounter;
 		int fpsCount;
 		Camera* cam;
+		sf::Socket* socket;
 };
 
 #endif // SCENEMAIN_HPP

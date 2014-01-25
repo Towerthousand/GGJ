@@ -16,7 +16,7 @@ SOURCES += main.cpp \
     SceneMain/particles/ParticleEmitter.cpp \
     SceneMain/particles/Particle.cpp \
     SceneMain/particles/LightParticleEmitter.cpp \
-    SceneMain/MotionBlurContainer.cpp
+    SceneMain/MotionBlurContainer.cpp \
     SceneMain/Trails.cpp
 
 HEADERS += \
@@ -34,7 +34,7 @@ HEADERS += \
     SceneMain/particles/ParticleEmitter.hpp \
     SceneMain/particles/Particle.hpp \
     SceneMain/particles/LightParticleEmitter.hpp \
-    SceneMain/MotionBlurContainer.hpp
+    SceneMain/MotionBlurContainer.hpp \
     SceneMain/Colors.hpp \
     SceneMain/Trails.hpp
 

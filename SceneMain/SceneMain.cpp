@@ -11,7 +11,7 @@
 #include "particles/LightParticleEmitter.hpp"
 #include "Trails.hpp"
 
-SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
+SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
 
 	loadResources();

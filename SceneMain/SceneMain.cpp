@@ -48,7 +48,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 
 	for(int i = 0; i < playerCount; i++)
 	{
-		Player* p = new Player("playerTest",vec3f(3,5,0),vec3f(0.0f), Color::BLUE);
+		Player* p = new Player(i, vec3f(3,5,0), vec3f(0.0f), Color::BLUE);
 		p->addTo(renderer);
 		players[i] = p;
 	}

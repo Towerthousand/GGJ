@@ -13,9 +13,9 @@
 #define ELASTICITY      0.0f
 
 
-Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot, Color col)
-	: pos(pos), rot(rot), color(col) {
-    this->setName(playerName);
+Player::Player(int playerNum, const vec3f& pos, const vec3f& rot, Color col)
+	: playerNum(playerNum), pos(pos), rot(rot), color(col) {
+	this->setName("player"+char('0'+playerNum));
     model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
     renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");

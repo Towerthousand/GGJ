@@ -74,10 +74,10 @@ void Trails::addTrailSegment(Color color, Trails::Direction dir, const Trails::S
 {
     std::vector<Segment>& segs = trails[color][dir];
     bool merged = false;
-   /* for (unsigned int i = 0; i < segs.size() && !merged; i++) {
+    for (unsigned int i = 0; i < segs.size() && !merged; i++) {
         Segment& s2 = segs[i];
         if (dir == Direction::HORIZONTAL) {
-            if (fabs(s2.ini.y - s.ini.y)) {
+            if (fabs(s2.ini.y - s.ini.y) < 0.1f) {
                 if ((s.ini.x < s2.end.x + 0.01f && s.ini.x > s2.ini.x - 0.01f) || (s.end.x < s2.end.x + 0.01f && s.end.x > s2.ini.x - 0.01f)) {
                     s2.ini.x = std::min(s2.ini.x, s.ini.x);
                     s2.end.x = std::max(s2.end.x, s.end.x);
@@ -86,7 +86,7 @@ void Trails::addTrailSegment(Color color, Trails::Direction dir, const Trails::S
             }
         }
         else {
-            if (fabs(s2.ini.x - s.ini.x)) {
+            if (fabs(s2.ini.x - s.ini.x) < 0.1f) {
                 if ((s.ini.y < s2.end.y + 0.01f && s.ini.y > s2.ini.y - 0.01f) || (s.end.y < s2.end.y + 0.01f && s.end.y > s2.ini.y - 0.01f)) {
                     s2.ini.y = std::min(s2.ini.y, s.ini.y);
                     s2.end.y = std::max(s2.end.y, s.end.y);
@@ -94,7 +94,7 @@ void Trails::addTrailSegment(Color color, Trails::Direction dir, const Trails::S
                 }
             }
         }
-    }*/
+    }
     if (!merged) segs.push_back(s);
 
     models[color][dir].mesh->setVertexData(&trails[color][dir][0], trails[color][dir].size()*2);

@@ -12,7 +12,7 @@ out vec2 v_texCoord;
 
 int   inidx[8] = {0, 1, 0, 1, 0, 1, 0, 1};
 float texY[8]  = {1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f};
-float zdisp[8] = {0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, -1.0f, -1.0f};
+float zdisp[8] = {0.01f, 0.01f, 0.01f, 0.01f, -1.01f, -1.01f, -1.01f, -1.01f};
 
 void main() {
 

@@ -34,23 +34,28 @@ void Trails::draw() const
 
     Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
     glDepthMask(GL_FALSE);
+    glDisable(GL_CULL_FACE);
 
     for (int i = 0; i < Color::NUM_COLORS; i++) {
         if (i == Color::WHITE) continue;
-        Texture2D* tex;
+
+        std::string scolor = "";
         switch (i) {
-            case Color::RED:   tex = Textures2D.get("trailR"); break;
-            case Color::GREEN: tex = Textures2D.get("trailG"); break;
-            case Color::BLUE:  tex = Textures2D.get("trailB"); break;
+            case Color::RED:   scolor = "R"; break;
+            case Color::GREEN: scolor = "G"; break;
+            case Color::BLUE:  scolor = "B"; break;
         }
         for (int j = 0; j < Direction::NUM_DIRECTIONS; j++) {
 
             float hor, ver;
             vec2f side;
+            std::string sside = "";
+            if (j != HORIZONTAL) sside = "V";
+            Texture2D* tex = Textures2D.get("trail" + scolor + sside);
             switch (j) {
-                case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f( 0, -0.25f); break;
-                case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-0.25f, 0);  break;
-                case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 0.25f, 0);  break;
+                case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f( 0, -1.0f); break;
+                case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-1.0f, 0);  break;
+                case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 1.0f, 0);  break;
             }
             models[i][j].program->uniform("MVP")->set(cam->projection*cam->view);
             models[i][j].program->uniform("tex")->set(tex);
@@ -62,17 +67,18 @@ void Trails::draw() const
     }
 
     glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
 }
 
 void Trails::addTrailSegment(Color color, Trails::Direction dir, const Trails::Segment &s)
 {
     std::vector<Segment>& segs = trails[color][dir];
     bool merged = false;
-    for (unsigned int i = 0; i < segs.size() && !merged; i++) {
+   /* for (unsigned int i = 0; i < segs.size() && !merged; i++) {
         Segment& s2 = segs[i];
         if (dir == Direction::HORIZONTAL) {
             if (fabs(s2.ini.y - s.ini.y)) {
-                if ((s.ini.x < s2.end.x + 0.1f && s.ini.x > s2.ini.x - 0.1f) || (s.end.x < s2.end.x + 0.1f && s.end.x > s2.ini.x - 0.1f)) {
+                if ((s.ini.x < s2.end.x + 0.01f && s.ini.x > s2.ini.x - 0.01f) || (s.end.x < s2.end.x + 0.01f && s.end.x > s2.ini.x - 0.01f)) {
                     s2.ini.x = std::min(s2.ini.x, s.ini.x);
                     s2.end.x = std::max(s2.end.x, s.end.x);
                     merged = true;
@@ -81,14 +87,14 @@ void Trails::addTrailSegment(Color color, Trails::Direction dir, const Trails::S
         }
         else {
             if (fabs(s2.ini.x - s.ini.x)) {
-                if ((s.ini.y < s2.end.y + 0.1f && s.ini.y > s2.ini.y - 0.1f) || (s.end.y < s2.end.y + 0.1f && s.end.y > s2.ini.y - 0.1f)) {
+                if ((s.ini.y < s2.end.y + 0.01f && s.ini.y > s2.ini.y - 0.01f) || (s.end.y < s2.end.y + 0.01f && s.end.y > s2.ini.y - 0.01f)) {
                     s2.ini.y = std::min(s2.ini.y, s.ini.y);
                     s2.end.y = std::max(s2.end.y, s.end.y);
                     merged = true;
                 }
             }
         }
-    }
+    }*/
     if (!merged) segs.push_back(s);
 
     models[color][dir].mesh->setVertexData(&trails[color][dir][0], trails[color][dir].size()*2);

@@ -12,6 +12,6 @@ void main() {
     if (color.a < 0.01)
         discard;
 
-    outColor = color;
+    outColor = vec4(color.xyz, 2.0*color.a);
 
 }

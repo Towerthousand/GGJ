@@ -68,7 +68,7 @@ void Player::update(float deltaTime) {
     }
 
 	vec3f friction(0);
-    if(!(fabs(velocity.x) < 0.08f)) friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+    //if(!(fabs(velocity.x) < 0.08f)) friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
 
 
     totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
@@ -79,7 +79,7 @@ void Player::update(float deltaTime) {
     }
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
-    if (fabs(velocity.x) < 0.08f) velocity.x = 0;
+    //if (fabs(velocity.x) < 0.08f) velocity.x = 0;
 
 
     //Reset totalForce;
@@ -98,7 +98,12 @@ void Player::update(float deltaTime) {
     mat4f trans = fullTransform*modelOffset;
     aabb = AABB(vec3f(trans*vec4f(aabb.getMin(), 1.0f)), vec3f(trans*vec4f(aabb.getMax(), 1.0f)));
 
+    vec3f bbmin = vec3f(trans*vec4f(modelAabb.getMin(), 1.0f));
+    vec3f bbmax = vec3f(trans*vec4f(modelAabb.getMin() + modelAabb.getDimensions()*vec3f(1.0f, 0.05f, 1.0f), 1.0f));
+    AABB brushBox(bbmin + disp, bbmax + disp);
+
 	colliding = false;
+    bool isBrushColliding = false;
 
 	//Y
 	AABB newboxY(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
@@ -117,6 +122,7 @@ void Player::update(float deltaTime) {
 		velocity.y = 0;
 		disp.y *= min;
 		colliding = true;
+        isBrushColliding = true;
 	}
 
 	pos.y += disp.y;
@@ -124,8 +130,11 @@ void Player::update(float deltaTime) {
 
 	//X
     bool isRightWall = false;
-	AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
+    AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
 	if(map->isColliding(newboxX)) {
+
+        isBrushColliding = map->isColliding(brushBox);
+
 		float min = 0;
 		float max = 1;
 		while(max-min > 0.001) { //search for the maximum distance you can move
@@ -153,6 +162,7 @@ void Player::update(float deltaTime) {
 
 
 
+
 		disp.x *= min;
 		colliding = true;
 	}
@@ -175,7 +185,6 @@ void Player::update(float deltaTime) {
     } else {
         animState = Player::JUMP;
         anim = fabs(velocity.x) > MAX_VELOCITY/2 ? "jumpb" : "jumpa";
-
     }
 
     animCount += deltaTime;
@@ -192,17 +201,27 @@ void Player::update(float deltaTime) {
 
 
     // TRAILS
+
+
     vec3f posoff(0, -0.25f*modelAabb.getDimensions().y, 0.5);
     if (prevOnfloor && collidingFloor) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
-        trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos + posoff, pos + posoff));
-    }
-    if (prevOnside && collidingSides) {
-        Trails* trails = (Trails*)getGame()->getObjectByName("trails");
-        if (isRightWall)
-            trails->addTrailSegment(color, Trails::VERTICAL_RIGHT, Trails::Segment(initPos + posoff, pos + posoff));
+        if (initPos.x < pos.x)
+            trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos + posoff, pos + posoff));
         else
-            trails->addTrailSegment(color, Trails::VERTICAL_LEFT, Trails::Segment(initPos + posoff, pos + posoff));
+            trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(pos + posoff, initPos + posoff));
+    }
+    if (prevOnside && collidingSides && isBrushColliding) {
+        Trails* trails = (Trails*)getGame()->getObjectByName("trails");
+        Trails::Direction dir;
+        if (isRightWall)
+            dir = Trails::VERTICAL_RIGHT;
+        else
+            dir = Trails::VERTICAL_LEFT;
+        if (initPos.y < pos.y)
+            trails->addTrailSegment(color, dir, Trails::Segment(initPos + posoff, pos + posoff));
+        else
+            trails->addTrailSegment(color, dir, Trails::Segment(pos + posoff, initPos + posoff));
     }
     prevOnfloor = collidingFloor;
     prevOnside = collidingSides;

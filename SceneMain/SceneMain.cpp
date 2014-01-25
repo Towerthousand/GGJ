@@ -146,9 +146,12 @@ void SceneMain::loadResources() {
     Textures2D.add("brushR", Texture2D::createFromFile("data/textures/brushR.png"));
     Textures2D.add("brushG", Texture2D::createFromFile("data/textures/brushG.png"));
     Textures2D.add("brushB", Texture2D::createFromFile("data/textures/brushB.png"));
-    Textures2D.add("trailR", Texture2D::createFromFile("data/textures/decalR.png"));
-    Textures2D.add("trailG", Texture2D::createFromFile("data/textures/decalG.png"));
-    Textures2D.add("trailB", Texture2D::createFromFile("data/textures/decalB.png"));
+    Textures2D.add("trailR", Texture2D::createFromFile("data/textures/decal2R.png"));
+    Textures2D.add("trailG", Texture2D::createFromFile("data/textures/decal2G.png"));
+    Textures2D.add("trailB", Texture2D::createFromFile("data/textures/decal2B.png"));
+    Textures2D.add("trailRV", Texture2D::createFromFile("data/textures/decal2RV.png"));
+    Textures2D.add("trailGV", Texture2D::createFromFile("data/textures/decal2GV.png"));
+    Textures2D.add("trailBV", Texture2D::createFromFile("data/textures/decal2BV.png"));
     Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
 	Textures2D.add("nullRed", Texture2D::createFromRaw(pixels, 1, 1));

@@ -23,8 +23,11 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius());
     cam->addTo(this);
 
-    velocity = vec3f(0,0,0);
+    velocity = vec3f(0.0f);
     colliding = false;
+
+    totalForce = vec3f(0.0f);
+
 
     scale = vec3f(0.26f/model.mesh->getBoundingBox().getRadius());
 
@@ -48,7 +51,7 @@ void Player::update(float deltaTime) {
 	vec3f friction(0);
     friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
 
-    vec3f totalForce = ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
+    totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
     // apply impulses
     if (Input::isKeyPressed(sf::Keyboard::Up)) {
@@ -57,6 +60,10 @@ void Player::update(float deltaTime) {
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
 	if (glm::length(velocity) < 1.0e-3f) velocity = vec3f(0);
+
+    //Reset totalForce;
+    totalForce = vec3f(0.0f);
+
 
 
 	vec3f disp = velocity*deltaTime;
@@ -105,7 +112,20 @@ void Player::update(float deltaTime) {
 			else
 				min = m;
 		}
-		velocity.x = 0;
+        //WALL JUMP
+        vec3f wallFriction(0);
+        if(velocity.x != 0) wallFriction = 0.4f*FRICTION_COEFF*vec3f(0, velocity.y > 0 ? -1.0 : 1.0, 0);
+        totalForce += wallFriction;
+
+        if(velocity.x > 0 ) {
+            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x -= JUMP_IMPULSE*5;
+
+        } else if(velocity.x < 0 ) {
+            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x += JUMP_IMPULSE*5;
+        } else velocity.x = 0;
+
+
+
 		disp.x *= min;
 		colliding = true;
 	}

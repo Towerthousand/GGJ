@@ -25,6 +25,8 @@ private:
     vec3f velocity;
     bool colliding;
 
+    vec3f totalForce;
+
 
 };
 

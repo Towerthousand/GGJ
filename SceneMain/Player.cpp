@@ -2,6 +2,7 @@
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
 #include "Map.hpp"
+#include "Trails.hpp"
 
 #define MAX_VELOCITY    10.0f
 #define GRAVITY         9.8f
@@ -33,18 +34,25 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
 	anim = "idle";
 	animIter = 0;
 
+<<<<<<< HEAD
 
 	scale = vec3f(0.26f/modelAabb.getRadius());
+=======
+    scale = vec3f(0.26f/modelAabb.getRadius());
+    color = RED;
+>>>>>>> acbd6d809e3652b29e9e7ce2082fc1985bf01d03
 }
 
 Player::~Player() {
 }
 
 void Player::update(float deltaTime) {
-	//Animation Conditions
-	bool collidingSides = false;
-	bool collidingFloor = false;
-	bool running = false;
+    vec3f initPos = pos;
+
+    //Animation Conditions
+    bool collidingSides = false;
+    bool collidingFloor = false;
+    bool running = false;
 
 	//PHYSICS
 	// apply forces
@@ -59,7 +67,7 @@ void Player::update(float deltaTime) {
 	}
 
 	vec3f friction(0);
-	if(!(fabs(velocity.x) < 0.08f)) friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+    //if(!(fabs(velocity.x) < 0.08f)) friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
 
 
 	totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
@@ -71,8 +79,13 @@ void Player::update(float deltaTime) {
 	// integration
 	velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
 
-	if(!Input::isKeyDown(sf::Keyboard::Left) && !Input::isKeyDown(sf::Keyboard::Right))
-		if (fabs(velocity.x) < 0.08f) velocity.x = 0;
+    // apply impulses
+    if (animState != Player::JUMP && Input::isKeyPressed(sf::Keyboard::Up)) {
+        velocity.y += JUMP_IMPULSE;
+    }
+    // integration
+    velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
+    //if (fabs(velocity.x) < 0.08f) velocity.x = 0;
 
 
 	//Reset totalForce;
@@ -91,17 +104,24 @@ void Player::update(float deltaTime) {
 	mat4f trans = fullTransform*modelOffset;
 	aabb = AABB(vec3f(trans*vec4f(aabb.getMin(), 1.0f)), vec3f(trans*vec4f(aabb.getMax(), 1.0f)));
 
+    vec3f bbmin = vec3f(trans*vec4f(modelAabb.getMin(), 1.0f));
+    vec3f bbmax = vec3f(trans*vec4f(modelAabb.getMin() + modelAabb.getDimensions()*vec3f(1.0f, 0.05f, 1.0f), 1.0f));
+    AABB brushBox(bbmin + disp, bbmax + disp);
+
 	colliding = false;
+    bool isBrushColliding = false;
 
 	//Y
 	AABB newboxY(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
-	if(map->isColliding(newboxY)) {
+    Color blockColor;
+    if(map->isColliding(newboxY, blockColor)) {
 		float min = 0;
 		float max = 1;
+        Color foo;
 		while(max-min > 0.001) { //search for the maximum distance you can move
 			float m = (max+min)/2;
 			newboxY = AABB(aabb.getMin()+vec3f(0,disp.y*m,0), aabb.getMax()+vec3f(0,disp.y*m,0));
-			if(map->isColliding(newboxY))
+            if(map->isColliding(newboxY, foo))
 				max = m;
 			else
 				min = m;
@@ -110,20 +130,26 @@ void Player::update(float deltaTime) {
 		velocity.y = 0;
 		disp.y *= min;
 		colliding = true;
+        isBrushColliding = true;
 	}
 
 	pos.y += disp.y;
 	aabb = AABB(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
 
 	//X
-	AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
-	if(map->isColliding(newboxX)) {
+    bool isRightWall = false;
+    AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
+    if(map->isColliding(newboxX, blockColor)) {
+
+        Color foo;
+        isBrushColliding = map->isColliding(brushBox, foo);
+
 		float min = 0;
 		float max = 1;
 		while(max-min > 0.001) { //search for the maximum distance you can move
 			float m = (max+min)/2;
 			newboxX = AABB(aabb.getMin()+vec3f(disp.x*m,0,0), aabb.getMax()+vec3f(disp.x*m,0,0));
-			if(map->isColliding(newboxX))
+            if(map->isColliding(newboxX, foo))
 				max = m;
 			else
 				min = m;
@@ -136,14 +162,12 @@ void Player::update(float deltaTime) {
 		}
 		totalForce += wallFriction;
 
-		if(velocity.x > 0 ) {
-			if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x -= JUMP_IMPULSE*5;
-
-		} else if(velocity.x < 0 ) {
-			if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x += JUMP_IMPULSE*5;
-		} else velocity.x = 0;
-
-
+        if(velocity.x > 0 ) {
+            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x -= JUMP_IMPULSE*5;
+            isRightWall = true;
+        } else if(velocity.x < 0 ) {
+            if (Input::isKeyPressed(sf::Keyboard::Up)) velocity.x += JUMP_IMPULSE*5;
+        } else velocity.x = 0;
 
 		disp.x *= min;
 		colliding = true;
@@ -163,12 +187,11 @@ void Player::update(float deltaTime) {
 			animState = Player::IDLE;
 			anim = "idle";
 
-		}
-	} else {
-		animState = Player::JUMP;
-		anim = fabs(velocity.x) > MAX_VELOCITY/2 ? "jumpb" : "jumpa";
-
-	}
+        }
+    } else {
+        animState = Player::JUMP;
+        anim = fabs(velocity.x) > MAX_VELOCITY/2 ? "jumpb" : "jumpa";
+    }
 
 	animCount += deltaTime;
 	if(animCount >= animTime) {
@@ -182,6 +205,31 @@ void Player::update(float deltaTime) {
 	model.mesh = Meshes.get(s);
 
 
+
+    // TRAILS
+
+    vec3f posoff(0, -0.25f*modelAabb.getDimensions().y, 0.5);
+    if (prevOnfloor && collidingFloor && (blockColor == Color::WHITE || blockColor == color) ) {
+        Trails* trails = (Trails*)getGame()->getObjectByName("trails");
+        if (initPos.x < pos.x)
+            trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos + posoff, pos + posoff));
+        else
+            trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(pos + posoff, initPos + posoff));
+    }
+    if (prevOnside && collidingSides && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
+        Trails* trails = (Trails*)getGame()->getObjectByName("trails");
+        Trails::Direction dir;
+        if (isRightWall)
+            dir = Trails::VERTICAL_RIGHT;
+        else
+            dir = Trails::VERTICAL_LEFT;
+        if (initPos.y < pos.y)
+            trails->addTrailSegment(color, dir, Trails::Segment(initPos + posoff, pos + posoff));
+        else
+            trails->addTrailSegment(color, dir, Trails::Segment(pos + posoff, initPos + posoff));
+    }
+    prevOnfloor = collidingFloor;
+    prevOnside = collidingSides;
 
 
 	//transform stuff

@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     SceneMain/particles/Particle.cpp \
     SceneMain/particles/LightParticleEmitter.cpp \
     SceneMain/MotionBlurContainer.cpp
+    SceneMain/Trails.cpp
 
 HEADERS += \
     commons.hpp \
@@ -34,6 +35,8 @@ HEADERS += \
     SceneMain/particles/Particle.hpp \
     SceneMain/particles/LightParticleEmitter.hpp \
     SceneMain/MotionBlurContainer.hpp
+    SceneMain/Colors.hpp \
+    SceneMain/Trails.hpp
 
 OTHER_FILES += \
     data/shaders/quad.vert \
@@ -53,4 +56,7 @@ OTHER_FILES += \
     data/shaders/particles.frag \
     data/shaders/motionBlurPass.frag \
     data/shaders/quadlol.vert
+    data/shaders/trails.vert \
+    data/shaders/trails.frag \
+    data/shaders/trails.geom
 

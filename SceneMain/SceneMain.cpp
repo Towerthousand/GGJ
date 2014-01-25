@@ -9,6 +9,7 @@
 #include "Map.hpp"
 #include "particles/ParticleSystem.hpp"
 #include "particles/LightParticleEmitter.hpp"
+#include "Trails.hpp"
 
 SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	this->setName("SCENE");
@@ -42,6 +43,9 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 
 	Map* map = new Map("data/maps/map0.map");
 	map->addTo(renderer);
+
+    Trails* trails = new Trails("trails");
+    trails->addTo(renderer);
 
     DeferredLight* dl = new DeferredLight();
 	dl->pos = vec3f(10,5,10);
@@ -153,6 +157,12 @@ void SceneMain::loadResources() {
     Textures2D.add("brushR", Texture2D::createFromFile("data/textures/brushR.png"));
     Textures2D.add("brushG", Texture2D::createFromFile("data/textures/brushG.png"));
     Textures2D.add("brushB", Texture2D::createFromFile("data/textures/brushB.png"));
+    Textures2D.add("trailR", Texture2D::createFromFile("data/textures/decal2R.png"));
+    Textures2D.add("trailG", Texture2D::createFromFile("data/textures/decal2G.png"));
+    Textures2D.add("trailB", Texture2D::createFromFile("data/textures/decal2B.png"));
+    Textures2D.add("trailRV", Texture2D::createFromFile("data/textures/decal2RV.png"));
+    Textures2D.add("trailGV", Texture2D::createFromFile("data/textures/decal2GV.png"));
+    Textures2D.add("trailBV", Texture2D::createFromFile("data/textures/decal2BV.png"));
     Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
 	Textures2D.add("nullRed", Texture2D::createFromRaw(pixels, 1, 1));
@@ -177,6 +187,7 @@ void SceneMain::loadResources() {
 	Programs.add("motionBlurPass", ShaderProgram::loadFromFile("data/shaders/quadlol.vert", "data/shaders/motionBlurPass.frag"));
 	Programs.add("depthShader", ShaderProgram::loadFromFile("data/shaders/depth.vert","data/shaders/depth.frag"));
     Programs.add("lines", ShaderProgram::loadFromFile("data/shaders/quad.vert","data/shaders/lines.frag"));
+    Programs.add("trails", ShaderProgram::loadFromFile("data/shaders/trails.vert", "data/shaders/trails.geom", "data/shaders/trails.frag"));
 }
 
 void SceneMain::update(float deltaTime) {

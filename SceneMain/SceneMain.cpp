@@ -11,7 +11,7 @@
 #include "particles/LightParticleEmitter.hpp"
 #include "Trails.hpp"
 
-SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
+SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
 
 	sf::Packet packet = receivePacket();
@@ -207,4 +207,34 @@ void SceneMain::update(float deltaTime) {
 		fpsCount = 0;
 	}
 
+}
+
+
+
+void SceneMain::sendInputToServer() {
+	sf::Packet packet;
+	packet << input.encodeToString();
+	socket->send(packet);
+}
+
+sf::Packet SceneMain::receivePacket() {
+	sf::Packet packet;
+	if (socket->receive(packet) != sf::Socket::Done) {
+		std::cerr<< "[ERROR] PACKET COSAS CHUNGAS" << std::endl;
+		socket->disconnect();
+		exit(1);
+	}
+	return packet;
+}
+
+void SceneMain::receiveServerInfo() {
+
+	sf::Packet packet = receivePacket();
+
+	for(int i = 0; i < playerCount; i++)
+	{
+		std::string str;
+		packet >> str;
+		players[i]->input.decodeFromString(str);
+	}
 }

@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     SceneMain/particles/Particle.cpp \
     SceneMain/particles/LightParticleEmitter.cpp \
     SceneMain/MotionBlurContainer.cpp \
-    SceneMain/Trails.cpp
+    SceneMain/Trails.cpp \
+    SceneMain/InputHandler.cpp
 
 HEADERS += \
     commons.hpp \
@@ -39,7 +40,8 @@ HEADERS += \
     SceneMain/particles/LightParticleEmitter.hpp \
     SceneMain/MotionBlurContainer.hpp \
     SceneMain/Colors.hpp \
-    SceneMain/Trails.hpp
+    SceneMain/Trails.hpp \
+    SceneMain/InputHandler.hpp
 
 OTHER_FILES += \
     data/shaders/quad.vert \

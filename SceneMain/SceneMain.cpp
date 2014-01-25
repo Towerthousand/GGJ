@@ -103,7 +103,12 @@ void SceneMain::loadResources() {
 	wirecube->setVertexData(&cubeVertices[0],cubeVertices.size());
 	wirecube->setVertexIndices(&wireIndices[0],wireIndices.size());
 	Meshes.add("1x1WireCube",wirecube);
-    Meshes.add("brush", Mesh::loadFromFile("data/meshes/brush2.obj"));
+    Meshes.add("brush1", Mesh::loadFromFile("data/meshes/brush1.obj"));
+    Meshes.add("brush2", Mesh::loadFromFile("data/meshes/brush2.obj"));
+    Meshes.add("brush3", Mesh::loadFromFile("data/meshes/brush3.obj"));
+    Meshes.add("brush4", Mesh::loadFromFile("data/meshes/brush4.obj"));
+    Meshes.add("brush5", Mesh::loadFromFile("data/meshes/brush5.obj"));
+    Meshes.add("brush6", Mesh::loadFromFile("data/meshes/brush6.obj"));
 	Meshes.add("cube", Mesh::loadFromFile("data/meshes/cube.obj"));
 	Meshes.add("saw", Mesh::loadFromFile("data/meshes/saw.obj"));
 	Meshes.add("sawCube", Mesh::loadFromFile("data/meshes/cubeS.obj"));

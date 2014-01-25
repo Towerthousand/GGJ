@@ -36,6 +36,11 @@ private:
     };
 
     Animation animState;
+    float animCount;
+    int animNumber;
+    int animIter;
+    AABB modelAabb;
+
 
 };
 

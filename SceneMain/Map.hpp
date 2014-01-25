@@ -8,17 +8,19 @@ class Map : public GameObject {
 		class Cube {
 			public:
 				enum Color {
-					WHITE,
+					WHITE = 0,
 					RED,
 					GREEN,
-					BLUE
+					BLUE,
+					NUM_COLORS
 				};
 
 				enum Type {
-					AIR,
+					AIR = 0,
 					FLOOR,
-					SPIKES,
-					BUMP
+					SAW,
+					BUMP,
+					NUM_TYPES
 				};
 
 				Cube(Color c, Type t) : color(c), type(t) {}
@@ -39,6 +41,8 @@ class Map : public GameObject {
 		bool isColliding(const AABB& aabb) const;
 
 	private:
+		static std::string models_textures[Cube::NUM_TYPES][Cube::NUM_COLORS][2];
+
 		Cube translate(char c);
 
 		std::vector<std::vector <Cube> > map;

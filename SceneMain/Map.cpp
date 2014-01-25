@@ -2,6 +2,33 @@
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
 
+std::string Map::models_textures[Map::Cube::NUM_TYPES][Map::Cube::NUM_COLORS][2] = {
+	{ //AIR
+	  {"",""},
+	  {"",""},
+	  {"",""},
+	  {"",""}
+	},
+	{ //FLOOR
+	  {"cube","botCubeW"},
+	  {"cube","botCubeR"},
+	  {"cube","botCubeG"},
+	  {"cube","botCubeB"}
+	},
+	{ //SAW
+	  {"sawCube","sawCubeW"},
+	  {"sawCube","sawCubeR"},
+	  {"sawCube","sawCubeG"},
+	  {"sawCube","sawCubeB"}
+	},
+	{ //BUMP
+	  {"botCube","botCubeW"},
+	  {"botCube","botCubeR"},
+	  {"botCube","botCubeG"},
+	  {"botCube","botCubeB"}
+	}
+};
+
 Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
 	setName("map");
 	std::ifstream in(mapfile.c_str(), std::ifstream::in);
@@ -18,7 +45,6 @@ Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, st
 		else map[i].push_back(translate(c));
 	}
 	std::reverse(map.begin(),map.end());
-	cube.mesh = Meshes.get("Cube");
 	cube.program = Programs.get("deferredModel");
 	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 }
@@ -41,19 +67,26 @@ void Map::draw() const {
 				cube.program->uniform("V")->set(cam->view);
 				cube.program->uniform("ambient")->set(0.5f);
 				cube.program->uniform("specular")->set(1.0f);
-				switch(map[i][j].color) {
-					case Cube::WHITE: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullWhite")); break;
-					case Cube::RED: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullRed")); break;
-					case Cube::GREEN: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullGreen")); break;
-					case Cube::BLUE: cube.program->uniform("diffuseTex")->set(Textures2D.get("nullBlue")); break;
-				}
+				cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
+				cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
 				cube.draw();
+				if(map[i][j].type == Cube::SAW) {
+					float rot = GLOBALCLOCK.getElapsedTime().asSeconds()*10000;
+					cube.program->uniform("MVP")->
+							set(cam->projection*cam->view*
+								glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,-0.5)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
+					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
+					cube.mesh = Meshes.get("saw");
+					cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
+					cube.draw();
+				}
 			}
 		}
 	}
 	else if (renderer->getMode() == DeferredContainer::Forward) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
+				if(map[i][j].type == Cube::AIR) continue;
 				Model m;
 				m.mesh = Meshes.get("1x1WireCube");
 				m.program = Programs.get("lines");
@@ -99,6 +132,9 @@ Map::Cube Map::translate(char c) {
 		case 'R' : return Cube(Cube::RED	,Cube::FLOOR);
 		case 'G' : return Cube(Cube::GREEN	,Cube::FLOOR);
 		case 'B' : return Cube(Cube::BLUE	,Cube::FLOOR);
+		case 'Z' : return Cube(Cube::RED	,Cube::SAW);
+		case 'X' : return Cube(Cube::GREEN	,Cube::SAW);
+		case 'C' : return Cube(Cube::BLUE	,Cube::SAW);
 		case ' ' : return Cube(Cube::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}

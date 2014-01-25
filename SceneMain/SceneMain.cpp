@@ -72,18 +72,15 @@ void SceneMain::loadResources() {
 	quad->setVertexData(&data[0], 6);
 	quad->setPrimitiveType(Mesh::TRIANGLES);
 	Meshes.add("quad", quad);
-	Meshes.add("monkey", Mesh::loadFromFile("data/meshes/monkey.obj"));
-	Meshes.add("Cube", Mesh::loadFromFile("data/meshes/cube.obj"));
-    Meshes.add("brush", Mesh::loadFromFile("data/meshes/brush2.obj"));
 	std::vector<vec3f> cubeVertices = {
-        vec3f(-1.0, -1.0, 1.0),
-        vec3f(1.0, -1.0, 1.0),
-        vec3f(-1.0, 1.0, 1.0),
+		vec3f(-1.0, -1.0, 1.0),
+		vec3f(1.0, -1.0, 1.0),
+		vec3f(-1.0, 1.0, 1.0),
 		vec3f(1.0, 1.0, 1.0),
-        vec3f(-1.0, -1.0, -1.0),
-        vec3f(1.0, -1.0, -1.0),
-        vec3f(-1.0, 1.0, -1.0),
-        vec3f(1.0, 1.0, -1.0),
+		vec3f(-1.0, -1.0, -1.0),
+		vec3f(1.0, -1.0, -1.0),
+		vec3f(-1.0, 1.0, -1.0),
+		vec3f(1.0, 1.0, -1.0),
 	};
 	std::vector<unsigned int> cubeIndices = {
 		0, 1, 2, 3, 7, 1, 5, 4, 7, 6, 2, 4, 0, 1
@@ -95,18 +92,36 @@ void SceneMain::loadResources() {
 	Meshes.add("1x1Cube",cube);
 
 
-    std::vector<unsigned int> wireIndices = {
-        0, 1, 1, 3, 3, 2, 2, 0,     // front
-        4, 5, 5, 7, 7, 6, 6, 4,     // back
-        0, 4, 2, 6, 1, 5, 3, 7      // side edges
-    };
-    Mesh* wirecube = Mesh::loadEmpty(Vertex::Format(elems),Mesh::STATIC,true);
-    wirecube->setPrimitiveType(Mesh::LINES);
-    wirecube->setVertexData(&cubeVertices[0],cubeVertices.size());
-    wirecube->setVertexIndices(&wireIndices[0],wireIndices.size());
-    Meshes.add("1x1WireCube",wirecube);
+	std::vector<unsigned int> wireIndices = {
+		0, 1, 1, 3, 3, 2, 2, 0,     // front
+		4, 5, 5, 7, 7, 6, 6, 4,     // back
+		0, 4, 2, 6, 1, 5, 3, 7      // side edges
+	};
+	Mesh* wirecube = Mesh::loadEmpty(Vertex::Format(elems),Mesh::STATIC,true);
+	wirecube->setPrimitiveType(Mesh::LINES);
+	wirecube->setVertexData(&cubeVertices[0],cubeVertices.size());
+	wirecube->setVertexIndices(&wireIndices[0],wireIndices.size());
+	Meshes.add("1x1WireCube",wirecube);
+    Meshes.add("brush", Mesh::loadFromFile("data/meshes/brush2.obj"));
+	Meshes.add("cube", Mesh::loadFromFile("data/meshes/cube.obj"));
+	Meshes.add("saw", Mesh::loadFromFile("data/meshes/saw.obj"));
+	Meshes.add("sawCube", Mesh::loadFromFile("data/meshes/cubeS.obj"));
+	Meshes.add("botCube", Mesh::loadFromFile("data/meshes/rebota1.obj"));
 
     //textures
+	Textures2D.add("saw", Texture2D::createFromFile("data/textures/sawW.png"));
+	Textures2D.add("botCubeW", Texture2D::createFromFile("data/textures/cubebotW.png"));
+	Textures2D.add("botCubeR", Texture2D::createFromFile("data/textures/cubebotR.png"));
+	Textures2D.add("botCubeG", Texture2D::createFromFile("data/textures/cubebotG.png"));
+	Textures2D.add("botCubeB", Texture2D::createFromFile("data/textures/cubebotB.png"));
+	Textures2D.add("sawCubeW", Texture2D::createFromFile("data/textures/cubeSW.png"));
+	Textures2D.add("sawCubeR", Texture2D::createFromFile("data/textures/cubeSR.png"));
+	Textures2D.add("sawCubeG", Texture2D::createFromFile("data/textures/cubeSG.png"));
+	Textures2D.add("sawCubeB", Texture2D::createFromFile("data/textures/cubeSB.png"));
+	Textures2D.add("elevatorW", Texture2D::createFromFile("data/textures/elevatorW.png"));
+	Textures2D.add("elevatorR", Texture2D::createFromFile("data/textures/elevatorR.png"));
+	Textures2D.add("elevatorG", Texture2D::createFromFile("data/textures/elevatorG.png"));
+	Textures2D.add("elevatorB", Texture2D::createFromFile("data/textures/elevatorB.png"));
     Textures2D.add("brushR", Texture2D::createFromFile("data/textures/brushR.png"));
     Textures2D.add("brushG", Texture2D::createFromFile("data/textures/brushG.png"));
     Textures2D.add("brushB", Texture2D::createFromFile("data/textures/brushB.png"));

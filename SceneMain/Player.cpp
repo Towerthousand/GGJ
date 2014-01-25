@@ -14,13 +14,13 @@
 Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot)
     : pos(pos), rot(rot) {
     this->setName(playerName);
-    model.mesh = Meshes.get("monkey");
+    model.mesh = Meshes.get("brush");
     model.program = Programs.get("deferredModel");
     renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 
     cam = new Camera("playerCam");
     cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-    cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius());
+    cam->pos = vec3f(0,0,20*model.mesh->getBoundingBox().getRadius()) - 0.5f*model.mesh->getBoundingBox().getDimensions();
     cam->addTo(this);
 
     velocity = vec3f(0,0,0);
@@ -132,7 +132,7 @@ void Player::draw() const
         model.program->uniform("V")->set(cam->view);
         model.program->uniform("ambient")->set(0.5f);
         model.program->uniform("specular")->set(1.0f);
-        model.program->uniform("diffuseTex")->set(Textures2D.get("nullRed"));
+        model.program->uniform("diffuseTex")->set(Textures2D.get("brushR"));
         model.draw();
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {

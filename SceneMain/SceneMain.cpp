@@ -3,6 +3,7 @@
 #include "Player.hpp"
 #include "DeferredContainer.hpp"
 #include "BlurContainer.hpp"
+#include "MotionBlurContainer.hpp"
 #include "SquareObject.hpp"
 #include "DeferredLight.hpp"
 #include "Map.hpp"
@@ -24,7 +25,10 @@ SceneMain::SceneMain() : debugCounter(0.0), fpsCount(0) {
 	glEnable(GL_CULL_FACE); //enable backface culling
 	glCullFace(GL_BACK);
 
-	//getGame()->getWindow().setVerticalSyncEnabled(true);
+	getGame()->getWindow().setVerticalSyncEnabled(true);
+
+	//MotionBlurContainer* mblur = new MotionBlurContainer();
+	//mblur->addTo(this);
 
 	BlurContainer* blur = new BlurContainer();
 	blur->addTo(this);
@@ -170,7 +174,8 @@ void SceneMain::loadResources() {
 	Programs.add("blurPassHoritzontal", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurPassHoritzontal.frag"));
 	Programs.add("textureToScreen", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/quad.frag"));
 	Programs.add("blurMaskPass", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurMaskPass.frag"));
-    Programs.add("depthShader", ShaderProgram::loadFromFile("data/shaders/depth.vert","data/shaders/depth.frag"));
+	Programs.add("motionBlurPass", ShaderProgram::loadFromFile("data/shaders/quadlol.vert", "data/shaders/motionBlurPass.frag"));
+	Programs.add("depthShader", ShaderProgram::loadFromFile("data/shaders/depth.vert","data/shaders/depth.frag"));
     Programs.add("lines", ShaderProgram::loadFromFile("data/shaders/quad.vert","data/shaders/lines.frag"));
 }
 

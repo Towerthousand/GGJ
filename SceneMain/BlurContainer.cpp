@@ -41,6 +41,8 @@ BlurContainer::~BlurContainer() {
 
 
 void BlurContainer::draw() const {
+	RenderTarget* screen = RenderTarget::getCurrent();
+
 	RenderTarget::bind(noBlur);
 
 	ContainerObject::draw();
@@ -78,8 +80,8 @@ void BlurContainer::draw() const {
 	}
 
 	//BLUR + SCENE
-	RenderTarget::bind(nullptr);
-	glClear(GL_COLOR_BUFFER_BIT);
+	RenderTarget::bind(screen);
+	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
 	quad.program = Programs.get("textureToScreen");
 	quad.program->uniform("MVP")->set(mat4f(1.0f));
     quad.program->uniform("tex1")->set(noBlur->getTextureForAttachment(RenderTarget::COLOR0));

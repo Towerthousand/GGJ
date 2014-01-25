@@ -15,7 +15,8 @@ SOURCES += main.cpp \
     SceneMain/particles/ParticleSystem.cpp \
     SceneMain/particles/ParticleEmitter.cpp \
     SceneMain/particles/Particle.cpp \
-    SceneMain/particles/LightParticleEmitter.cpp
+    SceneMain/particles/LightParticleEmitter.cpp \
+    SceneMain/MotionBlurContainer.cpp
 
 HEADERS += \
     commons.hpp \
@@ -31,7 +32,8 @@ HEADERS += \
     SceneMain/particles/ParticleSystem.hpp \
     SceneMain/particles/ParticleEmitter.hpp \
     SceneMain/particles/Particle.hpp \
-    SceneMain/particles/LightParticleEmitter.hpp
+    SceneMain/particles/LightParticleEmitter.hpp \
+    SceneMain/MotionBlurContainer.hpp
 
 OTHER_FILES += \
     data/shaders/quad.vert \
@@ -48,5 +50,7 @@ OTHER_FILES += \
     data/shaders/lines.frag \
     data/shaders/particles.vert \
     data/shaders/particles.geom \
-    data/shaders/particles.frag
+    data/shaders/particles.frag \
+    data/shaders/motionBlurPass.frag \
+    data/shaders/quadlol.vert
 

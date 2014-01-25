@@ -103,13 +103,24 @@ void SceneMain::loadResources() {
 	wirecube->setVertexData(&cubeVertices[0],cubeVertices.size());
 	wirecube->setVertexIndices(&wireIndices[0],wireIndices.size());
 	Meshes.add("1x1WireCube",wirecube);
-    Meshes.add("brush1", Mesh::loadFromFile("data/meshes/brush1.obj"));
-    Meshes.add("brush2", Mesh::loadFromFile("data/meshes/brush2.obj"));
-    Meshes.add("brush3", Mesh::loadFromFile("data/meshes/brush3.obj"));
-    Meshes.add("brush4", Mesh::loadFromFile("data/meshes/brush4.obj"));
-    Meshes.add("brush5", Mesh::loadFromFile("data/meshes/brush5.obj"));
-    Meshes.add("brush6", Mesh::loadFromFile("data/meshes/brush6.obj"));
-	Meshes.add("cube", Mesh::loadFromFile("data/meshes/cube.obj"));
+
+    Meshes.add("brushidle0", Mesh::loadFromFile("data/meshes/brush3a.obj"));
+    Meshes.add("brushidle1", Mesh::loadFromFile("data/meshes/brush3b.obj"));
+    Meshes.add("brushruna0", Mesh::loadFromFile("data/meshes/brush4a.obj"));
+    Meshes.add("brushruna1", Mesh::loadFromFile("data/meshes/brush4b.obj"));
+    Meshes.add("brushrunb0", Mesh::loadFromFile("data/meshes/brush5a.obj"));
+    Meshes.add("brushrunb1", Mesh::loadFromFile("data/meshes/brush5b.obj"));
+    Meshes.add("brushjumpa0", Mesh::loadFromFile("data/meshes/brush2a.obj"));
+    Meshes.add("brushjumpa1", Mesh::loadFromFile("data/meshes/brush2b.obj"));
+    Meshes.add("brushjumpb0", Mesh::loadFromFile("data/meshes/brush1a.obj"));
+    Meshes.add("brushjumpb1", Mesh::loadFromFile("data/meshes/brush1b.obj"));
+    Meshes.add("brushwallu0", Mesh::loadFromFile("data/meshes/brushparetU.obj"));
+    Meshes.add("brushwallu1", Mesh::loadFromFile("data/meshes/brushparetU.obj"));
+    Meshes.add("brushwalld0", Mesh::loadFromFile("data/meshes/brushparetD.obj"));
+    Meshes.add("brushwalld1", Mesh::loadFromFile("data/meshes/brushparetD.obj"));
+
+
+    Meshes.add("cube", Mesh::loadFromFile("data/meshes/cube.obj"));
 	Meshes.add("saw", Mesh::loadFromFile("data/meshes/saw.obj"));
 	Meshes.add("sawCube", Mesh::loadFromFile("data/meshes/cubeS.obj"));
 	Meshes.add("botCube", Mesh::loadFromFile("data/meshes/rebota1.obj"));

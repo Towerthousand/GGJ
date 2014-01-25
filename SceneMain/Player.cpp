@@ -14,7 +14,7 @@
 Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot)
     : pos(pos), rot(rot) {
     this->setName(playerName);
-    model.mesh = Meshes.get("brush2");
+    model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
     renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 
@@ -33,7 +33,7 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     animState = Player::IDLE;
 
     animCount = 0.0f;
-    animNumber = 1;
+    anim = "idle";
     animIter = 0;
 
 
@@ -151,19 +151,21 @@ void Player::update(float deltaTime) {
     pos.x += disp.x;
 
     //ANIMATION
-    if(collidingSides)  animState = Player::WALL;
-    else if(collidingFloor) {
+    if(collidingSides)  {
+        animState = Player::WALL;
+        anim = velocity.y > 0 ? "wallu" : "walld";
+    } else if(collidingFloor) {
         if(running)      {
             animState = Player::RUN;
-            animNumber = 3;
+            anim = fabs(velocity.x) >= MAX_VELOCITY/2 ? "runb" : "runa";
         } else {
             animState = Player::IDLE;
-            animNumber = 1;
+            anim = "idle";
 
         }
     } else {
         animState = Player::JUMP;
-        animNumber = 5;
+        anim = fabs(velocity.x) > MAX_VELOCITY/2 ? "jumpb" : "jumpa";
 
     }
 
@@ -172,7 +174,8 @@ void Player::update(float deltaTime) {
         animCount -= 0.1f;
         animIter = 1 - animIter;
     }
-    std::string s = "brush" + toString(animNumber+animIter);
+    std::string s = "brush" + anim + toString(animIter);
+    //VBE_LOG(s);
     model.mesh = Meshes.get(s);
 
 

@@ -37,7 +37,7 @@ private:
 
     Animation animState;
     float animCount;
-    int animNumber;
+    std::string anim;
     int animIter;
     AABB modelAabb;
 

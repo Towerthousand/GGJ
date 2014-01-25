@@ -47,15 +47,12 @@ void Player::update(float deltaTime) {
         dir += vec3f(1, 0, 0);
     }
 
-    vec3f friction(0);
-    friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+	vec3f friction(0);
+	if (abs(velocity.x) > 1.0e3f) {
+		friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+	}
 
-    vec3f contactForce(0);
-    if (colliding) {
-        contactForce = vec3f(0, GRAVITY, 0);
-    }
-
-    vec3f totalForce = ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + contactForce + friction;
+	vec3f totalForce = ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
     // apply impulses
     if (Input::isKeyPressed(sf::Keyboard::Up)) {
@@ -63,26 +60,67 @@ void Player::update(float deltaTime) {
     }
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
-    pos += velocity*deltaTime;
+	if (glm::length(velocity) < 1.0e-3f) velocity = vec3f(0);
+	vec3f disp = velocity*deltaTime;
 
 	//NOT PHYSICS
-	vec3f disp = pos-prevPos;
 
     // collision detection
-    AABB aabb = model.mesh->getBoundingBox();
-	//AABB mybox(vec3f(fullTransform*vec4f(aabb.getMin(), 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax(), 1.0f)));
-	AABB newbox(vec3f(fullTransform*vec4f(aabb.getMin()+disp, 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax()+disp, 1.0f)));
-	if(((Map*)getGame()->getObjectByName("map"))->isColliding(newbox)) {
-		pos = prevPos;
+	Map* map = (Map*)getGame()->getObjectByName("map");
+	AABB aabb = model.mesh->getBoundingBox();
+	aabb = AABB(vec3f(fullTransform*vec4f(aabb.getMin(), 1.0f)), vec3f(fullTransform*vec4f(aabb.getMax(), 1.0f)));
+
+	colliding = false;
+
+	//Y
+	AABB newboxY(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
+	if(map->isColliding(newboxY)) {
+		float min = 0;
+		float max = 1;
+		while(max-min > 0.001) { //search for the maximum distance you can move
+			float m = (max+min)/2;
+			newboxY = AABB(aabb.getMin()+vec3f(0,disp.y*m,0), aabb.getMax()+vec3f(0,disp.y*m,0));
+			if(map->isColliding(newboxY))
+				max = m;
+			else
+				min = m;
+		}
+		velocity.y = 0;
+		disp.y *= min;
+		colliding = true;
 	}
+
+	pos.y += disp.y;
+	aabb = AABB(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
+
+	//X
+	AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
+	if(map->isColliding(newboxX)) {
+		float min = 0;
+		float max = 1;
+		while(max-min > 0.001) { //search for the maximum distance you can move
+			float m = (max+min)/2;
+			newboxX = AABB(aabb.getMin()+vec3f(disp.x*m,0,0), aabb.getMax()+vec3f(disp.x*m,0,0));
+			if(map->isColliding(newboxX))
+				max = m;
+			else
+				min = m;
+		}
+		velocity.x = 0;
+		disp.x *= min;
+		colliding = true;
+	}
+
+	pos.x += disp.x;
+
 	//transform stuff
 	for(int i = 0; i < 3; ++i) {
 		if(rot[i] < 0) rot[i] = rot[i]+360;
 		else if(rot[i] >= 360.0f) rot[i] = rot[i]-360;
 	}
 
-	transform = glm::scale(mat4f(1), scale);
-	transform = glm::translate(transform,pos);
+	transform = glm::translate(mat4f(1),pos);
+	transform = glm::scale(transform, scale);
 }
 
 void Player::draw() const
@@ -99,13 +137,11 @@ void Player::draw() const
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
 		Model m;
-        m.mesh = Meshes.get("1x1WireCube");
-		VBE_LOG(model.mesh->getBoundingBox().getDimensions().x << " " << model.mesh->getBoundingBox().getDimensions().y << " " << model.mesh->getBoundingBox().getDimensions().z);
+		m.mesh = Meshes.get("1x1WireCube");
         m.program = Programs.get("lines");
 		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(fullTransform,vec3f(model.mesh->getBoundingBox().getDimensions()/model.mesh->getBoundingBox().getRadius())));
         m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
         m.draw();
     }
-
 }
 

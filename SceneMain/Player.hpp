@@ -27,6 +27,15 @@ private:
 
     vec3f totalForce;
 
+    enum Animation {
+        IDLE,
+        RUN,
+        JUMP,
+        WALL
+    };
+
+    Animation animState;
+
 
 };
 

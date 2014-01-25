@@ -80,8 +80,8 @@ SceneMain::~SceneMain() {
 }
 
 void SceneMain::loadResources() {
-    AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
-    AudioManager::getMusic("gameMusic")->setPlayingOffset(sf::seconds(42.22));
+    AudioManager::loadMusic("gameMusic", "data/music/GuantepoderosoCut2.ogg");
+    AudioManager::getMusic("gameMusic")->setLoop(true);
     AudioManager::getMusic("gameMusic")->play();
 
 	//meshes

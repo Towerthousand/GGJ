@@ -9,9 +9,9 @@ Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, st
 	char c = 'x';
 	int i = 0;
 	while(1) {
-		in >> c;
+		in >> std::noskipws >> c;
 		if(c == '%') break;
-		if(c == '\\') {
+		if(c == '\n') {
 			map.push_back(std::vector<Cube>());
 			++i;
 		}
@@ -58,7 +58,7 @@ Map::Cube Map::translate(char c) {
 		case 'R' : return Cube(Cube::RED	,Cube::FLOOR);
 		case 'G' : return Cube(Cube::GREEN	,Cube::FLOOR);
 		case 'B' : return Cube(Cube::BLUE	,Cube::FLOOR);
-		case 'A' : return Cube(Cube::WHITE	,Cube::AIR);
+		case ' ' : return Cube(Cube::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}
 }

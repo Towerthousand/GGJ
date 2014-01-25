@@ -98,13 +98,16 @@ void Map::draw() const {
     }
 }
 
-bool Map::isColliding(const vec3f& pos) const {
+bool Map::isColliding(const vec3f& pos, Color &color) const {
 	int x = floor(pos.x);
-	int y = floor(pos.y);
-    return !(x < 0 || y < 0 || x >= int(map[0].size()) || y >= int(map.size()) || map[y][x].type == Cube::AIR);
+    int y = floor(pos.y);
+    if (x < 0 || y < 0 || x >= int(map[0].size()) || y >= int(map.size())) return false;
+    if (map[y][x].type == Cube::AIR) return false;
+    color = map[y][x].color;
+    return true;
 }
 
-bool Map::isColliding(const AABB& aabb) const
+bool Map::isColliding(const AABB& aabb, Color &color) const
 {
 	int xmin = floor(aabb.getMin().x);
 	int xmax = floor(aabb.getMax().x);
@@ -118,6 +121,7 @@ bool Map::isColliding(const AABB& aabb) const
 			if (map[i][j].type != Cube::AIR) {
 				AABB tilebox(vec3f(j, i, -1), vec3f(j+1, i+1, 1));
 				if (tilebox.overlap(aabb)) {
+                    color = map[i][j].color;
 					return true;
 				}
 			}

@@ -102,13 +102,15 @@ void Player::update(float deltaTime) {
 
 	//Y
 	AABB newboxY(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
-	if(map->isColliding(newboxY)) {
+    Color blockColor;
+    if(map->isColliding(newboxY, blockColor)) {
 		float min = 0;
 		float max = 1;
+        Color foo;
 		while(max-min > 0.001) { //search for the maximum distance you can move
 			float m = (max+min)/2;
 			newboxY = AABB(aabb.getMin()+vec3f(0,disp.y*m,0), aabb.getMax()+vec3f(0,disp.y*m,0));
-			if(map->isColliding(newboxY))
+            if(map->isColliding(newboxY, foo))
 				max = m;
 			else
 				min = m;
@@ -126,16 +128,17 @@ void Player::update(float deltaTime) {
 	//X
     bool isRightWall = false;
     AABB newboxX(aabb.getMin()+vec3f(disp.x,0,0), aabb.getMax()+vec3f(disp.x,0,0));
-	if(map->isColliding(newboxX)) {
+    if(map->isColliding(newboxX, blockColor)) {
 
-        isBrushColliding = map->isColliding(brushBox);
+        Color foo;
+        isBrushColliding = map->isColliding(brushBox, foo);
 
 		float min = 0;
 		float max = 1;
 		while(max-min > 0.001) { //search for the maximum distance you can move
 			float m = (max+min)/2;
 			newboxX = AABB(aabb.getMin()+vec3f(disp.x*m,0,0), aabb.getMax()+vec3f(disp.x*m,0,0));
-			if(map->isColliding(newboxX))
+            if(map->isColliding(newboxX, foo))
 				max = m;
 			else
 				min = m;
@@ -197,16 +200,15 @@ void Player::update(float deltaTime) {
 
     // TRAILS
 
-
     vec3f posoff(0, -0.25f*modelAabb.getDimensions().y, 0.5);
-    if (prevOnfloor && collidingFloor) {
+    if (prevOnfloor && collidingFloor && (blockColor == Color::WHITE || blockColor == color) ) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         if (initPos.x < pos.x)
             trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(initPos + posoff, pos + posoff));
         else
             trails->addTrailSegment(color, Trails::HORIZONTAL, Trails::Segment(pos + posoff, initPos + posoff));
     }
-    if (prevOnside && collidingSides && isBrushColliding) {
+    if (prevOnside && collidingSides && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
         Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         Trails::Direction dir;
         if (isRightWall)

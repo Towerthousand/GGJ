@@ -31,8 +31,8 @@ class Map : public GameObject {
 		void update(float deltaTime);
 		void draw() const; //while(1) fork;
 
-		bool isColliding(const vec3f& aabb) const;
-		bool isColliding(const AABB& aabb) const;
+        bool isColliding(const vec3f& aabb, Color &color) const;
+        bool isColliding(const AABB& aabb,  Color &color) const;
 
 	private:
         static std::string models_textures[Cube::NUM_TYPES][Color::NUM_COLORS][2];

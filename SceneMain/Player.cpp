@@ -3,6 +3,7 @@
 #include "DeferredContainer.hpp"
 #include "Map.hpp"
 #include "Trails.hpp"
+#include "particles/LightParticleEmitter.hpp"
 
 #define MAX_VELOCITY    10.0f
 #define GRAVITY         9.8f
@@ -12,8 +13,8 @@
 #define ELASTICITY      0.0f
 
 
-Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot)
-    : pos(pos), rot(rot) {
+Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot, Color col)
+	: pos(pos), rot(rot), color(col) {
     this->setName(playerName);
     model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
@@ -35,7 +36,9 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     animIter = 0;
 
 	scale = vec3f(0.30f/modelAabb.getRadius());
-    color = RED;
+
+	ParticleEmitter* emitter = new LightParticleEmitter(vec3f(1),color-1);
+	emitter->addTo(this);
 }
 
 Player::~Player() {

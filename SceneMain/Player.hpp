@@ -9,7 +9,7 @@ class Camera;
 class Player : public GameObject {
 public:
 
-    Player(const std::string &playerName, const vec3f& pos = vec3f(0.0f), const vec3f& rot = vec3f(0.0f));
+	Player(const std::string &playerName, const vec3f& pos = vec3f(0.0f), const vec3f& rot = vec3f(0.0f), Color col = Color::RED);
     virtual ~Player();
 
     void update(float deltaTime);

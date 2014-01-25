@@ -37,10 +37,18 @@ SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socke
 	DeferredContainer* renderer = new DeferredContainer();
 	renderer->addTo(blur);
 
-    Player* pla = new Player("playerTest");
-    pla->pos = vec3f(3,5,0);
-    pla->color = Color::BLUE;
+	ParticleSystem* sys = new ParticleSystem();
+	sys->addTo(renderer);
+	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
+
+	Player* pla = new Player("playerTest",vec3f(3,5,0),vec3f(0.0f), Color::BLUE);
     pla->addTo(renderer);
+
+	Player* pla2 = new Player("enemy",vec3f(4,5,0),vec3f(0.0f),Color::RED);
+	pla2->addTo(renderer);
+
+	Player* pla3 = new Player("enemy2",vec3f(5,5,0),vec3f(0.0f),Color::GREEN);
+	pla3->addTo(renderer);
 
 	Map* map = new Map("data/maps/map0.map");
 	map->addTo(renderer);
@@ -53,17 +61,8 @@ SceneMain::SceneMain(sf::Socket* socket) : debugCounter(0.0), fpsCount(0), socke
 	dl->color = vec3f(1);
     dl->addTo(renderer);
 
-	ParticleSystem* sys = new ParticleSystem();
-	sys->addTo(renderer);
-	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
-
-    ParticleEmitter* emitter1 = new LightParticleEmitter(vec3f(1),pla->color-1);
-	emitter1->addTo(pla);
-
-
 	cam = new Camera("playerCam");
 	cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-//	cam->pos = vec3f(0,0,20*modelAabb.getRadius());
 	cam->addTo(this);
 	cam->targetPlayer = "playerTest";
 }

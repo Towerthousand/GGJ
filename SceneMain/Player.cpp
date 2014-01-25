@@ -33,6 +33,8 @@ Player::Player(const std::string& playerName, const vec3f& pos, const vec3f& rot
     animState = Player::IDLE;
 
     animCount = 0.0f;
+    animTime = randomFloat(0.1f, 0.4f);
+
     anim = "idle";
     animIter = 0;
 
@@ -62,7 +64,8 @@ void Player::update(float deltaTime) {
     }
 
 	vec3f friction(0);
-    friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+    if(!(fabs(velocity.x) < 0.08f)) friction = FRICTION_COEFF*vec3f(velocity.x > 0 ? -1.0 : 1.0, 0, 0);
+
 
     totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
@@ -72,7 +75,8 @@ void Player::update(float deltaTime) {
     }
     // integration
     velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
-	if (glm::length(velocity) < 1.0e-3f) velocity = vec3f(0);
+    if (fabs(velocity.x) < 0.08f) velocity.x = 0;
+
 
     //Reset totalForce;
     totalForce = vec3f(0.0f);
@@ -170,8 +174,10 @@ void Player::update(float deltaTime) {
     }
 
     animCount += deltaTime;
-    if(animCount >= 0.1f) {
-        animCount -= 0.1f;
+    if(animCount >= animTime) {
+        animCount -= animTime;
+        animTime = randomFloat(0.1f, 0.2f);
+        VBE_LOG(animTime);
         animIter = 1 - animIter;
     }
     std::string s = "brush" + anim + toString(animIter);

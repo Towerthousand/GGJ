@@ -18,4 +18,10 @@ constexpr int TEXSIZE = 8;
 
 std::string toString(float n);
 
+inline float randomFloat(float min, float max)
+{
+    float f = (float(rand()) / RAND_MAX);
+    return min + f*(max-min);
+}
+
 #endif // COMMONS_HPP

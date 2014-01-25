@@ -55,7 +55,7 @@ OTHER_FILES += \
     data/shaders/particles.geom \
     data/shaders/particles.frag \
     data/shaders/motionBlurPass.frag \
-    data/shaders/quadlol.vert
+    data/shaders/quadlol.vert \
     data/shaders/trails.vert \
     data/shaders/trails.frag \
     data/shaders/trails.geom

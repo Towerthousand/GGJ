@@ -54,7 +54,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 
 	for(int i = 0; i < playerCount; i++)
 	{
-		Player* p = new Player(i, vec3f(3,5,0), vec3f(0.0f), Color::BLUE);
+        Player* p = new Player(i, vec3f(3,5,0), vec3f(0.0f), Color(i+1));
 		p->addTo(renderer);
 		players[i] = p;
 	}
@@ -152,7 +152,12 @@ void SceneMain::loadResources() {
 	Meshes.add("sawCube", Mesh::loadFromFile("data/meshes/cubeS.obj"));
 	Meshes.add("botCube", Mesh::loadFromFile("data/meshes/rebota1.obj"));
 
+    Meshes.add("canvas", Mesh::loadFromFile("data/meshes/canvas.obj"));
+
+
     //textures
+    Textures2D.add("canvasW", Texture2D::createFromFile("data/textures/canvasW.png"));
+
 	Textures2D.add("saw", Texture2D::createFromFile("data/textures/sawW.png"));
 	Textures2D.add("botCubeW", Texture2D::createFromFile("data/textures/cubebotW.png"));
 	Textures2D.add("botCubeR", Texture2D::createFromFile("data/textures/cubebotR.png"));

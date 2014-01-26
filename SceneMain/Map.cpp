@@ -27,7 +27,13 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	  {"botCube","nullRed"},
 	  {"botCube","nullGreen"},
 	  {"botCube","nullBlue"}
-	}
+    },
+    { //FINISH
+      {"cube","nullWhite"},
+      {"cube","nullRed"},
+      {"cube","nullGreen"},
+      {"cube","nullBlue"}
+    }
 };
 
 Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
@@ -83,7 +89,16 @@ void Map::draw() const {
 					cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
 					cube.draw();
 				}
-			}
+                if(map[i][j].type == Cube::FINISH) {
+                    //cube.program->uniform("MVP")->
+                      //      set(cam->projection*cam->view*
+                        //        glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,0)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
+                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
+                    cube.mesh = Meshes.get("canvas");
+                    cube.program->uniform("diffuseTex")->set(Textures2D.get("canvasW"));
+                    cube.draw();
+                }
+            }
 		}
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
@@ -147,6 +162,7 @@ Map::Cube Map::translate(char c) {
         case 'K' : return Cube(Color::RED	,Cube::BUMP);
         case 'L' : return Cube(Color::GREEN	,Cube::BUMP);
         case 'P' : return Cube(Color::BLUE	,Cube::BUMP);
+        case 'M' : return Cube(Color::WHITE	,Cube::FINISH);
         case ' ' : return Cube(Color::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}

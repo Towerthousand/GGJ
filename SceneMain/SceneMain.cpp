@@ -52,7 +52,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->addTo(renderer);
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
-    Map* map = new Map("data/maps/map1.map");
+    Map* map = new Map("data/maps/map2.map");
     map->addTo(renderer);
 
 	for(int i = 0; i < playerCount; i++)
@@ -86,7 +86,7 @@ SceneMain::~SceneMain() {
 void SceneMain::loadResources() {
     AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
     AudioManager::getMusic("gameMusic")->setLoop(true);
-	//AudioManager::getMusic("gameMusic")->play();
+    //AudioManager::getMusic("gameMusic")->play();
 
 	//meshes
 	std::vector<Vertex::Element> elems = {

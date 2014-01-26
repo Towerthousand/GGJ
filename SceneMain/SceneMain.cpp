@@ -69,7 +69,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	cam = new Camera("playerCam");
 	cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
 	cam->addTo(renderer);
-	cam->targetPlayer = players[playerNum];
+    cam->targetPlayer = players[playerNum];
 }
 
 SceneMain::~SceneMain() {
@@ -159,7 +159,6 @@ void SceneMain::loadResources() {
     Textures2D.add("canvas1", Texture2D::createFromFile("data/textures/canvasR.png"));
     Textures2D.add("canvas2", Texture2D::createFromFile("data/textures/canvasG.png"));
     Textures2D.add("canvas3", Texture2D::createFromFile("data/textures/canvasB.png"));
-
 	Textures2D.add("saw", Texture2D::createFromFile("data/textures/sawW.png"));
 	Textures2D.add("botCubeW", Texture2D::createFromFile("data/textures/cubebotW.png"));
 	Textures2D.add("botCubeR", Texture2D::createFromFile("data/textures/cubebotR.png"));
@@ -169,10 +168,10 @@ void SceneMain::loadResources() {
 	Textures2D.add("sawCubeR", Texture2D::createFromFile("data/textures/cubeSR.png"));
 	Textures2D.add("sawCubeG", Texture2D::createFromFile("data/textures/cubeSG.png"));
 	Textures2D.add("sawCubeB", Texture2D::createFromFile("data/textures/cubeSB.png"));
-	Textures2D.add("elevatorW", Texture2D::createFromFile("data/textures/elevatorW.png"));
+    /*Textures2D.add("elevatorW", Texture2D::createFromFile("data/textures/elevatorW.png"));
 	Textures2D.add("elevatorR", Texture2D::createFromFile("data/textures/elevatorR.png"));
 	Textures2D.add("elevatorG", Texture2D::createFromFile("data/textures/elevatorG.png"));
-	Textures2D.add("elevatorB", Texture2D::createFromFile("data/textures/elevatorB.png"));
+    Textures2D.add("elevatorB", Texture2D::createFromFile("data/textures/elevatorB.png"));*/
     Textures2D.add("brush1", Texture2D::createFromFile("data/textures/brushR.png"));
     Textures2D.add("brush2", Texture2D::createFromFile("data/textures/brushG.png"));
     Textures2D.add("brush3", Texture2D::createFromFile("data/textures/brushB.png"));
@@ -182,6 +181,8 @@ void SceneMain::loadResources() {
     Textures2D.add("trailRV", Texture2D::createFromFile("data/textures/decal2RV.png"));
     Textures2D.add("trailGV", Texture2D::createFromFile("data/textures/decal2GV.png"));
     Textures2D.add("trailBV", Texture2D::createFromFile("data/textures/decal2BV.png"));
+    Textures2D.add("normalsTrail",  Texture2D::createFromFile("data/textures/decal2nmapA.png"));
+    Textures2D.add("normalsTrailV", Texture2D::createFromFile("data/textures/decal2nmapB.png"));
     Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
 	Textures2D.add("nullRed", Texture2D::createFromRaw(pixels, 1, 1));

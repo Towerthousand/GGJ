@@ -4,6 +4,7 @@
 using namespace std;
 
 int main() {
+
 	WINDOW_TITLE = "Deferred Test";
 	ZNEAR = 0.01f;
 	ZFAR = 1000.0f;

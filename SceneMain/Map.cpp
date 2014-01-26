@@ -134,7 +134,7 @@ void Map::draw() const {
             }
 		}
     }
-    /*else if (renderer->getMode() == DeferredContainer::Forward) {
+	else if (renderer->getMode() == DeferredContainer::Forward) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
                 if(map[i][j].type == Cube::AIR || map[i][j].type == Cube::FINISH || map[i][j].type == Cube::START) continue;
@@ -146,7 +146,7 @@ void Map::draw() const {
 				m.draw();
 			}
 		}
-    }*/
+	}
 }
 
 bool Map::isColliding(const vec3f& pos, Color &color) const {

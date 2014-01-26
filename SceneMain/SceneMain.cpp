@@ -176,11 +176,7 @@ void SceneMain::loadResources() {
     Textures2D.add("brush2", Texture2D::createFromFile("data/textures/brushG.png"));
     Textures2D.add("brush3", Texture2D::createFromFile("data/textures/brushB.png"));
     Textures2D.add("trailR", Texture2D::createFromFile("data/textures/decal2R.png"));
-    Textures2D.add("trailG", Texture2D::createFromFile("data/textures/decal2G.png"));
-    Textures2D.add("trailB", Texture2D::createFromFile("data/textures/decal2B.png"));
     Textures2D.add("trailRV", Texture2D::createFromFile("data/textures/decal2RV.png"));
-    Textures2D.add("trailGV", Texture2D::createFromFile("data/textures/decal2GV.png"));
-    Textures2D.add("trailBV", Texture2D::createFromFile("data/textures/decal2BV.png"));
     Textures2D.add("normalsTrail",  Texture2D::createFromFile("data/textures/decal2nmapA.png"));
     Textures2D.add("normalsTrailV", Texture2D::createFromFile("data/textures/decal2nmapB.png"));
     Textures2D.add("normalsCubes", Texture2D::createFromFile("data/textures/NM1.png"));

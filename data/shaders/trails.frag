@@ -15,7 +15,6 @@ layout(location = 1) out vec4 color1;
 void main() {
 
     vec4 color = texture(tex, v_texCoord);
-
     if (color.a < 0.01 || (color.r > 0.1 && color.g > 0.1 && color.b > 0.1))
         discard;
 
@@ -23,6 +22,6 @@ void main() {
     float p = sqrt(normal.z*8+8);
     vec2 encodedNormal = normal.xy/p;
 
-    color0 = color.rgb;
+    color0 = v_color;
     color1 = vec4(encodedNormal, ambient, specular);
 }

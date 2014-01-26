@@ -25,8 +25,10 @@ class Map : public GameObject {
 				Type type;
 		};
 
-		Map(const std::string& mapfile);
+		Map();
 		~Map();
+
+		void loadFromFile(const std::string& mapfile);
 
 		void update(float deltaTime);
 		void draw() const; //while(1) fork;

@@ -14,10 +14,18 @@
 SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
 
-	sf::Packet packet = receivePacket();
-	int mapSize, personCount, policeCount, seed;
-	packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
-	//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
+	if(socket != nullptr)
+	{
+		sf::Packet packet = receivePacket();
+		int mapSize, personCount, policeCount, seed;
+		packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
+		//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
+	}
+	else
+	{
+		playerNum = 0;
+		playerCount = 1;
+	}
 
 	loadResources();
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
@@ -206,9 +214,14 @@ void SceneMain::update(float deltaTime) {
 	}
 
 	input.update();
-	sendInputToServer();
-	receiveServerInfo();
 
+	if(socket == nullptr)
+		players[0]->input.update();
+	else
+	{
+		sendInputToServer();
+		receiveServerInfo();
+	}
 }
 
 

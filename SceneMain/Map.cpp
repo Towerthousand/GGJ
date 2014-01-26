@@ -67,6 +67,7 @@ Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, st
     }
 	cube.program = Programs.get("deferredModel");
 	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
+    canvasTexture = "canvasW";
 }
 
 Map::~Map() {
@@ -84,17 +85,21 @@ void Map::draw() const {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
                 if(map[i][j].type == Cube::FINISH) {
-                    cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
-                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+                    float rot = -30.0f;
+                    mat4f mat = fullTransform;
+                    mat = glm::translate(mat,vec3f(j,i,0));
+                    mat = glm::rotate(mat,rot,vec3f(0,1.0f,0));
+                    cube.program->uniform("MVP")->set(cam->projection*cam->view*mat);
+                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
                     cube.program->uniform("V")->set(cam->view);
                     cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
-                    cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+                    cube.program->uniform("diffuseTex")->set(Textures2D.get(canvasTexture));
                     cube.draw();
                     continue;
                 }
                 if(map[i][j].type == Cube::START) {
-                    cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
-                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+                    cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.2)));
+                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.2)));
                     cube.program->uniform("V")->set(cam->view);
                     cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
                     cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
@@ -198,5 +203,9 @@ Map::Cube Map::translate(char c) {
 Map::Cube Map::getCube(vec3f pos) {
     if(pos.x < 0 || pos.y < 0 || pos.x >= map[0].size() || pos.y >= map.size()) return Cube(Color::WHITE,Cube::AIR);
     return map[floor(pos.y)][floor(pos.x)];
+}
+
+void Map::setCanvasTex(std::string tex) {
+   canvasTexture = tex;
 }
 

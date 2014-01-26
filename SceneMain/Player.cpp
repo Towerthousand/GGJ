@@ -235,6 +235,8 @@ void Player::update(float deltaTime) {
     }
     transform = glm::translate(mat4f(1), pos);
     transform = glm::scale(transform, scale);
+
+    if(pos.y < -2) die();
 }
 
 void Player::draw() const
@@ -271,6 +273,29 @@ void Player::checkMapStatus() {
     Map::Cube c = map->getCube(vec3f(fullTransform*vec4f(0,0,0,1)));
     if(c.type == Map::Cube::FINISH) {
         //YAAAAY
-    }
+        std::string s = "canvas" + toString(playerNum+1);
+        map->setCanvasTex(s);
 
+    }
+}
+
+void Player::die() {
+    Map* map = (Map*)getGame()->getObjectByName("map");
+    pos = vec3f(map->getStartingPos(color).x,map->getStartingPos(color).y-0.6,0);
+    fullTransform = glm::translate(mat4f(1.0f),pos);
+    model.mesh = Meshes.get("brushidle0");
+    velocity = vec3f(0.0f, JUMP_IMPULSE*0.65f, 0.0f);
+
+    colliding = false;
+
+    totalForce = vec3f(0.0f);
+    animState = Player::JUMP;
+
+    animCount = 0.0f;
+    animTime = randomFloat(0.1f, 0.4f);
+
+    anim = "idle";
+    animIter = 0;
+
+    scale = vec3f(0.30f/modelAabb.getRadius());
 }

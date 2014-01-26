@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     SceneMain/MotionBlurContainer.cpp \
     SceneMain/Trails.cpp \
     SceneMain/InputHandler.cpp \
-    SceneMain/Colors.cpp
+    SceneMain/Colors.cpp \
+    Menu.cpp
 
 HEADERS += \
     commons.hpp \
@@ -42,7 +43,8 @@ HEADERS += \
     SceneMain/MotionBlurContainer.hpp \
     SceneMain/Colors.hpp \
     SceneMain/Trails.hpp \
-    SceneMain/InputHandler.hpp
+    SceneMain/InputHandler.hpp \
+    Menu.hpp
 
 OTHER_FILES += \
     data/shaders/quad.vert \

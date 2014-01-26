@@ -32,7 +32,7 @@ void Trails::update(float )
 
 void Trails::draw() const
 {
-	if (renderer->getMode() != DeferredContainer::Forward)
+    if (renderer->getMode() != DeferredContainer::Deferred)
 		return;
 
 	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
@@ -44,18 +44,21 @@ void Trails::draw() const
 		float hor, ver;
 		vec2f side;
 		std::string sside = "";
-		if (j != HORIZONTAL) sside = "V";
-		Texture2D* tex = Textures2D.get("trailR" + sside);
+        if (j != HORIZONTAL) sside = "V";
 		switch (j) {
 			case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f( 0, -1.0f); break;
 			case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-1.0f, 0);  break;
 			case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 1.0f, 0);  break;
 		}
-		models[j].program->uniform("MVP")->set(cam->projection*cam->view);
-		models[j].program->uniform("tex")->set(tex);
+        models[j].program->uniform("MVP")->set(cam->projection*cam->view);
+        models[j].program->uniform("tex")->set(Textures2D.get("trailR" + sside));
+        models[j].program->uniform("normalMap")->set(Textures2D.get("normalsTrail" + sside));
+        models[j].program->uniform("normalMatrix")->set(glm::inverse(glm::transpose(cam->view)));
 		models[j].program->uniform("horTrail")->set(hor);
 		models[j].program->uniform("verTrail")->set(ver);
 		models[j].program->uniform("side")->set(side);
+        models[j].program->uniform("ambient")->set(1.0f);
+        models[j].program->uniform("specular")->set(1.0f);
 		models[j].draw();
 	}
 

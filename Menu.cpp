@@ -1,7 +1,7 @@
 #include "Menu.hpp"
 #include "SceneMain/SceneMain.hpp"
 
-#define multiplayer true
+#define multiplayer false
 
 Menu::Menu() : socket(nullptr)
 {

@@ -274,7 +274,7 @@ void Player::draw() const
 
 		model.program->uniform("diffuseTex")->set(Textures2D.get(s));
 		model.draw();
-	}
+	}/*
 	else if (renderer->getMode() == DeferredContainer::Forward) {
 		AABB aabb = modelAabb;
 		Model m;
@@ -283,7 +283,7 @@ void Player::draw() const
 		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(fullTransform, vec3f(aabb.getDimensions()/float(sqrt(3.0f)))));
 		m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
 		m.draw();
-	}
+	}*/
 }
 
 void Player::checkMapStatus() {

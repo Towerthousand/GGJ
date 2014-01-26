@@ -229,7 +229,7 @@ Map::Cube Map::getCube(vec3f pos) {
 }
 
 void Map::setCanvasTex(std::string tex) {
-	canvasTexture = tex;
+	if(canvasTexture == "canvasW") canvasTexture = tex;
 }
 
 

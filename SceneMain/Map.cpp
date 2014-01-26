@@ -206,6 +206,42 @@ Map::Cube Map::getCube(vec3f pos) {
 }
 
 void Map::setCanvasTex(std::string tex) {
-   canvasTexture = tex;
+    canvasTexture = tex;
+}
+
+void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
+{
+    float pos = 0.5f*(x1 + x2);
+    int ipos = floor(pos);
+    int iini = floor(x1);
+    int iend = floor(x2);
+    if (horizontal) {
+        for (int i = ipos; i >= iini; i--) {
+            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+                x1 = float(i + 1.0);
+                break;
+            }
+        }
+        for (int i = ipos; i <= iend; i++) {
+            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+                x2 = float(i);
+                break;
+            }
+        }
+    }
+    else {
+        for (int i = ipos; i >= iini; i--) {
+            if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+                x1 = float(i + 1.0);
+                break;
+            }
+        }
+        for (int i = ipos; i <= iend; i++) {
+            if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+                x2 = float(i);
+                break;
+            }
+        }
+    }
 }
 

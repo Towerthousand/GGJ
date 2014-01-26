@@ -26,6 +26,7 @@ public:
 
 
 	InputHandler input;
+
 private:
     void checkMapStatus();
     void die();

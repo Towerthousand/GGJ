@@ -1,6 +1,7 @@
 #include "Trails.hpp"
 #include "DeferredContainer.hpp"
 #include "Camera.hpp"
+#include "Map.hpp"
 
 Trails::Trails(const std::string &name)
 {
@@ -62,37 +63,15 @@ void Trails::draw() const
 	glEnable(GL_CULL_FACE);
 }
 
-void Trails::addTrailSegment(Color color, Trails::Direction dir, float x1, float x2, int y)
-{/*
-	std::vector<Segment>& segs = trails[color][dir];
-	bool merged = false;
-	for (unsigned int i = 0; i < segs.size() && !merged; i++) {
-		Segment& s2 = segs[i];
-		if (dir == Direction::HORIZONTAL) {
-			if (fabs(s2.ini.y - s.ini.y) < 0.1f) {
-				if ((s.ini.x < s2.end.x + 0.01f && s.ini.x > s2.ini.x - 0.01f) || (s.end.x < s2.end.x + 0.01f && s.end.x > s2.ini.x - 0.01f)) {
-					s2.ini.x = std::min(s2.ini.x, s.ini.x);
-					s2.end.x = std::max(s2.end.x, s.end.x);
-					merged = true;
-				}
-			}
-		}
-		else {
-			if (fabs(s2.ini.x - s.ini.x) < 0.1f) {
-				if ((s.ini.y < s2.end.y + 0.01f && s.ini.y > s2.ini.y - 0.01f) || (s.end.y < s2.end.y + 0.01f && s.end.y > s2.ini.y - 0.01f)) {
-					s2.ini.y = std::min(s2.ini.y, s.ini.y);
-					s2.end.y = std::max(s2.end.y, s.end.y);
-					merged = true;
-				}
-			}
-		}
-	}
-	if (!merged) segs.push_back(s);
-
-	*/
-
-
+void Trails::addTrailSegment(Color color, Trails::Direction dir, float x1, float x2, int y, float width)
+{
 	if(x2 < x1) std::swap(x1, x2);
+    x1 -= width;
+    x2 += width;
+
+    Map* map = (Map*)getGame()->getObjectByName("map");
+    map->clipTrail(color, dir == Direction::HORIZONTAL, y - (dir != Direction::VERTICAL_RIGHT ? 1 : 0), x1, x2);
+
 	std::map<float, Color>& mp = segments[dir][y];
 
 	auto left = mp.lower_bound(x1);
@@ -140,11 +119,12 @@ void Trails::updateMeshes() {
 
 			for(std::map<float, Color>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
 			{
-				if(last != Color::WHITE)
+                if(last != Color::WHITE) {
 					if(dir == HORIZONTAL)
 						mesh.push_back(Segment(vec3f(lastx, it->first, 0.5f), vec3f(it2->first, it->first, 0.5f), getColor(last)));
 					else
 						mesh.push_back(Segment(vec3f(it->first, lastx, 0.5f), vec3f(it->first, it2->first, 0.5f), getColor(last)));
+                }
 				last = it2->second;
 				lastx = it2->first;
 

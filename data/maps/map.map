@@ -1,0 +1,27 @@
+        case 'W' : return Cube(Color::WHITE	,Cube::FLOOR);
+        case 'R' : return Cube(Color::RED	,Cube::FLOOR);
+        case 'G' : return Cube(Color::GREEN	,Cube::FLOOR);
+        case 'B' : return Cube(Color::BLUE	,Cube::FLOOR);
+	W R G B
+	< Z X C
+        case '<' : return Cube(Color::WHITE	,Cube::SAW);
+        case 'Z' : return Cube(Color::RED	,Cube::SAW);
+        case 'X' : return Cube(Color::GREEN	,Cube::SAW);
+        case 'C' : return Cube(Color::BLUE	,Cube::SAW);
+	
+	W R G B
+	J K L P
+        case 'J' : return Cube(Color::WHITE	,Cube::BUMP);
+        case 'K' : return Cube(Color::RED	,Cube::BUMP);
+        case 'L' : return Cube(Color::GREEN	,Cube::BUMP);
+        case 'P' : return Cube(Color::BLUE	,Cube::BUMP);
+
+	R G B
+	A S D
+        case 'A' : return Cube(Color::RED	,Cube::START);
+        case 'S' : return Cube(Color::GREEN	,Cube::START);
+        case 'D' : return Cube(Color::BLUE	,Cube::START);
+	
+	M
+        case 'M' : return Cube(Color::WHITE	,Cube::FINISH);
+        case ' ' : return Cube(Color::WHITE	,Cube::AIR);

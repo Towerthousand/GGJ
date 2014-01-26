@@ -1,53 +1,17 @@
 #include "SceneMain/SceneMain.hpp"
 #include "SFML/Network.hpp"
-
+#include "Menu.hpp"
 using namespace std;
 
 int main() {
-
-	bool multiplayer = false;
-	sf::TcpSocket* socket = nullptr;
-
-	if(multiplayer)
-	{
-		string host = "192.168.1.147";
-		//cout<<"Enter host to connect:";
-		//getline(cin, host);
-
-		socket = new sf::TcpSocket();
-		if(socket->connect(host, 6174) != sf::Socket::Done)
-		{
-			cerr<<"Can't connect to host."<<endl;
-			return 1;
-		}
-
-		cerr<<"Connected!"<<endl;
-		sf::Packet p;
-		while(socket->receive(p) == sf::Socket::Done)
-		{
-			int x;
-			p>>x;
-			if(x == 1)
-				break;
-			else
-			{
-				int a, b;
-				p >> a >> b;
-				cout << "WAITING FOR PLAYERS ("<<a<<" OF "<<b<<")";
-			}
-		}
-	}
-
-	cerr<<"STARTING GAME!"<<endl;
-
 	WINDOW_TITLE = "Deferred Test";
 	ZNEAR = 0.01f;
 	ZFAR = 1000.0f;
 	Game* game = new Game();
 	game->getWindow().setVerticalSyncEnabled(true);
-	game->setFixedFramerate(60);
-	SceneMain* sc = new SceneMain(socket);
-	sc->addTo(game);
+    game->setFixedFramerate(60);
+    Menu* menu = new Menu();
+    menu->addTo(game);
 	game->run();
 	delete game;
 	return 42;

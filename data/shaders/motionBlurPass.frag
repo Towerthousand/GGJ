@@ -7,6 +7,6 @@ out vec4 finalColor;
 in vec2 vTexCoord;
 
 void main(void) {
-        vec4 valColor0 = texture(tex1, vTexCoord); //xyz = color
-        finalColor = vec4(valColor0.yzx, alpha);
+        vec4 valColor0 = texture(tex1, vec2(vTexCoord.x,-vTexCoord.y)); //xyz = color
+        finalColor = vec4(valColor0.xyz, alpha);
 }

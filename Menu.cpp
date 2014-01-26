@@ -17,17 +17,17 @@ Menu::Menu()
 
 	tex = Texture2D::createFromFile("data/textures/menu.png");
 
-	//AudioManager::loadMusic("menuMusic", "data/music/Guantepoderoso.ogg");
-	//AudioManager::getMusic("menuMusic")->setLoop(true);
-	//AudioManager::getMusic("menuMusic")->play();
+	AudioManager::loadMusic("menuMusic", "data/music/menu1.ogg");
+	AudioManager::getMusic("menuMusic")->setLoop(true);
+	AudioManager::getMusic("menuMusic")->play();
 
 }
 
 Menu::~Menu() {
 	delete m.mesh;
 	delete m.program;
-	//AudioManager::getMusic("menuMusic")->stop();
-	//AudioManager::eraseMusic("menuMusic");
+	AudioManager::getMusic("menuMusic")->stop();
+	AudioManager::eraseMusic("menuMusic");
 
 }
 

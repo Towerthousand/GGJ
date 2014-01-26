@@ -31,16 +31,15 @@ void LightParticleEmitter::boom(int count)
 	ps.y = floor(ps.y)+0.15;
 	for(int i = 0; i < count; i++)
 	{
-		//vec3f vel = glm::sphericalRand(3.0f);
-		vec3f vel = vec3f(0,1.0,0);
+        //vec3f vel = glm::sphericalRand(3.0f);
 		Particle pt;
-		pt.life = 0.5;
+        pt.life = 0.3;
 		pt.startSize = randomFloat(0.02, 0.1);
 		pt.endSize = pt.startSize*0.3;
 		pt.startCol = vec4f(col, 1.0);
 		pt.endCol = vec4f(col, 0.7);
 		vec2f a = glm::circularRand(1.0f)*randomFloat(0.5, 1.5);
-		pt.v = vec3f(a.x, 0, a.y);
+        pt.v = 1.1f*vec3f(a.x, 0, a.y);
 		pt.p = ps+vec3f(0, -0.1, 0);
 		pt.a = vec3f(0,0,0);
 		pt.texIndex = index;
@@ -52,10 +51,9 @@ void LightParticleEmitter::boomSide(int count, float vx)
 {
 	for(int i = 0; i < count; i++)
 	{
-		//vec3f vel = glm::sphericalRand(3.0f);
-		vec3f vel = vec3f(0,1.0,0);
+        //vec3f vel = glm::sphericalRand(3.0f);
 		Particle pt;
-		pt.life = 0.5;
+        pt.life = 0.4;
 		pt.startSize = randomFloat(0.02, 0.1);
 		pt.endSize = pt.startSize*0.3;
 		pt.startCol = vec4f(col, 1.0);

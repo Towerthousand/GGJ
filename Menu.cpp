@@ -34,8 +34,8 @@ Menu::~Menu() {
 
 }
 
-void Menu::update(float deltaTime) {
 
+void Menu::update(float) {
 
 	if(socket == nullptr && Input::isKeyPressed(sf::Keyboard::Space)) {
 		if(!multiplayer)

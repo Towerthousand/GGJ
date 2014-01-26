@@ -53,7 +53,7 @@ void LightParticleEmitter::boomSide(int count, float vx)
 	{
         //vec3f vel = glm::sphericalRand(3.0f);
 		Particle pt;
-        pt.life = 0.4;
+        pt.life = 0.4f;
 		pt.startSize = randomFloat(0.02, 0.1);
 		pt.endSize = pt.startSize*0.3;
 		pt.startCol = vec4f(col, 1.0);

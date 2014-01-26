@@ -279,6 +279,12 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
 
 void Map::dieAt(vec3f pos, Color col) {
 	if(pos.x < 0 || pos.y < 0 || pos.x >= map[0].size() || pos.y >= map.size()) return;
-    map[floor(pos.y)][floor(pos.x)].deathColor = col;
+	map[floor(pos.y)][floor(pos.x)].deathColor = col;
+	VBE_LOG(toString(pos));
+//	for(int i = 0; i < map.size(); ++i) {
+//		for(int j = 0; j < map[0].size(); ++j) {
+//			map[i][j].deathColor = col;
+//		}
+//	}
 }
 

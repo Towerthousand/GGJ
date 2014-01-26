@@ -294,7 +294,11 @@ void Player::checkMapStatus() {
 		//YAAAAY
 		std::string s = "canvas" + toString(playerNum+1);
 		map->setCanvasTex(s);
-
+	}
+	Map::Cube l = map->getCube(p-vec3f(0,0.5,0));
+	if (l.type == Map::Cube::SAW) {
+		die();
+		map->dieAt(vec3f(p-vec3f(0,0.5,0)),color);
 	}
 }
 

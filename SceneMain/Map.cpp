@@ -42,8 +42,18 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
     }
 };
 
-Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
+Map::Map() : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
 	setName("map");
+
+	cube.program = Programs.get("deferredModel");
+	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
+    canvasTexture = "canvasW";
+}
+
+Map::~Map() {
+}
+
+void Map::loadFromFile(const std::string& mapfile) {
 	std::ifstream in(mapfile.c_str(), std::ifstream::in);
 	VBE_ASSERT(in, "While parsing map: Cannot open " << mapfile );
 	char c = 'x';
@@ -55,22 +65,16 @@ Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, st
 			map.push_back(std::vector<Cube>());
 			++i;
 		}
-        else {
-            map[i].push_back(translate(c));
-            if(translate(c).type == Cube::START)
-                startingPos[translate(c).color-1] = vec2f(map[i].size()-1+0.5,i);
-        }
+		else {
+			map[i].push_back(translate(c));
+			if(translate(c).type == Cube::START)
+				startingPos[translate(c).color-1] = vec2f(map[i].size()-1+0.5,i);
+		}
 	}
 	std::reverse(map.begin(),map.end());
-    for(int i = 0; i < 3; ++i) {
-        startingPos[i].y = (int)map.size() - startingPos[i].y;
-    }
-	cube.program = Programs.get("deferredModel");
-	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
-    canvasTexture = "canvasW";
-}
-
-Map::~Map() {
+	for(int i = 0; i < 3; ++i) {
+		startingPos[i].y = (int)map.size() - startingPos[i].y;
+	}
 }
 
 void Map::update(float deltaTime) {

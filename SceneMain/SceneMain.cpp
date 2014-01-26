@@ -10,22 +10,25 @@
 #include "particles/ParticleSystem.hpp"
 #include "particles/LightParticleEmitter.hpp"
 #include "Trails.hpp"
+#include <ctime>
 
 SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
-	int seed = randomInt(0,3);
+    int seed = 0; //randomInt(0,3);
 
 	if(socket != nullptr)
 	{
 		sf::Packet packet = receivePacket();
 		int mapSize, personCount, policeCount;
 		packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
-		//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
+        //Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
 	}
 	else
 	{
 		playerNum = 0;
 		playerCount = 1;
+        srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
+        seed = randomInt(0, 3);
 	}
 	seed = seed%4;
 	mapPath = "data/maps/map" + toString(seed) + ".map";
@@ -34,7 +37,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
 
 	//GL stuff..:
-	glClearColor(0, 0, 0, 1);
+    glClearColor(bgColor.r, bgColor.g, bgColor.b, 1);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -56,7 +59,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
     Map* map = new Map();
-	map->loadFromFile(mapPath);
+    map->loadFromFile(mapPath);
     map->addTo(renderer);
 
 	for(int i = 0; i < playerCount; i++)
@@ -73,6 +76,8 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
 	cam->addTo(renderer);
     cam->targetPlayer = players[playerNum];
+
+    bgColor = vec4f(0);
 }
 
 SceneMain::~SceneMain() {
@@ -225,7 +230,12 @@ void SceneMain::update(float deltaTime) {
 	{
 		sendInputToServer();
 		receiveServerInfo();
-	}
+    }
+}
+
+void SceneMain::setBackgroundColor(const vec4f &col)
+{
+    bgColor = col;
 }
 
 

@@ -4,6 +4,7 @@
 #include "Map.hpp"
 #include "Trails.hpp"
 #include "particles/LightParticleEmitter.hpp"
+#include "SceneMain.hpp"
 
 #define MAX_VELOCITY    10.0f
 #define GRAVITY         9.8f
@@ -294,6 +295,14 @@ void Player::checkMapStatus() {
 		//YAAAAY
 		std::string s = "canvas" + toString(playerNum+1);
 		map->setCanvasTex(s);
+        SceneMain* scn = (SceneMain*)getGame()->getObjectByName("SCENE");
+        vec4f col;
+        switch(playerNum+1) {
+            case 1: col = vec4f(0.25f, 0, 0, 1); break;
+            case 2: col = vec4f(0, 0.25f, 0, 1); break;
+            case 3: col = vec4f(0, 0, 0.25f, 1); break;
+        }
+        scn->setBackgroundColor(col);
 	}
 	Map::Cube l = map->getCube(p-vec3f(0,0.5,0));
 	if (l.type == Map::Cube::SAW) {

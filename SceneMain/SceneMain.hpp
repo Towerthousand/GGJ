@@ -15,6 +15,8 @@ class SceneMain : public GameObject {
         int playerNum;
         int playerCount;
 
+        void setBackgroundColor(const vec4f& col);
+
 	private:
         void loadResources();
 		float debugCounter;
@@ -31,6 +33,8 @@ class SceneMain : public GameObject {
 		void receiveServerInfo();
 
 		InputHandler input;
+
+        vec4f bgColor;
 
 		std::string mapPath;
 

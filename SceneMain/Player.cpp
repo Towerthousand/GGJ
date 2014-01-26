@@ -288,7 +288,8 @@ void Player::draw() const
 
 void Player::checkMapStatus() {
 	Map* map = (Map*)getGame()->getObjectByName("map");
-	Map::Cube c = map->getCube(vec3f(fullTransform*vec4f(0,0,0,1)));
+	vec3f p = vec3f(fullTransform*vec4f(0,0,0,1));
+	Map::Cube c = map->getCube(p);
 	if(c.type == Map::Cube::FINISH) {
 		//YAAAAY
 		std::string s = "canvas" + toString(playerNum+1);

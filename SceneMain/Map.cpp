@@ -111,7 +111,7 @@ void Map::draw() const {
 					continue;
 				}
 				else if(map[i][j].type == Cube::SAW) {
-					if(map[i][j].color == playerColor) {
+					if(map[i][j].color == playerColor || map[i][j].color == Color::WHITE) {
 						cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
 						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
 						cube.program->uniform("V")->set(cam->view);
@@ -121,7 +121,7 @@ void Map::draw() const {
 						cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
 						cube.draw();
 					}
-					if(map[i][j].color == playerColor || map[i][j].deathColor != Color::WHITE) {
+					if(map[i][j].color == playerColor || map[i][j].color == Color::WHITE  || map[i][j].deathColor != Color::WHITE) {
 						cube.program = Programs.get("deferredSaw");
 						cube.program->uniform("ambient")->set(0.5f);
 						cube.program->uniform("specular")->set(1.0f);

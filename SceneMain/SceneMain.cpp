@@ -192,7 +192,6 @@ void SceneMain::loadResources() {
 	char pixels5[4] = {char(255), char(255), char(255), char(255)};
     Textures2D.add("nullWhite", Texture2D::createFromRaw(pixels5, 1, 1));
 
-
     //program
     Programs.add("deferredLight", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/light.frag"));
     Programs.add("deferredModel", ShaderProgram::loadFromFile("data/shaders/standardDeferred.vert", "data/shaders/standardDeferred.frag"));

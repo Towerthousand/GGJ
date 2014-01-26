@@ -21,6 +21,7 @@ class ParticleEmitter : public GameObject {
 	private:
 		void spawnParticle(float frameTimePassed, float deltaTime);
 
+	protected:
 		float period;
 		ParticleSystem* sys;
 		float state;

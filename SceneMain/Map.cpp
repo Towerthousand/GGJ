@@ -28,11 +28,17 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	  {"botCube","nullGreen"},
 	  {"botCube","nullBlue"}
     },
+    { //START
+      {"",""},
+      {"pote","poteR"},
+      {"pote","poteG"},
+      {"pote","poteB"}
+    },
     { //FINISH
-      {"cube","nullWhite"},
-      {"cube","nullRed"},
-      {"cube","nullGreen"},
-      {"cube","nullBlue"}
+      {"canvas","canvasW"},
+      {"",""},
+      {"",""},
+      {"",""}
     }
 };
 
@@ -70,6 +76,24 @@ void Map::draw() const {
 	if(renderer->getMode() == DeferredContainer::Deferred) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
+                if(map[i][j].type == Cube::FINISH) {
+                    cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+                    cube.program->uniform("V")->set(cam->view);
+                    cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
+                    cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+                    cube.draw();
+                    continue;
+                }
+                if(map[i][j].type == Cube::START) {
+                    cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+                    cube.program->uniform("V")->set(cam->view);
+                    cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
+                    cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+                    cube.draw();
+                    continue;
+                }
                 if(map[i][j].type == Cube::AIR || (playerColor != map[i][j].color && map[i][j].color != Color::WHITE)) continue;
                 cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
                 cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
@@ -88,23 +112,16 @@ void Map::draw() const {
 					cube.mesh = Meshes.get("saw");
 					cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
 					cube.draw();
-				}
-                if(map[i][j].type == Cube::FINISH) {
-                    //cube.program->uniform("MVP")->
-                      //      set(cam->projection*cam->view*
-                        //        glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,0)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
-                    cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
-                    cube.mesh = Meshes.get("canvas");
-                    cube.program->uniform("diffuseTex")->set(Textures2D.get("canvasW"));
-                    cube.draw();
                 }
+
+
             }
 		}
     }
     else if (renderer->getMode() == DeferredContainer::Forward) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
-				if(map[i][j].type == Cube::AIR) continue;
+                if(map[i][j].type == Cube::AIR || map[i][j].type == Cube::FINISH || map[i][j].type == Cube::START) continue;
 				Model m;
 				m.mesh = Meshes.get("1x1WireCube");
 				m.program = Programs.get("lines");
@@ -120,7 +137,7 @@ bool Map::isColliding(const vec3f& pos, Color &color) const {
 	int x = floor(pos.x);
     int y = floor(pos.y);
     if (x < 0 || y < 0 || x >= int(map[0].size()) || y >= int(map.size())) return false;
-    if (map[y][x].type == Cube::AIR) return false;
+    if (map[y][x].type == Cube::AIR || map[y][x].type == Cube::FINISH || map[y][x].type == Cube::START) return false;
     color = map[y][x].color;
     return true;
 }
@@ -136,7 +153,7 @@ bool Map::isColliding(const AABB& aabb, Color &color) const
 		if(i < 0) continue;
 		for (int j = xmin; j <= xmax && j < (int)map[i].size(); j++) {
 			if(j < 0) continue;
-			if (map[i][j].type != Cube::AIR) {
+            if (map[i][j].type != Cube::AIR && map[i][j].type != Cube::FINISH && map[i][j].type != Cube::START) {
 				AABB tilebox(vec3f(j, i, -1), vec3f(j+1, i+1, 1));
 				if (tilebox.overlap(aabb)) {
                     color = map[i][j].color;
@@ -162,6 +179,9 @@ Map::Cube Map::translate(char c) {
         case 'K' : return Cube(Color::RED	,Cube::BUMP);
         case 'L' : return Cube(Color::GREEN	,Cube::BUMP);
         case 'P' : return Cube(Color::BLUE	,Cube::BUMP);
+        case 'A' : return Cube(Color::RED	,Cube::START);
+        case 'S' : return Cube(Color::GREEN	,Cube::START);
+        case 'D' : return Cube(Color::BLUE	,Cube::START);
         case 'M' : return Cube(Color::WHITE	,Cube::FINISH);
         case ' ' : return Cube(Color::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}

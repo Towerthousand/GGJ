@@ -14,6 +14,7 @@ class Map : public GameObject {
 					FLOOR,
 					SAW,
 					BUMP,
+                    START,
                     FINISH,
 					NUM_TYPES
 				};

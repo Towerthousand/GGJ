@@ -151,12 +151,18 @@ void SceneMain::loadResources() {
 	Meshes.add("saw", Mesh::loadFromFile("data/meshes/saw.obj"));
 	Meshes.add("sawCube", Mesh::loadFromFile("data/meshes/cubeS.obj"));
 	Meshes.add("botCube", Mesh::loadFromFile("data/meshes/rebota1.obj"));
-
+    Meshes.add("pote", Mesh::loadFromFile("data/meshes/pote.obj"));
     Meshes.add("canvas", Mesh::loadFromFile("data/meshes/canvas.obj"));
 
 
     //textures
+    Textures2D.add("poteR", Texture2D::createFromFile("data/textures/poteR.png"));
+    Textures2D.add("poteG", Texture2D::createFromFile("data/textures/poteG.png"));
+    Textures2D.add("poteB", Texture2D::createFromFile("data/textures/poteB.png"));
     Textures2D.add("canvasW", Texture2D::createFromFile("data/textures/canvasW.png"));
+    Textures2D.add("canvasR", Texture2D::createFromFile("data/textures/canvasR.png"));
+    Textures2D.add("canvasG", Texture2D::createFromFile("data/textures/canvasG.png"));
+    Textures2D.add("canvasB", Texture2D::createFromFile("data/textures/canvasB.png"));
 
 	Textures2D.add("saw", Texture2D::createFromFile("data/textures/sawW.png"));
 	Textures2D.add("botCubeW", Texture2D::createFromFile("data/textures/cubebotW.png"));

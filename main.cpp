@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
 
-	bool multiplayer = false;
+    bool multiplayer = false;
 	sf::TcpSocket* socket = nullptr;
 
 	if(multiplayer)

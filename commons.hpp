@@ -18,6 +18,8 @@ constexpr int MAXLIGHT = 16;
 constexpr int TEXSIZE = 8;
 
 std::string toString(float n);
+std::string toString(vec3f n);
+
 
 inline float randomFloat(float min, float max)
 {

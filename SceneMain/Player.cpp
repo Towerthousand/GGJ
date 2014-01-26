@@ -244,6 +244,8 @@ void Player::draw() const
 	if(renderer->getMode() == DeferredContainer::Deferred) {
 		mat4f t = mat4f(1.0f);
 		if(velocity.x < 0) t = glm::rotate(t,180.0f,vec3f(0,1,0));
+		t = glm::scale(t, vec3f(1.5f));
+		t = glm::translate(t, vec3f(0, 0.13, 0));
 		model.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform*t*modelOffset);
 		model.program->uniform("M")->set(fullTransform*t*modelOffset);
 		model.program->uniform("V")->set(cam->view);

@@ -41,7 +41,7 @@ Player::Player(int playerNum, const vec3f& rot, Color col)
 
 	scale = vec3f(0.30f/modelAabb.getRadius());
 
-	ParticleEmitter* emitter = new LightParticleEmitter(vec3f(1),color-1);
+	emitter = new LightParticleEmitter(vec3f(1),color-1);
 	emitter->addTo(this);
 }
 
@@ -75,9 +75,11 @@ void Player::update(float deltaTime) {
 
 	totalForce += ACCELERATION*dir + vec3f(0, -GRAVITY, 0) + friction;
 
+	bool saltito = false;
 	// apply impulses
 	if (animState != Player::JUMP && input.getKeyDown(InputHandler::PLAYER_UP)) {
 		velocity.y += JUMP_IMPULSE;
+		saltito = true;
 	}
 	// integration
 	velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
@@ -162,16 +164,29 @@ void Player::update(float deltaTime) {
 		totalForce += wallFriction;
 
 		if(velocity.x > 0 ) {
-			if (input.getKeyDown(InputHandler::PLAYER_UP)) velocity.x -= JUMP_IMPULSE*5;
+			if (input.getKeyDown(InputHandler::PLAYER_UP))
+			{
+				velocity.x -= JUMP_IMPULSE*5;
+				emitter->boomSide(20, -1);
+				saltito = false;
+			}
 			isRightWall = true;
 		} else if(velocity.x < 0 ) {
-			if (input.getKeyDown(InputHandler::PLAYER_UP)) velocity.x += JUMP_IMPULSE*5;
+			if (input.getKeyDown(InputHandler::PLAYER_UP))
+			{
+				velocity.x += JUMP_IMPULSE*5;
+				emitter->boomSide(20, 1);
+				saltito = false;
+			}
 
 		} else velocity.x = 0;
 
 		disp.x *= min;
 		colliding = true;
 	}
+
+	if(saltito)
+		emitter->boom(20);
 
 	pos.x += disp.x;
 
@@ -206,11 +221,14 @@ void Player::update(float deltaTime) {
 
 	// TRAILS
 
-    if (prevOnfloor && collidingFloor && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
+	if(collidingFloor && !prevOnfloor)
+		emitter->boom(20);
+
+	if (collidingFloor && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
 		Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         trails->addTrailSegment(color, Trails::HORIZONTAL, pos.x, initPos.x, int(pos.y - 0.1), 1.5f*modelAabb.getDimensions().x);
 	}
-	if (prevOnside && collidingSides && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
+	if (collidingSides && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
 		Trails* trails = (Trails*)getGame()->getObjectByName("trails");
 		Trails::Direction dir;
 		if (isRightWall)
@@ -245,7 +263,7 @@ void Player::draw() const
 		mat4f t = mat4f(1.0f);
 		if(velocity.x < 0) t = glm::rotate(t,180.0f,vec3f(0,1,0));
 		t = glm::scale(t, vec3f(1.5f));
-		t = glm::translate(t, vec3f(0, 0.13, 0));
+		t = glm::translate(t, vec3f(0, 0.11, 0));
 		model.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform*t*modelOffset);
 		model.program->uniform("M")->set(fullTransform*t*modelOffset);
 		model.program->uniform("V")->set(cam->view);

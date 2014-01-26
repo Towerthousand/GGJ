@@ -65,14 +65,9 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
     Trails* trails = new Trails("trails");
     trails->addTo(renderer);
 
-    DeferredLight* dl = new DeferredLight();
-	dl->pos = vec3f(10,5,10);
-	dl->color = vec3f(1);
-    dl->addTo(renderer);
-
 	cam = new Camera("playerCam");
 	cam->projection = glm::perspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-	cam->addTo(this);
+	cam->addTo(renderer);
 	cam->targetPlayer = players[playerNum];
 }
 

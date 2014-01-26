@@ -1,10 +1,16 @@
 #include "Camera.hpp"
 #include "Player.hpp"
+#include "DeferredLight.hpp"
 
 Camera::Camera(const std::string& cameraName, const vec3f& pos, const vec3f& rot)
     : pos(pos), rot(rot), projection(1.0f), view(1.0f) {
     this->setName(cameraName);
     this->setUpdatePriority(2);
+	DeferredLight* l = new DeferredLight();
+	l->color = vec3f(1);
+	l->pos = vec3f(-10,10,0);
+	l->radius = 30;
+	l->addTo(this);
 }
 
 Camera::~Camera() {

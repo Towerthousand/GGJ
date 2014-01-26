@@ -11,6 +11,7 @@ uniform vec2  side;
 in vec3 g_color[];
 
 out vec2 v_texCoord;
+out vec2 v_normal;
 out vec3 v_color;
 
 int   inidx[8] = {0, 1, 0, 1, 0, 1, 0, 1};

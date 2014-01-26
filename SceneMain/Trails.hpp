@@ -37,7 +37,7 @@ public:
     void update(float deltaTime);
     void draw() const;
 
-	void addTrailSegment(Color color, Direction dir, float x1, float x2, int y);
+    void addTrailSegment(Color color, Direction dir, float x1, float x2, int y, float width);
 
 private:
 

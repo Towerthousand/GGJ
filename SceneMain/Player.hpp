@@ -6,6 +6,7 @@
 
 class DeferredContainer;
 class Camera;
+class LightParticleEmitter;
 
 class Player : public GameObject {
 public:
@@ -25,9 +26,11 @@ public:
 
 
 	InputHandler input;
+
 private:
     void checkMapStatus();
     void die();
+	LightParticleEmitter* emitter;
 
 	int playerNum;
 

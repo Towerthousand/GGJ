@@ -25,8 +25,10 @@ class Map : public GameObject {
 				Type type;
 		};
 
-		Map(const std::string& mapfile);
+		Map();
 		~Map();
+
+		void loadFromFile(const std::string& mapfile);
 
 		void update(float deltaTime);
 		void draw() const; //while(1) fork;
@@ -38,6 +40,8 @@ class Map : public GameObject {
         vec2f getStartingPos(Color col) { return startingPos[col-1];}
 
         void setCanvasTex(std::string tex);
+
+        void clipTrail(Color col, bool horizontal, int y, float &x1, float &x2);
 
 
 	private:

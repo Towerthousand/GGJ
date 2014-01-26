@@ -42,8 +42,18 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
     }
 };
 
-Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
+Map::Map() : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
 	setName("map");
+
+	cube.program = Programs.get("deferredModel");
+	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
+    canvasTexture = "canvasW";
+}
+
+Map::~Map() {
+}
+
+void Map::loadFromFile(const std::string& mapfile) {
 	std::ifstream in(mapfile.c_str(), std::ifstream::in);
 	VBE_ASSERT(in, "While parsing map: Cannot open " << mapfile );
 	char c = 'x';
@@ -55,22 +65,16 @@ Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, st
 			map.push_back(std::vector<Cube>());
 			++i;
 		}
-        else {
-            map[i].push_back(translate(c));
-            if(translate(c).type == Cube::START)
-                startingPos[translate(c).color-1] = vec2f(map[i].size()-1+0.5,i);
-        }
+		else {
+			map[i].push_back(translate(c));
+			if(translate(c).type == Cube::START)
+				startingPos[translate(c).color-1] = vec2f(map[i].size()-1+0.5,i);
+		}
 	}
 	std::reverse(map.begin(),map.end());
-    for(int i = 0; i < 3; ++i) {
-        startingPos[i].y = (int)map.size() - startingPos[i].y;
-    }
-	cube.program = Programs.get("deferredModel");
-	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
-    canvasTexture = "canvasW";
-}
-
-Map::~Map() {
+	for(int i = 0; i < 3; ++i) {
+		startingPos[i].y = (int)map.size() - startingPos[i].y;
+	}
 }
 
 void Map::update(float deltaTime) {
@@ -206,6 +210,46 @@ Map::Cube Map::getCube(vec3f pos) {
 }
 
 void Map::setCanvasTex(std::string tex) {
-   canvasTexture = tex;
+    canvasTexture = tex;
+}
+
+void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
+{
+    float pos = 0.5f*(x1 + x2);
+    int xdim = horizontal ? map[0].size() : map.size();
+    int ipos = floor(glm::clamp(pos, 0.0f, float(xdim) - 0.1f));
+    x1 = glm::clamp(x1,  0.0f, float(xdim) - 0.1f);
+    int iini = floor(x1);
+    x2 = glm::clamp(x2,  0.0f, float(xdim) - 0.1f);
+    int iend = floor(x2);
+
+    if (horizontal) {
+        for (int i = ipos; i >= iini; i--) {
+            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+                x1 = float(i + 1.0);
+                break;
+            }
+        }
+        for (int i = ipos; i <= iend; i++) {
+            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+                x2 = float(i);
+                break;
+            }
+        }
+    }
+    else {
+        for (int i = ipos; i >= iini; i--) {
+            if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+                x1 = float(i + 1.0);
+                break;
+            }
+        }
+        for (int i = ipos; i <= iend; i++) {
+            if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+                x2 = float(i);
+                break;
+            }
+        }
+    }
 }
 

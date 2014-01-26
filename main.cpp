@@ -44,6 +44,8 @@ int main() {
 	ZNEAR = 0.01f;
 	ZFAR = 1000.0f;
 	Game* game = new Game();
+	game->getWindow().setVerticalSyncEnabled(true);
+	game->setFixedFramerate(60);
 	SceneMain* sc = new SceneMain(socket);
 	sc->addTo(game);
 	game->run();

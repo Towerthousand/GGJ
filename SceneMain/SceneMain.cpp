@@ -39,8 +39,6 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	glEnable(GL_CULL_FACE); //enable backface culling
 	glCullFace(GL_BACK);
 
-	getGame()->getWindow().setVerticalSyncEnabled(true);
-
 	//MotionBlurContainer* mblur = new MotionBlurContainer();
 	//mblur->addTo(this);
 

@@ -53,7 +53,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
     Map* map = new Map();
-    map->loadFromFile("data/maps/map3.map");
+	map->loadFromFile("data/maps/map1.map");
     map->addTo(renderer);
 
 	for(int i = 0; i < playerCount; i++)

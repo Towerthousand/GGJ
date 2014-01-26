@@ -212,9 +212,13 @@ void Map::setCanvasTex(std::string tex) {
 void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
 {
     float pos = 0.5f*(x1 + x2);
-    int ipos = floor(pos);
+    int xdim = horizontal ? map[0].size() : map.size();
+    int ipos = floor(glm::clamp(pos, 0.0f, float(xdim) - 0.1f));
+    x1 = glm::clamp(x1,  0.0f, float(xdim) - 0.1f);
     int iini = floor(x1);
+    x2 = glm::clamp(x2,  0.0f, float(xdim) - 0.1f);
     int iend = floor(x2);
+
     if (horizontal) {
         for (int i = ipos; i >= iini; i--) {
             if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {

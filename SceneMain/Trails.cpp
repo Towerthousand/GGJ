@@ -71,6 +71,7 @@ void Trails::addTrailSegment(Color color, Trails::Direction dir, float x1, float
 
     Map* map = (Map*)getGame()->getObjectByName("map");
     map->clipTrail(color, dir == Direction::HORIZONTAL, y - (dir != Direction::VERTICAL_RIGHT ? 1 : 0), x1, x2);
+    if (x2 < x1) return;
 
 	std::map<float, Color>& mp = segments[dir][y];
 

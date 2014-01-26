@@ -85,7 +85,6 @@ void Menu::startGame()
 }
 
 void Menu::draw() const {
-	VBE_LOG("jafgaijbgf");
 	m.program->uniform("alpha")->set(1.0f);
 	m.program->uniform("tex1")->set(socket == nullptr? tex1 : tex2);
 	m.program->uniform("MVP")->set(mat4f(1.0f));

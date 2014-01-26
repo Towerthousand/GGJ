@@ -221,11 +221,14 @@ void Player::update(float deltaTime) {
 
 	// TRAILS
 
-    if (prevOnfloor && collidingFloor && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
+	if(collidingFloor && !prevOnfloor)
+		emitter->boom(20);
+
+	if (collidingFloor && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
 		Trails* trails = (Trails*)getGame()->getObjectByName("trails");
         trails->addTrailSegment(color, Trails::HORIZONTAL, pos.x, initPos.x, int(pos.y - 0.1), 1.5f*modelAabb.getDimensions().x);
 	}
-	if (prevOnside && collidingSides && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
+	if (collidingSides && isBrushColliding && (blockColor == Color::WHITE || blockColor == color) ) {
 		Trails* trails = (Trails*)getGame()->getObjectByName("trails");
 		Trails::Direction dir;
 		if (isRightWall)

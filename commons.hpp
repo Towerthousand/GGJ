@@ -27,4 +27,12 @@ inline float randomFloat(float min, float max)
     return min + f*(max-min);
 }
 
+inline int randomInt(int min, int max)
+{
+	if(max <= min) return max;
+
+	return min + rand() % (max-min+1);
+}
+
+
 #endif // COMMONS_HPP

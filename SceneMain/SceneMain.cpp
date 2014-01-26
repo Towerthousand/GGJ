@@ -13,11 +13,12 @@
 
 SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
+	int seed = randomInt(0,3);
 
 	if(socket != nullptr)
 	{
 		sf::Packet packet = receivePacket();
-		int mapSize, personCount, policeCount, seed;
+		int mapSize, personCount, policeCount;
 		packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
 		//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
 	}
@@ -26,6 +27,8 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 		playerNum = 0;
 		playerCount = 1;
 	}
+	seed = seed%4;
+	mapPath = "data/maps/map" + toString(seed) + ".map";
 
 	loadResources();
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
@@ -53,7 +56,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
     Map* map = new Map();
-	map->loadFromFile("data/maps/map1.map");
+	map->loadFromFile(mapPath);
     map->addTo(renderer);
 
 	for(int i = 0; i < playerCount; i++)

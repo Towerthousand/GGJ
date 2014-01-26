@@ -143,16 +143,13 @@ void SceneMain::loadResources() {
     Meshes.add("brushwallu0", Mesh::loadFromFile("data/meshes/brushparetU.obj"));
     Meshes.add("brushwallu1", Mesh::loadFromFile("data/meshes/brushparetUb.obj"));
     Meshes.add("brushwalld0", Mesh::loadFromFile("data/meshes/brushparetD.obj"));
-    Meshes.add("brushwalld1", Mesh::loadFromFile("data/meshes/brushparetDb.obj"));
-
-
+	Meshes.add("brushwalld1", Mesh::loadFromFile("data/meshes/brushparetDb.obj"));
     Meshes.add("cube", Mesh::loadFromFile("data/meshes/cube.obj"));
 	Meshes.add("saw", Mesh::loadFromFile("data/meshes/saw.obj"));
 	Meshes.add("sawCube", Mesh::loadFromFile("data/meshes/cubeS.obj"));
 	Meshes.add("botCube", Mesh::loadFromFile("data/meshes/rebota1.obj"));
     Meshes.add("pote", Mesh::loadFromFile("data/meshes/pote.obj"));
     Meshes.add("canvas", Mesh::loadFromFile("data/meshes/canvas.obj"));
-
 
     //textures
     Textures2D.add("poteR", Texture2D::createFromFile("data/textures/poteR.png"));
@@ -171,10 +168,10 @@ void SceneMain::loadResources() {
 	Textures2D.add("sawCubeR", Texture2D::createFromFile("data/textures/cubeSR.png"));
 	Textures2D.add("sawCubeG", Texture2D::createFromFile("data/textures/cubeSG.png"));
 	Textures2D.add("sawCubeB", Texture2D::createFromFile("data/textures/cubeSB.png"));
-    /*Textures2D.add("elevatorW", Texture2D::createFromFile("data/textures/elevatorW.png"));
+	/*Textures2D.add("elevatorW", Texture2D::createFromFile("data/textures/elevatorW.png"));
 	Textures2D.add("elevatorR", Texture2D::createFromFile("data/textures/elevatorR.png"));
 	Textures2D.add("elevatorG", Texture2D::createFromFile("data/textures/elevatorG.png"));
-    Textures2D.add("elevatorB", Texture2D::createFromFile("data/textures/elevatorB.png"));*/
+	Textures2D.add("elevatorB", Texture2D::createFromFile("data/textures/elevatorB.png"));*/
     Textures2D.add("brush1", Texture2D::createFromFile("data/textures/brushR.png"));
     Textures2D.add("brush2", Texture2D::createFromFile("data/textures/brushG.png"));
     Textures2D.add("brush3", Texture2D::createFromFile("data/textures/brushB.png"));
@@ -202,6 +199,7 @@ void SceneMain::loadResources() {
     //program
     Programs.add("deferredLight", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/light.frag"));
     Programs.add("deferredModel", ShaderProgram::loadFromFile("data/shaders/standardDeferred.vert", "data/shaders/standardDeferred.frag"));
+	Programs.add("deferredSaw", ShaderProgram::loadFromFile("data/shaders/standardDeferred.vert", "data/shaders/sawDeferred.frag"));
 	Programs.add("ambientPass", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/ambientPass.frag"));
 	Programs.add("blurPassVertical", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurPassVertical.frag"));
 	Programs.add("blurPassHoritzontal", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurPassHoritzontal.frag"));

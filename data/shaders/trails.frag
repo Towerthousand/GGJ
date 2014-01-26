@@ -3,6 +3,7 @@
 uniform sampler2D tex;
 
 in vec2 v_texCoord;
+in vec3 v_color;
 
 out vec4 outColor;
 
@@ -12,6 +13,6 @@ void main() {
     if (color.a < 0.01)
         discard;
 
-    outColor = vec4(color.xyz, 2.0*color.a);
+    outColor = vec4(v_color, 2.0*color.a);
 
 }

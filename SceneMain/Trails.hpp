@@ -20,13 +20,15 @@ public:
 
     class Segment {
         public:
-            vec3f ini;
-            vec3f end;
-			vec3f color;
+			vec3f ini;
+			vec3f color1;
+			vec3f end;
+			vec3f color2;
 
             Segment() : ini(vec3f(0)), end(vec3f(0)) {}
-            Segment(const vec3f& i, const vec3f& e) : ini(i), end(e) {}
-    };
+			Segment(const vec3f& i, const vec3f& e) : ini(i), end(e) {}
+			Segment(const vec3f& i, const vec3f& e, const vec3f& col) : ini(i), color1(col), end(e), color2(col) {}
+	};
 
 
     Trails(const std::string& name);
@@ -35,12 +37,13 @@ public:
     void update(float deltaTime);
     void draw() const;
 
-    void addTrailSegment(Color color, Direction dir, const Segment& s);
+	void addTrailSegment(Color color, Direction dir, float x1, float x2, int y);
 
 private:
 
+	void updateMeshes();
 	Model models[Direction::NUM_DIRECTIONS];
-	map<int, map<float, Color> > segments[NUM_DIRECTIONS];
+	std::map<int, std::map<float, Color> > segments[NUM_DIRECTIONS];
 
     DeferredContainer* renderer;
 

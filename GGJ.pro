@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     SceneMain/particles/LightParticleEmitter.cpp \
     SceneMain/MotionBlurContainer.cpp \
     SceneMain/Trails.cpp \
-    SceneMain/InputHandler.cpp
+    SceneMain/InputHandler.cpp \
+    SceneMain/Colors.cpp
 
 HEADERS += \
     commons.hpp \

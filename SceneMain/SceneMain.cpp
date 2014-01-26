@@ -86,7 +86,7 @@ SceneMain::~SceneMain() {
 void SceneMain::loadResources() {
     AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
     AudioManager::getMusic("gameMusic")->setLoop(true);
-    AudioManager::getMusic("gameMusic")->play();
+	//AudioManager::getMusic("gameMusic")->play();
 
 	//meshes
 	std::vector<Vertex::Element> elems = {

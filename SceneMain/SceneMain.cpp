@@ -52,7 +52,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->addTo(renderer);
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
-    Map* map = new Map("data/maps/map0.map");
+    Map* map = new Map("data/maps/map1.map");
     map->addTo(renderer);
 
 	for(int i = 0; i < playerCount; i++)
@@ -160,9 +160,9 @@ void SceneMain::loadResources() {
     Textures2D.add("poteG", Texture2D::createFromFile("data/textures/poteG.png"));
     Textures2D.add("poteB", Texture2D::createFromFile("data/textures/poteB.png"));
     Textures2D.add("canvasW", Texture2D::createFromFile("data/textures/canvasW.png"));
-    Textures2D.add("canvasR", Texture2D::createFromFile("data/textures/canvasR.png"));
-    Textures2D.add("canvasG", Texture2D::createFromFile("data/textures/canvasG.png"));
-    Textures2D.add("canvasB", Texture2D::createFromFile("data/textures/canvasB.png"));
+    Textures2D.add("canvas1", Texture2D::createFromFile("data/textures/canvasR.png"));
+    Textures2D.add("canvas2", Texture2D::createFromFile("data/textures/canvasG.png"));
+    Textures2D.add("canvas3", Texture2D::createFromFile("data/textures/canvasB.png"));
 
 	Textures2D.add("saw", Texture2D::createFromFile("data/textures/sawW.png"));
 	Textures2D.add("botCubeW", Texture2D::createFromFile("data/textures/cubebotW.png"));

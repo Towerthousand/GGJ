@@ -16,8 +16,8 @@
 Player::Player(int playerNum, const vec3f& rot, Color col)
 	: playerNum(playerNum), rot(rot), color(col) {
 	Map* map = (Map*)getGame()->getObjectByName("map");
-	pos = vec3f(map->getStartingPos(col).x,map->getStartingPos(col).y,0);
-	VBE_LOG(pos.x << " " << pos.y << " " << pos.z);
+	pos = vec3f(map->getStartingPos(col).x,map->getStartingPos(col).y-0.6,0);
+	fullTransform = glm::translate(mat4f(1.0f),pos);
 	this->setName("player"+char('0'+playerNum));
 	model.mesh = Meshes.get("brushidle0");
 	model.program = Programs.get("deferredModel");
@@ -26,11 +26,12 @@ Player::Player(int playerNum, const vec3f& rot, Color col)
 	modelAabb = model.mesh->getBoundingBox();
 	modelOffset = glm::translate(mat4f(1.0f), -modelAabb.getCenter()+vec3f(0,0,0.5));
 
-	velocity = vec3f(0.0f);
+	velocity = vec3f(0.0f, JUMP_IMPULSE*0.65f, 0.0f);
+
 	colliding = false;
 
 	totalForce = vec3f(0.0f);
-	animState = Player::IDLE;
+	animState = Player::JUMP;
 
 	animCount = 0.0f;
 	animTime = randomFloat(0.1f, 0.4f);
@@ -80,13 +81,6 @@ void Player::update(float deltaTime) {
 	}
 	// integration
 	velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
-
-	// apply impulses
-	if (animState != Player::JUMP && input.getKeyDown(InputHandler::PLAYER_UP)) {
-		velocity.y += JUMP_IMPULSE;
-	}
-	// integration
-	velocity = glm::clamp(velocity + totalForce*deltaTime, vec3f(-MAX_VELOCITY), vec3f(MAX_VELOCITY));
 	if (fabs(velocity.x) < 0.08f) velocity.x = 0;
 
 
@@ -112,6 +106,8 @@ void Player::update(float deltaTime) {
 
 	colliding = false;
 	bool isBrushColliding = false;
+
+
 
 	//Y
 	AABB newboxY(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
@@ -169,6 +165,7 @@ void Player::update(float deltaTime) {
 			isRightWall = true;
 		} else if(velocity.x < 0 ) {
 			if (input.getKeyDown(InputHandler::PLAYER_UP)) velocity.x += JUMP_IMPULSE*5;
+
 		} else velocity.x = 0;
 
 		disp.x *= min;
@@ -199,24 +196,14 @@ void Player::update(float deltaTime) {
 	if(animCount >= animTime) {
 		animCount -= animTime;
 		animTime = randomFloat(0.1f, 0.2f);
-		//VBE_LOG(animTime);
 		animIter = 1 - animIter;
 	}
 	std::string s = "brush" + anim + toString(animIter);
-	//VBE_LOG(s);
 	model.mesh = Meshes.get(s);
 
 
-	if(Input::isKeyPressed(sf::Keyboard::Q))
-		color = Color::RED;
-	if(Input::isKeyPressed(sf::Keyboard::W))
-		color = Color::GREEN;
-	if(Input::isKeyPressed(sf::Keyboard::E))
-		color = Color::BLUE;
 
 	// TRAILS
-
-	vec3f posoff(0, -0.29f*modelAabb.getDimensions().y, 0.5);
 
 	if (prevOnfloor && collidingFloor && (blockColor == Color::WHITE || blockColor == color) ) {
 		Trails* trails = (Trails*)getGame()->getObjectByName("trails");
@@ -237,6 +224,7 @@ void Player::update(float deltaTime) {
 	prevOnside = collidingSides;
 
 
+
 	//transform stuff
 	for(int i = 0; i < 3; ++i) {
 		if(rot[i] < 0) rot[i] = rot[i]+360;
@@ -244,6 +232,8 @@ void Player::update(float deltaTime) {
 	}
 	transform = glm::translate(mat4f(1), pos);
 	transform = glm::scale(transform, scale);
+
+	if(pos.y < -2) die();
 }
 
 void Player::draw() const
@@ -280,7 +270,29 @@ void Player::checkMapStatus() {
 	Map::Cube c = map->getCube(vec3f(fullTransform*vec4f(0,0,0,1)));
 	if(c.type == Map::Cube::FINISH) {
 		//YAAAAY
-		VBE_LOG("YAAAAY");
-	}
+		std::string s = "canvas" + toString(playerNum+1);
+		map->setCanvasTex(s);
 
+	}
+}
+
+void Player::die() {
+	Map* map = (Map*)getGame()->getObjectByName("map");
+	pos = vec3f(map->getStartingPos(color).x,map->getStartingPos(color).y-0.6,0);
+	fullTransform = glm::translate(mat4f(1.0f),pos);
+	model.mesh = Meshes.get("brushidle0");
+	velocity = vec3f(0.0f, JUMP_IMPULSE*0.65f, 0.0f);
+
+	colliding = false;
+
+	totalForce = vec3f(0.0f);
+	animState = Player::JUMP;
+
+	animCount = 0.0f;
+	animTime = randomFloat(0.1f, 0.4f);
+
+	anim = "idle";
+	animIter = 0;
+
+	scale = vec3f(0.30f/modelAabb.getRadius());
 }

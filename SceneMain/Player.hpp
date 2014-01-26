@@ -27,6 +27,8 @@ public:
 	InputHandler input;
 private:
     void checkMapStatus();
+    void die();
+
 	int playerNum;
 
     Model model;

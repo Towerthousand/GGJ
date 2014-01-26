@@ -37,6 +37,9 @@ class Map : public GameObject {
         Cube getCube(vec3f pos);
         vec2f getStartingPos(Color col) { return startingPos[col-1];}
 
+        void setCanvasTex(std::string tex);
+
+
 	private:
         static std::string models_textures[Cube::NUM_TYPES][Color::NUM_COLORS][2];
 
@@ -47,6 +50,7 @@ class Map : public GameObject {
 		DeferredContainer* renderer;
 
         vec2f startingPos[3];
+        std::string canvasTexture;
 };
 
 #endif // MAP_HPP

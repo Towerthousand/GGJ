@@ -47,7 +47,7 @@ class Map : public GameObject {
 	private:
         static std::string models_textures[Cube::NUM_TYPES][Color::NUM_COLORS][2];
 
-		Cube translate(char c);
+        Cube translate(char c);
 
 		std::vector<std::vector <Cube> > map;
 		Model cube;

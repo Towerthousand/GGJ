@@ -64,5 +64,7 @@ OTHER_FILES += \
     data/shaders/quadlol.vert \
     data/shaders/trails.vert \
     data/shaders/trails.frag \
-    data/shaders/trails.geom
+    data/shaders/trails.geom \
+    data/shaders/cubesDeferred.frag \
+    data/shaders/cubesDeferred.vert
 

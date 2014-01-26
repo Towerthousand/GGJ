@@ -111,14 +111,17 @@ void Map::draw() const {
                     continue;
                 }
                 if(map[i][j].type == Cube::AIR || (playerColor != map[i][j].color && map[i][j].color != Color::WHITE)) continue;
+                cube.program = Programs.get("deferredCubes");
                 cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
                 cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
-				cube.program->uniform("V")->set(cam->view);
+                cube.program->uniform("V")->set(cam->view);
 				cube.program->uniform("ambient")->set(0.5f);
 				cube.program->uniform("specular")->set(1.0f);
-				cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
-				cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
-				cube.draw();
+                cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
+                cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+                cube.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
+                cube.draw();
+                cube.program = Programs.get("deferredModel");
 				if(map[i][j].type == Cube::SAW) {
 					float rot = GLOBALCLOCK.getElapsedTime().asSeconds()*10000;
 					cube.program->uniform("MVP")->
@@ -201,7 +204,7 @@ Map::Cube Map::translate(char c) {
         case 'M' : return Cube(Color::WHITE	,Cube::FINISH);
         case ' ' : return Cube(Color::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
-	}
+    }
 }
 
 Map::Cube Map::getCube(vec3f pos) {
@@ -212,6 +215,7 @@ Map::Cube Map::getCube(vec3f pos) {
 void Map::setCanvasTex(std::string tex) {
     canvasTexture = tex;
 }
+
 
 void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
 {
@@ -239,13 +243,17 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
     }
     else {
         for (int i = ipos; i >= iini; i--) {
-            if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+            Cube::Type ctype = map[i][y].type;
+            if (ctype == Cube::AIR || ctype == Cube::START || ctype == Cube::FINISH
+                || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
                 x1 = float(i + 1.0);
                 break;
             }
         }
         for (int i = ipos; i <= iend; i++) {
-            if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+            Cube::Type ctype = map[i][y].type;
+            if (ctype == Cube::AIR || ctype == Cube::START || ctype == Cube::FINISH
+                || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
                 x2 = float(i);
                 break;
             }

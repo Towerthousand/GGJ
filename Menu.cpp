@@ -1,8 +1,6 @@
 #include "Menu.hpp"
 #include "SceneMain/SceneMain.hpp"
 
-#define multiplayer false
-
 Menu::Menu() : socket(nullptr)
 {
 	m.program = ShaderProgram::loadFromFile("data/shaders/quadlol.vert", "data/shaders/motionBlurPass.frag");
@@ -37,13 +35,13 @@ Menu::~Menu() {
 
 void Menu::update(float) {
 
-	if(socket == nullptr && Input::isKeyPressed(sf::Keyboard::Space)) {
-		if(!multiplayer)
-		{
-			startGame();
-			return;
-		}
+	if(socket == nullptr && Input::isKeyPressed(sf::Keyboard::Q))
+	{
+		startGame();
+		return;
+	}
 
+	if(socket == nullptr && Input::isKeyPressed(sf::Keyboard::Space)) {
 		std::string host = "192.168.1.147";
 
 		socket = new sf::TcpSocket();

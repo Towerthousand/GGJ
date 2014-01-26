@@ -52,15 +52,15 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->addTo(renderer);
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
+    Map* map = new Map("data/maps/map0.map");
+    map->addTo(renderer);
+
 	for(int i = 0; i < playerCount; i++)
 	{
-        Player* p = new Player(i, vec3f(3,5,0), vec3f(0.0f), Color(i+1));
+        Player* p = new Player(i, vec3f(0.0f), Color(i+1));
 		p->addTo(renderer);
 		players[i] = p;
 	}
-
-	Map* map = new Map("data/maps/map0.map");
-	map->addTo(renderer);
 
     Trails* trails = new Trails("trails");
     trails->addTo(renderer);

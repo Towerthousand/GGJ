@@ -55,9 +55,16 @@ Map::Map(const std::string &mapfile) : map(std::vector<std::vector<Cube> >(1, st
 			map.push_back(std::vector<Cube>());
 			++i;
 		}
-		else map[i].push_back(translate(c));
+        else {
+            map[i].push_back(translate(c));
+            if(translate(c).type == Cube::START)
+                startingPos[translate(c).color-1] = vec2f(map[i].size()-1+0.5,i);
+        }
 	}
 	std::reverse(map.begin(),map.end());
+    for(int i = 0; i < 3; ++i) {
+        startingPos[i].y = (int)map.size() - startingPos[i].y;
+    }
 	cube.program = Programs.get("deferredModel");
 	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 }
@@ -187,3 +194,9 @@ Map::Cube Map::translate(char c) {
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
 	}
 }
+
+Map::Cube Map::getCube(vec3f pos) {
+    if(pos.x < 0 || pos.y < 0 || pos.x >= map[0].size() || pos.y >= map.size()) return Cube(Color::WHITE,Cube::AIR);
+    return map[floor(pos.y)][floor(pos.x)];
+}
+

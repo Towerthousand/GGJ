@@ -13,8 +13,11 @@
 #define ELASTICITY      0.0f
 
 
-Player::Player(int playerNum, const vec3f& pos, const vec3f& rot, Color col)
-	: playerNum(playerNum), pos(pos), rot(rot), color(col) {
+Player::Player(int playerNum, const vec3f& rot, Color col)
+    : playerNum(playerNum), rot(rot), color(col) {
+    Map* map = (Map*)getGame()->getObjectByName("map");
+    pos = vec3f(map->getStartingPos(col).x,map->getStartingPos(col).y,0);
+    VBE_LOG(pos.x << " " << pos.y << " " << pos.z);
 	this->setName("player"+char('0'+playerNum));
     model.mesh = Meshes.get("brushidle0");
     model.program = Programs.get("deferredModel");
@@ -45,6 +48,7 @@ Player::~Player() {
 }
 
 void Player::update(float deltaTime) {
+    checkMapStatus();
     vec3f initPos = pos;
 
     //Animation Conditions
@@ -195,7 +199,7 @@ void Player::update(float deltaTime) {
     if(animCount >= animTime) {
         animCount -= animTime;
         animTime = randomFloat(0.1f, 0.2f);
-        VBE_LOG(animTime);
+        //VBE_LOG(animTime);
         animIter = 1 - animIter;
     }
     std::string s = "brush" + anim + toString(animIter);
@@ -268,3 +272,12 @@ void Player::draw() const
     }
 }
 
+void Player::checkMapStatus() {
+    Map* map = (Map*)getGame()->getObjectByName("map");
+    Map::Cube c = map->getCube(vec3f(fullTransform*vec4f(0,0,0,1)));
+    if(c.type == Map::Cube::FINISH) {
+        //YAAAAY
+        VBE_LOG("YAAAAY");
+    }
+
+}

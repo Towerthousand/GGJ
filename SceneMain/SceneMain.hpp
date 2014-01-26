@@ -32,6 +32,8 @@ class SceneMain : public GameObject {
 
 		InputHandler input;
 
+		std::string mapPath;
+
 };
 
 #endif // SCENEMAIN_HPP

@@ -139,15 +139,18 @@ void Map::draw() const {
 					continue;
 				}
 				if(map[i][j].type == Cube::AIR || (playerColor != map[i][j].color && map[i][j].color != Color::WHITE)) continue;
-				cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
-				cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
-				cube.program->uniform("V")->set(cam->view);
-				cube.program->uniform("ambient")->set(0.5f);
-				cube.program->uniform("specular")->set(1.0f);
-				cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
-				cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
-				cube.draw();
-			}
+                cube.program = Programs.get("deferredCubes");
+                cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+                cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+                cube.program->uniform("V")->set(cam->view);
+                cube.program->uniform("ambient")->set(0.5f);
+                cube.program->uniform("specular")->set(1.0f);
+                cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
+                cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+                cube.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
+                cube.draw();
+                cube.program = Programs.get("deferredModel");
+            }
 		}
 	}
 	/*else if (renderer->getMode() == DeferredContainer::Forward) {
@@ -217,7 +220,7 @@ Map::Cube Map::translate(char c) {
 		case 'M' : return Cube(Color::WHITE	,Cube::FINISH);
 		case ' ' : return Cube(Color::WHITE	,Cube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
-	}
+    }
 }
 
 Map::Cube Map::getCube(vec3f pos) {
@@ -229,48 +232,53 @@ void Map::setCanvasTex(std::string tex) {
 	canvasTexture = tex;
 }
 
+
 void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
 {
-	float pos = 0.5f*(x1 + x2);
-	int xdim = horizontal ? map[0].size() : map.size();
-	int ipos = floor(glm::clamp(pos, 0.0f, float(xdim) - 0.1f));
-	x1 = glm::clamp(x1,  0.0f, float(xdim) - 0.1f);
-	int iini = floor(x1);
-	x2 = glm::clamp(x2,  0.0f, float(xdim) - 0.1f);
-	int iend = floor(x2);
+    float pos = 0.5f*(x1 + x2);
+    int xdim = horizontal ? map[0].size() : map.size();
+    int ipos = floor(glm::clamp(pos, 0.0f, float(xdim) - 0.1f));
+    x1 = glm::clamp(x1,  0.0f, float(xdim) - 0.1f);
+    int iini = floor(x1);
+    x2 = glm::clamp(x2,  0.0f, float(xdim) - 0.1f);
+    int iend = floor(x2);
 
-	if (horizontal) {
-		for (int i = ipos; i >= iini; i--) {
-			if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
-				x1 = float(i + 1.0);
-				break;
-			}
-		}
-		for (int i = ipos; i <= iend; i++) {
-			if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
-				x2 = float(i);
-				break;
-			}
-		}
-	}
-	else {
-		for (int i = ipos; i >= iini; i--) {
-			if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
-				x1 = float(i + 1.0);
-				break;
-			}
-		}
-		for (int i = ipos; i <= iend; i++) {
-			if (map[i][y].type == Cube::AIR || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
-				x2 = float(i);
-				break;
-			}
-		}
-	}
+    if (horizontal) {
+        for (int i = ipos; i >= iini; i--) {
+            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+                x1 = float(i + 1.0);
+                break;
+            }
+        }
+        for (int i = ipos; i <= iend; i++) {
+            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+                x2 = float(i);
+                break;
+            }
+        }
+    }
+    else {
+        for (int i = ipos; i >= iini; i--) {
+            Cube::Type ctype = map[i][y].type;
+            if (ctype == Cube::AIR || ctype == Cube::START || ctype == Cube::FINISH
+                || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+                x1 = float(i + 1.0);
+                break;
+            }
+        }
+        for (int i = ipos; i <= iend; i++) {
+            Cube::Type ctype = map[i][y].type;
+            if (ctype == Cube::AIR || ctype == Cube::START || ctype == Cube::FINISH
+                || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
+                x2 = float(i);
+                break;
+            }
+        }
+    }
 }
 
 void Map::dieAt(vec3f pos, Color col) {
 	if(pos.x < 0 || pos.y < 0 || pos.x >= map[0].size() || pos.y >= map.size()) return;
-	map[floor(pos.y)][floor(pos.x)].deathColor = col;
+    map[floor(pos.y)][floor(pos.x)].deathColor = col;
 }
 

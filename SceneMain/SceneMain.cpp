@@ -13,11 +13,12 @@
 
 SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
+	int seed = randomInt(0,3);
 
 	if(socket != nullptr)
 	{
 		sf::Packet packet = receivePacket();
-		int mapSize, personCount, policeCount, seed;
+		int mapSize, personCount, policeCount;
 		packet >> playerNum >> playerCount >> mapSize >> personCount >> policeCount >> seed;
 		//Utils::randomSeed(seed); //VERRRY IMPORRRRRTANT
 	}
@@ -26,6 +27,8 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 		playerNum = 0;
 		playerCount = 1;
 	}
+	seed = seed%4;
+	mapPath = "data/maps/map" + toString(seed) + ".map";
 
 	loadResources();
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
@@ -53,7 +56,7 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 	sys->setTextureSheet(Textures2D.get("particleSheet"), 3);
 
     Map* map = new Map();
-	map->loadFromFile("data/maps/map1.map");
+	map->loadFromFile(mapPath);
     map->addTo(renderer);
 
 	for(int i = 0; i < playerCount; i++)
@@ -82,7 +85,7 @@ SceneMain::~SceneMain() {
 void SceneMain::loadResources() {
     AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
     AudioManager::getMusic("gameMusic")->setLoop(true);
-    //AudioManager::getMusic("gameMusic")->play();
+	AudioManager::getMusic("gameMusic")->play();
 
 	//meshes
 	std::vector<Vertex::Element> elems = {
@@ -180,6 +183,7 @@ void SceneMain::loadResources() {
     Textures2D.add("trailBV", Texture2D::createFromFile("data/textures/decal2BV.png"));
     Textures2D.add("normalsTrail",  Texture2D::createFromFile("data/textures/decal2nmapA.png"));
     Textures2D.add("normalsTrailV", Texture2D::createFromFile("data/textures/decal2nmapB.png"));
+    Textures2D.add("normalsCubes", Texture2D::createFromFile("data/textures/NM1.png"));
     Textures2D.add("particleSheet", Texture2D::createFromFile("data/textures/particleSheet.png"));
 	char pixels[4] = {char(200), char(20), char(20), char(255)};
 	Textures2D.add("nullRed", Texture2D::createFromRaw(pixels, 1, 1));
@@ -195,7 +199,8 @@ void SceneMain::loadResources() {
     //program
     Programs.add("deferredLight", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/light.frag"));
     Programs.add("deferredModel", ShaderProgram::loadFromFile("data/shaders/standardDeferred.vert", "data/shaders/standardDeferred.frag"));
-	Programs.add("deferredSaw", ShaderProgram::loadFromFile("data/shaders/standardDeferred.vert", "data/shaders/sawDeferred.frag"));
+    Programs.add("deferredCubes", ShaderProgram::loadFromFile("data/shaders/cubesDeferred.vert", "data/shaders/cubesDeferred.frag"));
+    Programs.add("deferredSaw", ShaderProgram::loadFromFile("data/shaders/standardDeferred.vert", "data/shaders/sawDeferred.frag"));
 	Programs.add("ambientPass", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/ambientPass.frag"));
 	Programs.add("blurPassVertical", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurPassVertical.frag"));
 	Programs.add("blurPassHoritzontal", ShaderProgram::loadFromFile("data/shaders/quad.vert", "data/shaders/blurPassHoritzontal.frag"));

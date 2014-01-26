@@ -36,35 +36,25 @@ void Trails::draw() const
 	glDepthMask(GL_TRUE);
     glDisable(GL_CULL_FACE);
 
-    for (int i = 0; i < Color::NUM_COLORS; i++) {
-        if (i == Color::WHITE) continue;
+	for (int j = 0; j < Direction::NUM_DIRECTIONS; j++) {
 
-        std::string scolor = "";
-        switch (i) {
-            case Color::RED:   scolor = "R"; break;
-            case Color::GREEN: scolor = "G"; break;
-            case Color::BLUE:  scolor = "B"; break;
-        }
-        for (int j = 0; j < Direction::NUM_DIRECTIONS; j++) {
-
-            float hor, ver;
-            vec2f side;
-            std::string sside = "";
-            if (j != HORIZONTAL) sside = "V";
-            Texture2D* tex = Textures2D.get("trail" + scolor + sside);
-            switch (j) {
-                case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f( 0, -1.0f); break;
-                case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-1.0f, 0);  break;
-                case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 1.0f, 0);  break;
-            }
-            models[i][j].program->uniform("MVP")->set(cam->projection*cam->view);
-            models[i][j].program->uniform("tex")->set(tex);
-            models[i][j].program->uniform("horTrail")->set(hor);
-            models[i][j].program->uniform("verTrail")->set(ver);
-            models[i][j].program->uniform("side")->set(side);
-            models[i][j].draw();
-        }
-    }
+		float hor, ver;
+		vec2f side;
+		std::string sside = "";
+		if (j != HORIZONTAL) sside = "V";
+		Texture2D* tex = Textures2D.get("trailR" + sside);
+		switch (j) {
+			case HORIZONTAL:     hor = 1.0f; ver = 0.0f; side = vec2f( 0, -1.0f); break;
+			case VERTICAL_LEFT:  hor = 0.0f; ver = 1.0f; side = vec2f(-1.0f, 0);  break;
+			case VERTICAL_RIGHT: hor = 0.0f; ver = 1.0f; side = vec2f( 1.0f, 0);  break;
+		}
+		models[j].program->uniform("MVP")->set(cam->projection*cam->view);
+		models[j].program->uniform("tex")->set(tex);
+		models[j].program->uniform("horTrail")->set(hor);
+		models[j].program->uniform("verTrail")->set(ver);
+		models[j].program->uniform("side")->set(side);
+		models[j].draw();
+	}
 
     glDepthMask(GL_TRUE);
     glEnable(GL_CULL_FACE);

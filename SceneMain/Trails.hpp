@@ -22,6 +22,7 @@ public:
         public:
             vec3f ini;
             vec3f end;
+			vec3f color;
 
             Segment() : ini(vec3f(0)), end(vec3f(0)) {}
             Segment(const vec3f& i, const vec3f& e) : ini(i), end(e) {}
@@ -38,8 +39,8 @@ public:
 
 private:
 
-    Model                models[Color::NUM_COLORS][Direction::NUM_DIRECTIONS];
-    std::vector<Segment> trails[Color::NUM_COLORS][Direction::NUM_DIRECTIONS];
+	Model models[Direction::NUM_DIRECTIONS];
+	map<int, map<float, Color> > segments[NUM_DIRECTIONS];
 
     DeferredContainer* renderer;
 

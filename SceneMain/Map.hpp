@@ -21,10 +21,8 @@ class Map : public GameObject {
 
 				Cube(Color c, Type t) : color(c), type(t) {}
 
-			private:
 				Color color;
 				Type type;
-				friend class Map;
 		};
 
 		Map(const std::string& mapfile);
@@ -36,6 +34,9 @@ class Map : public GameObject {
         bool isColliding(const vec3f& aabb, Color &color) const;
         bool isColliding(const AABB& aabb,  Color &color) const;
 
+        Cube getCube(vec3f pos);
+        vec2f getStartingPos(Color col) { return startingPos[col-1];}
+
 	private:
         static std::string models_textures[Cube::NUM_TYPES][Color::NUM_COLORS][2];
 
@@ -44,6 +45,8 @@ class Map : public GameObject {
 		std::vector<std::vector <Cube> > map;
 		Model cube;
 		DeferredContainer* renderer;
+
+        vec2f startingPos[3];
 };
 
 #endif // MAP_HPP

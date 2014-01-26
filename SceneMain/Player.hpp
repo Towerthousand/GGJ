@@ -10,7 +10,7 @@ class Camera;
 class Player : public GameObject {
 public:
 
-	Player(int playerNum, const vec3f& pos = vec3f(0.0f), const vec3f& rot = vec3f(0.0f), Color col = Color::RED);
+    Player(int playerNum, const vec3f& rot = vec3f(0.0f), Color col = Color::RED);
     virtual ~Player();
 
     void update(float deltaTime);
@@ -26,6 +26,7 @@ public:
 
 	InputHandler input;
 private:
+    void checkMapStatus();
 	int playerNum;
 
     Model model;

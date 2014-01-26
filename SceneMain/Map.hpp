@@ -39,6 +39,8 @@ class Map : public GameObject {
 
         void setCanvasTex(std::string tex);
 
+        void clipTrail(Color col, bool horizontal, int y, float &x1, float &x2);
+
 
 	private:
         static std::string models_textures[Cube::NUM_TYPES][Color::NUM_COLORS][2];

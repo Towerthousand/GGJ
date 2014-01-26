@@ -10,7 +10,7 @@ SOURCES += main.cpp \
     SceneMain/Camera.cpp \
     SceneMain/Player.cpp \
     SceneMain/DeferredContainer.cpp \
-	SceneMain/DeferredLight.cpp \
+    SceneMain/DeferredLight.cpp \
     SceneMain/BlurContainer.cpp \
     SceneMain/Frustum.cpp \
     SceneMain/SquareObject.cpp \
@@ -31,7 +31,7 @@ HEADERS += \
     SceneMain/Camera.hpp \
     SceneMain/Player.hpp \
     SceneMain/DeferredContainer.hpp \
-	SceneMain/DeferredLight.hpp \
+    SceneMain/DeferredLight.hpp \
     SceneMain/BlurContainer.hpp \
     SceneMain/Frustum.hpp \
     SceneMain/SquareObject.hpp \
@@ -68,5 +68,5 @@ OTHER_FILES += \
     data/shaders/trails.frag \
     data/shaders/trails.geom \
     data/shaders/cubesDeferred.frag \
-    data/shaders/cubesDeferred.vert
-
+    data/shaders/cubesDeferred.vert \
+    data/shaders/sawDeferred.frag

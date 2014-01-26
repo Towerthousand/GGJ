@@ -31,7 +31,7 @@ Menu::~Menu() {
 
 }
 
-void Menu::update(float deltaTime) {
+void Menu::update(float ) {
 	if(Input::isKeyPressed(sf::Keyboard::Space)) {
 		bool multiplayer = false;
 		sf::TcpSocket* socket = nullptr;

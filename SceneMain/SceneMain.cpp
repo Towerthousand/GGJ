@@ -10,6 +10,7 @@
 #include "particles/ParticleSystem.hpp"
 #include "particles/LightParticleEmitter.hpp"
 #include "Trails.hpp"
+#include "../Menu.hpp"
 
 SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), socket(socket) {
 	this->setName("SCENE");
@@ -225,6 +226,16 @@ void SceneMain::update(float deltaTime) {
 	{
 		sendInputToServer();
 		receiveServerInfo();
+	}
+
+	if(Input::isKeyPressed(sf::Keyboard::Return))
+	{
+		if(socket != nullptr)
+			socket->disconnect();
+
+		Menu* sc = new Menu();
+		sc->addTo(getGame());
+		this->removeAndDelete();
 	}
 }
 

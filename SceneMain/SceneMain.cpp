@@ -29,12 +29,20 @@ SceneMain::SceneMain(sf::TcpSocket* socket) : debugCounter(0.0), fpsCount(0), so
 		playerNum = 0;
 		playerCount = 1;
         srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
-        seed = randomInt(0, 3);
+		//seed = randomInt(0, 3);
 	}
-	seed = seed%4;
-	mapPath = "data/maps/map" + toString(seed) + ".map";
-
+	//seed = seed%4;
+	//mapPath = "data/maps/map" + toString(seed) + ".map";
+	std::ifstream in(std::string("data/config.ini").c_str(), std::ifstream::in);
+	VBE_ASSERT(in, "Failed to load data/config.ini");
+	std::string s;
+	in >> s;
+	in >> s;
+	in >> s;
+	mapPath = "data/maps/" + s;
 	loadResources();
+	AudioManager::getMusic("gameMusic")->play();
+
 	srand(GLOBALCLOCK.getElapsedTime().asMilliseconds());
 
 	//GL stuff..:
@@ -91,7 +99,6 @@ SceneMain::~SceneMain() {
 void SceneMain::loadResources() {
     AudioManager::loadMusic("gameMusic", "data/music/Guantepoderoso.ogg");
     AudioManager::getMusic("gameMusic")->setLoop(true);
-	AudioManager::getMusic("gameMusic")->play();
 
 	//meshes
 	std::vector<Vertex::Element> elems = {

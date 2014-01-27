@@ -42,7 +42,13 @@ void Menu::update(float) {
 	}
 
 	if(socket == nullptr && Input::isKeyPressed(sf::Keyboard::Space)) {
-		std::string host = "192.168.1.147";
+
+		std::ifstream in(std::string("data/config.ini").c_str(), std::ifstream::in);
+		VBE_ASSERT(in, "Failed to load data/config.ini");
+		std::string s;
+		in >> s;
+		in >> s;
+		std::string host = s;
 
 		socket = new sf::TcpSocket();
 		if(socket->connect(host, 6174) != sf::Socket::Done) {

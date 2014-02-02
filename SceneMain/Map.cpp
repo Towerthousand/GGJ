@@ -86,91 +86,91 @@ void Map::update(float deltaTime) {
 }
 
 void Map::draw() const {
-//	SceneMain* sc = (SceneMain*)getGame()->getObjectByName("SCENE");
-//	Color playerColor = (Color)(sc->playerNum + 1);
-//	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-//	if(renderer->getMode() == DeferredContainer::Deferred) {
-//		for(int i = 0; i < (int)map.size(); ++i) {
-//			for(int j = 0; j < (int)map[0].size(); ++j) {
-//				OldCube current = map[i][j];
-//				if(current.type == OldCube::FINISH) {
-//					float rot = -30.0f;
-//					mat4f mat = fullTransform;
-//					mat = glm::translate(mat,vec3f(j,i,0));
-//					mat = glm::rotate(mat,rot,vec3f(0,1.0f,0));
-//					cube.program->uniform("MVP")->set(cam->projection*cam->view*mat);
-//					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
-//					cube.program->uniform("V")->set(cam->view);
-//					cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
-//					cube.program->uniform("diffuseTex")->set(Textures2D.get(canvasTexture));
-//					cube.draw();
-//					continue;
-//				}
-//				else if(current.type == OldCube::START) {
-//					cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.2)));
-//					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.2)));
-//					cube.program->uniform("V")->set(cam->view);
-//					cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
-//					cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
-//					cube.draw();
-//					continue;
-//				}
-//				else if(current.type == OldCube::SAW) {
-//					if(current.color == playerColor || current.color == Color::WHITE) {
-//						cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
-//						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+//		SceneMain* sc = (SceneMain*)getGame()->getObjectByName("SCENE");
+//		Color playerColor = (Color)(sc->playerNum + 1);
+//		Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
+//		if(renderer->getMode() == DeferredContainer::Deferred) {
+//			for(int i = 0; i < (int)map.size(); ++i) {
+//				for(int j = 0; j < (int)map[0].size(); ++j) {
+//					OldCube current = map[i][j];
+//					if(current.type == OldCube::FINISH) {
+//						float rot = -30.0f;
+//						mat4f mat = fullTransform;
+//						mat = glm::translate(mat,vec3f(j,i,0));
+//						mat = glm::rotate(mat,rot,vec3f(0,1.0f,0));
+//						cube.program->uniform("MVP")->set(cam->projection*cam->view*mat);
+//						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
 //						cube.program->uniform("V")->set(cam->view);
-//						cube.program->uniform("ambient")->set(0.5f);
-//						cube.program->uniform("specular")->set(1.0f);
+//						cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
+//						cube.program->uniform("diffuseTex")->set(Textures2D.get(canvasTexture));
+//						cube.draw();
+//						continue;
+//					}
+//					else if(current.type == OldCube::START) {
+//						cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.2)));
+//						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.2)));
+//						cube.program->uniform("V")->set(cam->view);
 //						cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
 //						cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
 //						cube.draw();
+//						continue;
 //					}
-//					if(current.color == playerColor || current.color == Color::WHITE  || current.deathColor != Color::WHITE) {
-//						cube.program = Programs.get("deferredSaw");
-//						cube.program->uniform("ambient")->set(0.5f);
-//						cube.program->uniform("specular")->set(1.0f);
-//						float rot = GLOBALCLOCK.getElapsedTime().asSeconds()*10000;
-//						cube.program->uniform("MVP")->
-//								set(cam->projection*cam->view*
-//									glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,0)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
-//						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
-//						cube.program->uniform("colorID")->set(current.deathColor);
-//						cube.mesh = Meshes.get("saw");
-//						cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
-//						cube.draw();
-//						cube.program = Programs.get("deferredModel");
+//					else if(current.type == OldCube::SAW) {
+//						if(current.color == playerColor || current.color == Color::WHITE) {
+//							cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+//							cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+//							cube.program->uniform("V")->set(cam->view);
+//							cube.program->uniform("ambient")->set(0.5f);
+//							cube.program->uniform("specular")->set(1.0f);
+//							cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
+//							cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
+//							cube.draw();
+//						}
+//						if(current.color == playerColor || current.color == Color::WHITE  || current.deathColor != Color::WHITE) {
+//							cube.program = Programs.get("deferredSaw");
+//							cube.program->uniform("ambient")->set(0.5f);
+//							cube.program->uniform("specular")->set(1.0f);
+//							float rot = GLOBALCLOCK.getElapsedTime().asSeconds()*10000;
+//							cube.program->uniform("MVP")->
+//									set(cam->projection*cam->view*
+//										glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,0)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
+//							cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
+//							cube.program->uniform("colorID")->set(current.deathColor);
+//							cube.mesh = Meshes.get("saw");
+//							cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
+//							cube.draw();
+//							cube.program = Programs.get("deferredModel");
+//						}
+//						continue;
 //					}
-//					continue;
+//					if(current.type == OldCube::AIR || (playerColor != current.color && current.color != Color::WHITE)) continue;
+//					cube.program = Programs.get("deferredCubes");
+//					cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+//					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+//					cube.program->uniform("V")->set(cam->view);
+//					cube.program->uniform("ambient")->set(0.5f);
+//					cube.program->uniform("specular")->set(1.0f);
+//					cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
+//					cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
+//					cube.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
+//					cube.draw();
+//					cube.program = Programs.get("deferredModel");
 //				}
-//				if(current.type == OldCube::AIR || (playerColor != current.color && current.color != Color::WHITE)) continue;
-//				cube.program = Programs.get("deferredCubes");
-//				cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
-//				cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
-//				cube.program->uniform("V")->set(cam->view);
-//				cube.program->uniform("ambient")->set(0.5f);
-//				cube.program->uniform("specular")->set(1.0f);
-//				cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
-//				cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
-//				cube.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
-//				cube.draw();
-//				cube.program = Programs.get("deferredModel");
 //			}
 //		}
-//	}
-//	else if (renderer->getMode() == DeferredContainer::Forward) {
-//		for(int i = 0; i < (int)map.size(); ++i) {
-//			for(int j = 0; j < (int)map[0].size(); ++j) {
-//				if(map[i][j].type == OldCube::AIR || map[i][j].type == OldCube::FINISH || map[i][j].type == OldCube::START) continue;
-//				Model m;
-//				m.mesh = Meshes.get("1x1WireCube");
-//				m.program = Programs.get("lines");
-//				m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
-//				m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,0)),vec3f(0.5f)));
-//				m.draw();
+//		else if (renderer->getMode() == DeferredContainer::Forward) {
+//			for(int i = 0; i < (int)map.size(); ++i) {
+//				for(int j = 0; j < (int)map[0].size(); ++j) {
+//					if(map[i][j].type == OldCube::AIR || map[i][j].type == OldCube::FINISH || map[i][j].type == OldCube::START) continue;
+//					Model m;
+//					m.mesh = Meshes.get("1x1WireCube");
+//					m.program = Programs.get("lines");
+//					m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
+//					m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),vec3f(j+0.5,i+0.5,0)),vec3f(0.5f)));
+//					m.draw();
+//				}
 //			}
 //		}
-//	}
 }
 
 bool Map::isColliding(const vec3f& pos, Color &color) const {
@@ -223,7 +223,7 @@ Cube* Map::translate(char c, vec2i pos) const {
 		case 'M' : return new CubeCommon(WHITE, pos);
 		case ' ' : return (Cube*)nullptr;
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
-    }
+	}
 }
 
 Cube* Map::getCube(int x, int y) const {
@@ -242,37 +242,18 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2) {
 	int iini = floor(x1);
 	x2 = glm::clamp(x2,  0.0f, float(xdim) - 0.1f);
 	int iend = floor(x2);
-
-	if (horizontal) {
-		for (int i = ipos; i >= iini; i--) {
-			Cube* c = getCube(i,y);
-			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
-				x1 = float(i + 1.0);
-				break;
-			}
-		}
-		for (int i = ipos; i <= iend; i++) {
-			Cube* c = getCube(i,y);
-			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
-				x2 = float(i);
-				break;
-			}
+	for (int i = ipos; i >= iini; i--) {
+		Cube* c = (horizontal? getCube(i,y) : getCube(y,i));
+		if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
+			x1 = float(i + 1.0);
+			break;
 		}
 	}
-	else {
-		for (int i = ipos; i >= iini; i--) {
-			Cube* c = getCube(y,i);
-			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
-				x1 = float(i + 1.0);
-				break;
-			}
-		}
-		for (int i = ipos; i <= iend; i++) {
-			Cube* c = getCube(y,i);
-			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
-				x2 = float(i);
-				break;
-			}
+	for (int i = ipos; i <= iend; i++) {
+		Cube* c = (horizontal? getCube(i,y) : getCube(y,i));
+		if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
+			x2 = float(i);
+			break;
 		}
 	}
 }

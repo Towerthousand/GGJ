@@ -246,16 +246,14 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2) {
 	if (horizontal) {
 		for (int i = ipos; i >= iini; i--) {
 			Cube* c = getCube(i,y);
-			if(c == nullptr) continue;
-			if (!c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
+			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
 				x1 = float(i + 1.0);
 				break;
 			}
 		}
 		for (int i = ipos; i <= iend; i++) {
 			Cube* c = getCube(i,y);
-			if(c == nullptr) continue;
-			if (!c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
+			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
 				x2 = float(i);
 				break;
 			}
@@ -264,16 +262,14 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2) {
 	else {
 		for (int i = ipos; i >= iini; i--) {
 			Cube* c = getCube(y,i);
-			if(c == nullptr) continue;
-			if (!c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
+			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
 				x1 = float(i + 1.0);
 				break;
 			}
 		}
 		for (int i = ipos; i <= iend; i++) {
 			Cube* c = getCube(y,i);
-			if(c == nullptr) continue;
-			if (!c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
+			if (c == nullptr || !c->isPaintable() || (c->getColor() != WHITE && c->getColor() != col)) {
 				x2 = float(i);
 				break;
 			}

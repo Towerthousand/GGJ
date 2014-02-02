@@ -6,7 +6,7 @@
 class DeferredContainer;
 class Map : public GameObject {
 	public:
-		class Cube {
+		class OldCube {
             public:
 
 				enum Type {
@@ -19,7 +19,7 @@ class Map : public GameObject {
 					NUM_TYPES
 				};
 
-				Cube(Color c, Type t) : color(c), type(t), deathColor(Color::WHITE) {}
+				OldCube(Color c, Type t) : color(c), type(t), deathColor(Color::WHITE) {}
 
 				Color color;
 				Type type;
@@ -37,7 +37,7 @@ class Map : public GameObject {
         bool isColliding(const vec3f& aabb, Color &color) const;
         bool isColliding(const AABB& aabb,  Color &color) const;
 
-        Cube getCube(vec3f pos);
+		OldCube getCube(vec3f pos);
         vec2f getStartingPos(Color col) { return startingPos[col-1];}
 
         void setCanvasTex(std::string tex);
@@ -46,13 +46,12 @@ class Map : public GameObject {
 
 		void dieAt(vec3f pos, Color col);
 
-
 	private:
-        static std::string models_textures[Cube::NUM_TYPES][Color::NUM_COLORS][2];
+		static std::string models_textures[OldCube::NUM_TYPES][Color::NUM_COLORS][2];
 
-        Cube translate(char c);
+		OldCube translate(char c);
 
-		std::vector<std::vector <Cube> > map;
+		std::vector<std::vector <OldCube> > map;
 		std::vector<std::vector <std::vector<bool> > > deaths;
 		Model cube;
 		DeferredContainer* renderer;

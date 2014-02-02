@@ -1,5 +1,5 @@
 include(VBE/VBE.pro)
-INCLUDEPATH += .
+#INCLUDEPATH += .
 LIBS += -lsfml-network
 
 
@@ -23,7 +23,9 @@ SOURCES += main.cpp \
     SceneMain/Trails.cpp \
     SceneMain/InputHandler.cpp \
     SceneMain/Colors.cpp \
-    Menu.cpp
+    Menu.cpp \
+    SceneMain/Cube.cpp \
+    SceneMain/CubeCommon.cpp
 
 HEADERS += \
     commons.hpp \
@@ -44,7 +46,9 @@ HEADERS += \
     SceneMain/Colors.hpp \
     SceneMain/Trails.hpp \
     SceneMain/InputHandler.hpp \
-    Menu.hpp
+    Menu.hpp \
+    SceneMain/Cube.hpp \
+    SceneMain/CubeCommon.hpp
 
 OTHER_FILES += \
     data/shaders/quad.vert \

@@ -110,8 +110,6 @@ void Player::update(float deltaTime) {
 	colliding = false;
 	bool isBrushColliding = false;
 
-
-
 	//Y
 	AABB newboxY(aabb.getMin()+vec3f(0,disp.y,0), aabb.getMax()+vec3f(0,disp.y,0));
 	Color blockColor;
@@ -290,8 +288,8 @@ void Player::draw() const
 void Player::checkMapStatus() {
 	Map* map = (Map*)getGame()->getObjectByName("map");
 	vec3f p = vec3f(fullTransform*vec4f(0,0,0,1));
-	Map::Cube c = map->getCube(p);
-	if(c.type == Map::Cube::FINISH) {
+	Map::OldCube c = map->getCube(p);
+	if(c.type == Map::OldCube::FINISH) {
 		//YAAAAY
 		std::string s = "canvas" + toString(playerNum+1);
 		map->setCanvasTex(s);
@@ -304,8 +302,8 @@ void Player::checkMapStatus() {
         }
         scn->setBackgroundColor(col);
 	}
-	Map::Cube l = map->getCube(p-vec3f(0,0.5,0));
-	if (l.type == Map::Cube::SAW) {
+	Map::OldCube l = map->getCube(p-vec3f(0,0.5,0));
+	if (l.type == Map::OldCube::SAW) {
 		die();
 		map->dieAt(vec3f(p-vec3f(0,0.5,0)),color);
 	}

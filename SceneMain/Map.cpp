@@ -2,8 +2,9 @@
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
 #include "SceneMain.hpp"
+#include "CubeCommon.hpp"
 
-std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
+std::string Map::models_textures[Map::OldCube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	{ //AIR
 	  {"",""},
 	  {"",""},
@@ -42,12 +43,14 @@ std::string Map::models_textures[Map::Cube::NUM_TYPES][Color::NUM_COLORS][2] = {
 	}
 };
 
-Map::Map() : map(std::vector<std::vector<Cube> >(1, std::vector<Cube>())) {
+Map::Map() : map(std::vector<std::vector<OldCube> >(1, std::vector<OldCube>())) {
 	setName("map");
 
 	cube.program = Programs.get("deferredModel");
 	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
 	canvasTexture = "canvasW";
+	CubeCommon* c = new CubeCommon(RED,vec2i(0,1));
+	c->addTo(this);
 }
 
 Map::~Map() {
@@ -62,18 +65,18 @@ void Map::loadFromFile(const std::string& mapfile) {
 		in >> std::noskipws >> c;
 		if(c == '%') break;
 		if(c == '\n') {
-			map.push_back(std::vector<Cube>());
+			map.push_back(std::vector<OldCube>());
 			++i;
 		}
 		else {
 			map[i].push_back(translate(c));
-			if(translate(c).type == Cube::START)
+			if(translate(c).type == OldCube::START)
 				startingPos[translate(c).color-1] = vec2f(map[i].size()-1+0.5,i);
 		}
 	}
 	std::reverse(map.begin(),map.end());
 	for(int i = 0; i < 3; ++i) {
-		startingPos[i].y = (int)map.size() - startingPos[i].y;
+		startingPos[i] = vec2f(0,0);
 	}
 }
 
@@ -88,7 +91,8 @@ void Map::draw() const {
 	if(renderer->getMode() == DeferredContainer::Deferred) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
-				if(map[i][j].type == Cube::FINISH) {
+				OldCube current = map[i][j];
+				if(current.type == OldCube::FINISH) {
 					float rot = -30.0f;
 					mat4f mat = fullTransform;
 					mat = glm::translate(mat,vec3f(j,i,0));
@@ -96,32 +100,32 @@ void Map::draw() const {
 					cube.program->uniform("MVP")->set(cam->projection*cam->view*mat);
 					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
 					cube.program->uniform("V")->set(cam->view);
-					cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
+					cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
 					cube.program->uniform("diffuseTex")->set(Textures2D.get(canvasTexture));
 					cube.draw();
 					continue;
 				}
-				else if(map[i][j].type == Cube::START) {
+				else if(current.type == OldCube::START) {
 					cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.2)));
 					cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.2)));
 					cube.program->uniform("V")->set(cam->view);
-					cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
-					cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+					cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
+					cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
 					cube.draw();
 					continue;
 				}
-				else if(map[i][j].type == Cube::SAW) {
-					if(map[i][j].color == playerColor || map[i][j].color == Color::WHITE) {
+				else if(current.type == OldCube::SAW) {
+					if(current.color == playerColor || current.color == Color::WHITE) {
 						cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
 						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
 						cube.program->uniform("V")->set(cam->view);
 						cube.program->uniform("ambient")->set(0.5f);
 						cube.program->uniform("specular")->set(1.0f);
-						cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
-						cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
+						cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
+						cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
 						cube.draw();
 					}
-					if(map[i][j].color == playerColor || map[i][j].color == Color::WHITE  || map[i][j].deathColor != Color::WHITE) {
+					if(current.color == playerColor || current.color == Color::WHITE  || current.deathColor != Color::WHITE) {
 						cube.program = Programs.get("deferredSaw");
 						cube.program->uniform("ambient")->set(0.5f);
 						cube.program->uniform("specular")->set(1.0f);
@@ -130,7 +134,7 @@ void Map::draw() const {
 								set(cam->projection*cam->view*
 									glm::translate(glm::rotate(glm::translate(fullTransform,vec3f(j,i+1,0)),rot,vec3f(1,0,0)),vec3f(0,-1,0.5)));
 						cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0)));
-						cube.program->uniform("colorID")->set(map[i][j].deathColor);
+						cube.program->uniform("colorID")->set(current.deathColor);
 						cube.mesh = Meshes.get("saw");
 						cube.program->uniform("diffuseTex")->set(Textures2D.get("saw"));
 						cube.draw();
@@ -138,25 +142,25 @@ void Map::draw() const {
 					}
 					continue;
 				}
-				if(map[i][j].type == Cube::AIR || (playerColor != map[i][j].color && map[i][j].color != Color::WHITE)) continue;
-                cube.program = Programs.get("deferredCubes");
-                cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
-                cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
-                cube.program->uniform("V")->set(cam->view);
-                cube.program->uniform("ambient")->set(0.5f);
-                cube.program->uniform("specular")->set(1.0f);
-                cube.mesh = Meshes.get(models_textures[map[i][j].type][map[i][j].color][0]);
-                cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[map[i][j].type][map[i][j].color][1]));
-                cube.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
-                cube.draw();
-                cube.program = Programs.get("deferredModel");
-            }
+				if(current.type == OldCube::AIR || (playerColor != current.color && current.color != Color::WHITE)) continue;
+				cube.program = Programs.get("deferredCubes");
+				cube.program->uniform("MVP")->set(cam->projection*cam->view*glm::translate(fullTransform,vec3f(j,i,0.5)));
+				cube.program->uniform("M")->set(glm::translate(fullTransform,vec3f(j,i,0.5)));
+				cube.program->uniform("V")->set(cam->view);
+				cube.program->uniform("ambient")->set(0.5f);
+				cube.program->uniform("specular")->set(1.0f);
+				cube.mesh = Meshes.get(models_textures[current.type][current.color][0]);
+				cube.program->uniform("diffuseTex")->set(Textures2D.get(models_textures[current.type][current.color][1]));
+				cube.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
+				cube.draw();
+				cube.program = Programs.get("deferredModel");
+			}
 		}
 	}
-	/*else if (renderer->getMode() == DeferredContainer::Forward) {
+	else if (renderer->getMode() == DeferredContainer::Forward) {
 		for(int i = 0; i < (int)map.size(); ++i) {
 			for(int j = 0; j < (int)map[0].size(); ++j) {
-				if(map[i][j].type == Cube::AIR || map[i][j].type == Cube::FINISH || map[i][j].type == Cube::START) continue;
+				if(map[i][j].type == OldCube::AIR || map[i][j].type == OldCube::FINISH || map[i][j].type == OldCube::START) continue;
 				Model m;
 				m.mesh = Meshes.get("1x1WireCube");
 				m.program = Programs.get("lines");
@@ -165,14 +169,14 @@ void Map::draw() const {
 				m.draw();
 			}
 		}
-	}*/
+	}
 }
 
 bool Map::isColliding(const vec3f& pos, Color &color) const {
 	int x = floor(pos.x);
 	int y = floor(pos.y);
 	if (x < 0 || y < 0 || x >= int(map[0].size()) || y >= int(map.size())) return false;
-	if (map[y][x].type == Cube::AIR || map[y][x].type == Cube::FINISH || map[y][x].type == Cube::START) return false;
+	if (map[y][x].type == OldCube::AIR || map[y][x].type == OldCube::FINISH || map[y][x].type == OldCube::START) return false;
 	color = map[y][x].color;
 	return true;
 }
@@ -188,7 +192,7 @@ bool Map::isColliding(const AABB& aabb, Color &color) const
 		if(i < 0) continue;
 		for (int j = xmin; j <= xmax && j < (int)map[i].size(); j++) {
 			if(j < 0) continue;
-			if (map[i][j].type != Cube::AIR && map[i][j].type != Cube::FINISH && map[i][j].type != Cube::START) {
+			if (map[i][j].type != OldCube::AIR && map[i][j].type != OldCube::FINISH && map[i][j].type != OldCube::START) {
 				AABB tilebox(vec3f(j, i, -1), vec3f(j+1, i+1, 1));
 				if (tilebox.overlap(aabb)) {
 					color = map[i][j].color;
@@ -200,31 +204,31 @@ bool Map::isColliding(const AABB& aabb, Color &color) const
 	return false;
 }
 
-Map::Cube Map::translate(char c) {
+Map::OldCube Map::translate(char c) {
 	switch (c) {
-		case 'W' : return Cube(Color::WHITE	,Cube::FLOOR);
-		case 'R' : return Cube(Color::RED	,Cube::FLOOR);
-		case 'G' : return Cube(Color::GREEN	,Cube::FLOOR);
-		case 'B' : return Cube(Color::BLUE	,Cube::FLOOR);
-		case '<' : return Cube(Color::WHITE	,Cube::SAW);
-		case 'Z' : return Cube(Color::RED	,Cube::SAW);
-		case 'X' : return Cube(Color::GREEN	,Cube::SAW);
-		case 'C' : return Cube(Color::BLUE	,Cube::SAW);
-		case 'J' : return Cube(Color::WHITE	,Cube::BUMP);
-		case 'K' : return Cube(Color::RED	,Cube::BUMP);
-		case 'L' : return Cube(Color::GREEN	,Cube::BUMP);
-		case 'P' : return Cube(Color::BLUE	,Cube::BUMP);
-		case 'A' : return Cube(Color::RED	,Cube::START);
-		case 'S' : return Cube(Color::GREEN	,Cube::START);
-		case 'D' : return Cube(Color::BLUE	,Cube::START);
-		case 'M' : return Cube(Color::WHITE	,Cube::FINISH);
-		case ' ' : return Cube(Color::WHITE	,Cube::AIR);
+		case 'W' : return OldCube(Color::WHITE	,OldCube::FLOOR);
+		case 'R' : return OldCube(Color::RED	,OldCube::FLOOR);
+		case 'G' : return OldCube(Color::GREEN	,OldCube::FLOOR);
+		case 'B' : return OldCube(Color::BLUE	,OldCube::FLOOR);
+		case '<' : return OldCube(Color::WHITE	,OldCube::SAW);
+		case 'Z' : return OldCube(Color::RED	,OldCube::SAW);
+		case 'X' : return OldCube(Color::GREEN	,OldCube::SAW);
+		case 'C' : return OldCube(Color::BLUE	,OldCube::SAW);
+		case 'J' : return OldCube(Color::WHITE	,OldCube::BUMP);
+		case 'K' : return OldCube(Color::RED	,OldCube::BUMP);
+		case 'L' : return OldCube(Color::GREEN	,OldCube::BUMP);
+		case 'P' : return OldCube(Color::BLUE	,OldCube::BUMP);
+		case 'A' : return OldCube(Color::RED	,OldCube::START);
+		case 'S' : return OldCube(Color::GREEN	,OldCube::START);
+		case 'D' : return OldCube(Color::BLUE	,OldCube::START);
+		case 'M' : return OldCube(Color::WHITE	,OldCube::FINISH);
+		case ' ' : return OldCube(Color::WHITE	,OldCube::AIR);
 		default: {VBE_ASSERT(false, "INVALID CHARACTER " << c);}
     }
 }
 
-Map::Cube Map::getCube(vec3f pos) {
-	if(pos.x < 0 || pos.y < 0 || pos.x >= map[0].size() || pos.y >= map.size()) return Cube(Color::WHITE,Cube::AIR);
+Map::OldCube Map::getCube(vec3f pos) {
+	if(pos.x < 0 || pos.y < 0 || pos.x >= map[0].size() || pos.y >= map.size()) return OldCube(Color::WHITE,OldCube::AIR);
 	return map[floor(pos.y)][floor(pos.x)];
 }
 
@@ -245,13 +249,13 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
 
     if (horizontal) {
         for (int i = ipos; i >= iini; i--) {
-            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+			if (map[y][i].type == OldCube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
                 x1 = float(i + 1.0);
                 break;
             }
         }
         for (int i = ipos; i <= iend; i++) {
-            if (map[y][i].type == Cube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
+			if (map[y][i].type == OldCube::AIR || (map[y][i].color != Color::WHITE && map[y][i].color != col)) {
                 x2 = float(i);
                 break;
             }
@@ -259,16 +263,16 @@ void Map::clipTrail(Color col, bool horizontal, int y, float &x1, float &x2)
     }
     else {
         for (int i = ipos; i >= iini; i--) {
-            Cube::Type ctype = map[i][y].type;
-            if (ctype == Cube::AIR || ctype == Cube::START || ctype == Cube::FINISH
+			OldCube::Type ctype = map[i][y].type;
+			if (ctype == OldCube::AIR || ctype == OldCube::START || ctype == OldCube::FINISH
                 || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
                 x1 = float(i + 1.0);
                 break;
             }
         }
         for (int i = ipos; i <= iend; i++) {
-            Cube::Type ctype = map[i][y].type;
-            if (ctype == Cube::AIR || ctype == Cube::START || ctype == Cube::FINISH
+			OldCube::Type ctype = map[i][y].type;
+			if (ctype == OldCube::AIR || ctype == OldCube::START || ctype == OldCube::FINISH
                 || (map[i][y].color != Color::WHITE && map[i][y].color != col)) {
                 x2 = float(i);
                 break;

@@ -24,8 +24,6 @@ class SceneMain : public GameObject {
 		Camera* cam;
 		sf::TcpSocket* socket;
 
-
-
 		Player* players[32]; //32 players son suficientes :3
 
 		void sendInputToServer();

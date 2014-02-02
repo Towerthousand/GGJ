@@ -90,8 +90,6 @@ void Player::update(float deltaTime) {
 	//Reset totalForce;
 	totalForce = vec3f(0.0f);
 
-
-
 	vec3f disp = velocity*deltaTime;
 
 
@@ -99,6 +97,8 @@ void Player::update(float deltaTime) {
 
 	// collision detection
 	Map* map = (Map*)getGame()->getObjectByName("map");
+	if(map->getCube(pos) == nullptr) {VBE_LOG("NOPE");}
+	else {VBE_LOG("YEP");}
 	AABB aabb = modelAabb;
 	mat4f trans = fullTransform*modelOffset;
 	aabb = AABB(vec3f(trans*vec4f(aabb.getMin(), 1.0f)), vec3f(trans*vec4f(aabb.getMax(), 1.0f)));
@@ -288,25 +288,25 @@ void Player::draw() const
 void Player::checkMapStatus() {
 	Map* map = (Map*)getGame()->getObjectByName("map");
 	vec3f p = vec3f(fullTransform*vec4f(0,0,0,1));
-	Map::OldCube c = map->getCube(p);
-	if(c.type == Map::OldCube::FINISH) {
-		//YAAAAY
-		std::string s = "canvas" + toString(playerNum+1);
-		map->setCanvasTex(s);
-        SceneMain* scn = (SceneMain*)getGame()->getObjectByName("SCENE");
-        vec4f col;
-        switch(playerNum+1) {
-            case 1: col = vec4f(0.25f, 0, 0, 1); break;
-            case 2: col = vec4f(0, 0.25f, 0, 1); break;
-            case 3: col = vec4f(0, 0, 0.25f, 1); break;
-        }
-        scn->setBackgroundColor(col);
-	}
-	Map::OldCube l = map->getCube(p-vec3f(0,0.5,0));
-	if (l.type == Map::OldCube::SAW) {
-		die();
-		map->dieAt(vec3f(p-vec3f(0,0.5,0)),color);
-	}
+	Cube* c = map->getCube(p);
+//	if(c.type == Map::OldCube::FINISH) {
+//		//YAAAAY
+//		std::string s = "canvas" + toString(playerNum+1);
+//		map->setCanvasTex(s);
+//        SceneMain* scn = (SceneMain*)getGame()->getObjectByName("SCENE");
+//        vec4f col;
+//        switch(playerNum+1) {
+//            case 1: col = vec4f(0.25f, 0, 0, 1); break;
+//            case 2: col = vec4f(0, 0.25f, 0, 1); break;
+//            case 3: col = vec4f(0, 0, 0.25f, 1); break;
+//        }
+//        scn->setBackgroundColor(col);
+//	}
+//	Map::OldCube l = map->getCube(p-vec3f(0,0.5,0));
+//	if (l.type == Map::OldCube::SAW) {
+//		die();
+//		map->dieAt(vec3f(p-vec3f(0,0.5,0)),color);
+//	}
 }
 
 void Player::die() {

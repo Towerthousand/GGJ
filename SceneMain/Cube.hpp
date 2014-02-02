@@ -11,11 +11,12 @@ class Cube : public GameObject {
 
 		virtual void update(float deltaTime) = 0;
 		virtual void draw() const = 0;
-		virtual bool isColliding(vec3f point) = 0;
-		virtual bool isColliding(AABB box) = 0;
+		virtual bool isColliding(vec3f point) const = 0;
+		virtual bool isColliding(AABB box) const = 0;
+		virtual bool isPaintable() const = 0;
 
-		virtual Color getColor();
-		vec2i getPos();
+		virtual Color getColor() const;
+		vec2i getPos() const;
 
 	protected:
 		Color color;

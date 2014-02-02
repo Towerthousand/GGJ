@@ -8,10 +8,10 @@ Cube::Cube(vec2i pos) : color(WHITE), pos(pos), renderer(nullptr) {
 Cube::~Cube() {
 }
 
-Color Cube::getColor() {
+Color Cube::getColor() const {
 	return color;
 }
 
-vec2i Cube::getPos() {
+vec2i Cube::getPos() const {
 	return pos;
 }

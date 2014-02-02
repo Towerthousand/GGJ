@@ -10,8 +10,9 @@ class CubeCommon : public Cube {
 		void update(float deltaTime);
 		void draw() const;
 
-		bool isColliding(vec3f p);
-		bool isColliding(AABB box);
+		bool isColliding(vec3f p) const;
+		bool isColliding(AABB box) const;
+		bool isPaintable() const;
 
 		static const std::string textures[NUM_COLORS];
 };

@@ -44,21 +44,22 @@ void CubeCommon::draw() const {
 		m.program = Programs.get("lines");
 		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(
 										   glm::translate(mat4f(1.0f),aabb.getCenter()),aabb.getDimensions()/2.0f));
-		VBE_LOG(toString(cubeModel.mesh->getBoundingBox().getCenter()));
-		VBE_LOG(toString(aabb.getDimensions()));
-		VBE_LOG(toString(cubeModel.mesh->getBoundingBox().getDimensions()));
 		m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
 		m.draw();
 	}
 #endif
 }
 
-bool CubeCommon::isColliding(vec3f p) {
+bool CubeCommon::isColliding(vec3f p) const {
 	return (floor(p.x) == pos.x || floor(p.y) == pos.y);
 }
 
-bool CubeCommon::isColliding(AABB box) {
+bool CubeCommon::isColliding(AABB box) const {
 	AABB aabb = cubeModel.mesh->getBoundingBox();
 	aabb = AABB(vec3f(fullTransform*vec4f(aabb.getMin(),1)),vec3f(fullTransform*vec4f(aabb.getMax(),1)));
 	return aabb.overlap(box);
+}
+
+bool CubeCommon::isPaintable() const {
+	return true;
 }

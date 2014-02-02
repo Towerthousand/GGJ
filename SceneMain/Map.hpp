@@ -3,29 +3,10 @@
 #include "commons.hpp"
 #include "Colors.hpp"
 
+class Cube;
 class DeferredContainer;
 class Map : public GameObject {
 	public:
-		class OldCube {
-            public:
-
-				enum Type {
-					AIR = 0,
-					FLOOR,
-					SAW,
-					BUMP,
-                    START,
-                    FINISH,
-					NUM_TYPES
-				};
-
-				OldCube(Color c, Type t) : color(c), type(t), deathColor(Color::WHITE) {}
-
-				Color color;
-				Type type;
-				Color deathColor;
-		};
-
 		Map();
 		~Map();
 
@@ -37,8 +18,12 @@ class Map : public GameObject {
         bool isColliding(const vec3f& aabb, Color &color) const;
         bool isColliding(const AABB& aabb,  Color &color) const;
 
-		OldCube getCube(vec3f pos);
-        vec2f getStartingPos(Color col) { return startingPos[col-1];}
+		Cube* getCube(int x, int y) const;
+		Cube* getCube(float x, float y) const {return getCube(int(floor(x)),int(floor(y)));}
+		Cube* getCube(vec3f pos) const {return getCube(int(floor(pos.x)),int(floor(pos.y)));}
+		Cube* getCube(vec2f pos) const {return getCube(int(floor(pos.x)),int(floor(pos.y)));}
+		Cube* getCube(vec2i pos) const {return getCube(pos.x,pos.y);}
+		vec2f getStartingPos(Color col) const { return startingPos[col-1];}
 
         void setCanvasTex(std::string tex);
 
@@ -47,17 +32,11 @@ class Map : public GameObject {
 		void dieAt(vec3f pos, Color col);
 
 	private:
-		static std::string models_textures[OldCube::NUM_TYPES][Color::NUM_COLORS][2];
+		Cube* translate(char c, vec2i pos) const;
 
-		OldCube translate(char c);
+		std::vector<std::vector <Cube*> > map;
 
-		std::vector<std::vector <OldCube> > map;
-		std::vector<std::vector <std::vector<bool> > > deaths;
-		Model cube;
-		DeferredContainer* renderer;
-
-        vec2f startingPos[3];
-        std::string canvasTexture;
+		vec2f startingPos[3];
 };
 
 #endif // MAP_HPP

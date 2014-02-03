@@ -1,10 +1,11 @@
 #include "CubeCommon.hpp"
 #include "Camera.hpp"
 #include "DeferredContainer.hpp"
+#include "SceneMain.hpp"
 
 const std::string CubeCommon::textures[NUM_COLORS] = {
 	"nullWhite",
-	"nullBlue",
+	"nullRed",
 	"nullGreen",
 	"nullBlue"
 };
@@ -25,7 +26,21 @@ void CubeCommon::update(float deltaTime) {
 
 void CubeCommon::draw() const {
 	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
-	if(renderer->getMode() == DeferredContainer::Deferred) {
+	SceneMain* sc = (SceneMain*)getGame()->getObjectByName("SCENE");
+	Color playerColor = (Color)(sc->playerNum + 1);
+#ifdef __DEBUG
+	if (renderer->getMode() == DeferredContainer::Forward) { //draw bounding Box
+		AABB aabb = cubeModel.mesh->getBoundingBox();
+		aabb = AABB(vec3f(fullTransform*vec4f(aabb.getMin(),1)),vec3f(fullTransform*vec4f(aabb.getMax(),1)));
+		Model m;
+		m.mesh = Meshes.get("1x1WireCube");
+		m.program = Programs.get("lines");
+		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(glm::translate(mat4f(1.0f),aabb.getCenter()),aabb.getDimensions()/2.0f));
+		m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
+		m.draw();
+	}
+#endif
+	if(renderer->getMode() == DeferredContainer::Deferred && (playerColor == color || color == WHITE)) { //draw cube itself
 		cubeModel.program->uniform("MVP")->set(cam->projection*cam->view*fullTransform);
 		cubeModel.program->uniform("M")->set(fullTransform);
 		cubeModel.program->uniform("V")->set(cam->view);
@@ -35,19 +50,6 @@ void CubeCommon::draw() const {
 		cubeModel.program->uniform("normalsTex")->set(Textures2D.get("normalsCubes"));
 		cubeModel.draw();
 	}
-#ifdef __DEBUG
-	if (renderer->getMode() == DeferredContainer::Forward) {
-		AABB aabb = cubeModel.mesh->getBoundingBox();
-		aabb = AABB(vec3f(fullTransform*vec4f(aabb.getMin(),1)),vec3f(fullTransform*vec4f(aabb.getMax(),1)));
-		Model m;
-		m.mesh = Meshes.get("1x1WireCube");
-		m.program = Programs.get("lines");
-		m.program->uniform("MVP")->set(cam->projection*cam->view*glm::scale(
-										   glm::translate(mat4f(1.0f),aabb.getCenter()),aabb.getDimensions()/2.0f));
-		m.program->uniform("lineColor")->set(vec4f(1, 0, 0, 1));
-		m.draw();
-	}
-#endif
 }
 
 bool CubeCommon::isColliding(vec3f p) const {

@@ -76,9 +76,7 @@ void Map::loadFromFile(const std::string& mapfile) {
 			map[x][y]->addTo(this);
 		}
 	}
-	for(int i = 0; i < 3; ++i) {
-		startingPos[i] = vec2f(0,0);
-	}
+	for(int i = 0; i < 3; ++i) startingPos[i] = vec2f(0,0);
 }
 
 void Map::update(float deltaTime) {
@@ -206,9 +204,9 @@ bool Map::isColliding(const AABB& aabb, Color &color) const {
 Cube* Map::translate(char c, vec2i pos) const {
 	switch (c) {
 		case 'W' : return new CubeCommon(WHITE, pos);
-		case 'R' : return new CubeCommon(WHITE, pos);
-		case 'G' : return new CubeCommon(WHITE, pos);
-		case 'B' : return new CubeCommon(WHITE, pos);
+		case 'R' : return new CubeCommon(RED, pos);
+		case 'G' : return new CubeCommon(GREEN, pos);
+		case 'B' : return new CubeCommon(BLUE, pos);
 		case '<' : return new CubeCommon(WHITE, pos);
 		case 'Z' : return new CubeCommon(WHITE, pos);
 		case 'X' : return new CubeCommon(WHITE, pos);

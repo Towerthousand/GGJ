@@ -3,8 +3,7 @@
 #include "Camera.hpp"
 #include "Map.hpp"
 
-Trails::Trails(const std::string &name)
-{
+Trails::Trails(const std::string &name) {
 	this->setName(name);
 
 	std::vector<Vertex::Element> elems;
@@ -12,26 +11,23 @@ Trails::Trails(const std::string &name)
 	elems.push_back(Vertex::Element(Vertex::Attribute::Color, Vertex::Element::Float, 3));
 	Vertex::Format format = Vertex::Format(elems);
 
-	for (int j = 0; j < Direction::NUM_DIRECTIONS; j++) {
+	for (int j = 0; j < NUM_DIRECTIONS; j++) {
 		models[j].mesh = Mesh::loadEmpty(format, Mesh::DYNAMIC, false);
 		models[j].mesh->setPrimitiveType(Mesh::LINES);
 		models[j].program = Programs.get("trails");
 	}
 
 	renderer = (DeferredContainer*)getGame()->getObjectByName("deferred");
-
 }
 
-Trails::~Trails()
-{
+Trails::~Trails() {
 }
 
-void Trails::update(float )
-{
+void Trails::update(float deltaTime) {
+	(void) deltaTime;
 }
 
-void Trails::draw() const
-{
+void Trails::draw() const {
     if (renderer->getMode() != DeferredContainer::Deferred)
 		return;
 
@@ -39,7 +35,7 @@ void Trails::draw() const
 	glDepthMask(GL_TRUE);
 	glDisable(GL_CULL_FACE);
 
-	for (int j = 0; j < Direction::NUM_DIRECTIONS; j++) {
+	for (int j = 0; j < NUM_DIRECTIONS; j++) {
 
 		float hor, ver;
 		vec2f side;
@@ -66,64 +62,55 @@ void Trails::draw() const
 	glEnable(GL_CULL_FACE);
 }
 
-void Trails::addTrailSegment(Color color, Trails::Direction dir, float x1, float x2, int y, float width)
-{
+void Trails::addTrailSegment(Color color, Trails::Direction dir, float x1, float x2, int y, float width) {
 	if(x2 < x1) std::swap(x1, x2);
     x1 -= width;
     x2 += width;
 
     Map* map = (Map*)getGame()->getObjectByName("map");
-    map->clipTrail(color, dir == Direction::HORIZONTAL, y - (dir != Direction::VERTICAL_RIGHT ? 1 : 0), x1, x2);
+	map->clipTrail(color, dir == HORIZONTAL, y - (dir != VERTICAL_RIGHT ? 1 : 0), x1, x2);
     if (x2 < x1) return;
 
 	std::map<float, Color>& mp = segments[dir][y];
 
 	auto left = mp.lower_bound(x1);
-	Color leftc = Color::WHITE;
-	if(left != mp.begin())
-	{
+	Color leftc = WHITE;
+	if(left != mp.begin()) {
 		auto left2 = left;
 		left2--;
 		leftc = left2->second;
 	}
 
 	auto right = mp.upper_bound(x2);
-	Color rightc = Color::WHITE;
-	if(right != mp.begin())
-	{
+	Color rightc = WHITE;
+	if(right != mp.begin()) {
 		auto right2 = right;
 		right2--;
 		rightc = right2->second;
 	}
 
-	while(left != right)
-	{
+	while(left != right) {
 		auto left2 = left;
 		left2++;
 		mp.erase(left);
 		left = left2;
 	}
 
-	if(leftc != color)
-		mp[x1] = color;
-
-	if(rightc != color)
-		mp[x2] = rightc;
+	if(leftc != color) mp[x1] = color;
+	if(rightc != color)	mp[x2] = rightc;
 
 	updateMeshes();
 }
 
 void Trails::updateMeshes() {
-	for (int dir = 0; dir < Direction::NUM_DIRECTIONS; dir++) {
+	for (int dir = 0; dir < NUM_DIRECTIONS; dir++) {
 		std::vector<Segment> mesh;
-		for(std::map<int, std::map<float, Color> >::iterator it = segments[dir].begin(); it != segments[dir].end(); it++)
-		{
-			Color last = Color::WHITE;
+		for(std::map<int, std::map<float, Color> >::iterator it = segments[dir].begin(); it != segments[dir].end(); it++) {
+			Color last = WHITE;
 			float lastx = 0;
 
-			for(std::map<float, Color>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
-			{
-                if(last != Color::WHITE) {
+			for(std::map<float, Color>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+				if(last != WHITE) {
 					if(dir == HORIZONTAL)
 						mesh.push_back(Segment(vec3f(lastx, it->first, 0.5f), vec3f(it2->first, it->first, 0.5f), getColor(last)));
 					else

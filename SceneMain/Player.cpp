@@ -254,8 +254,7 @@ void Player::update(float deltaTime) {
 	if(pos.y < -2) die();
 }
 
-void Player::draw() const
-{
+void Player::draw() const {
 	Camera* cam = (Camera*)getGame()->getObjectByName("playerCam");
 
 	if(renderer->getMode() == DeferredContainer::Deferred) {

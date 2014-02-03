@@ -24,7 +24,6 @@ public:
 
     Color color;
 
-
 	InputHandler input;
 
 private:
